@@ -1,0 +1,240 @@
+% This template was initially provided by Dulip Withanage.
+% Modifications for the database systems research group
+% were made by Conny Junghans,  Jannik Strötgen and Michael Gertz
+
+\documentclass[
+     12pt,         % font size
+     a4paper,      % paper format
+     BCOR10mm,     % binding correction
+     DIV14,        % stripe size for margin calculation
+     ]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% PACKAGES:
+
+% Use English :
+\usepackage[english]{babel}
+% Input and font encoding
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+% Index-generation
+\usepackage{makeidx}
+% Einbinden von URLs:
+\usepackage{url}
+% Special \LaTex symbols (e.g. \BibTeX):
+%\usepackage{doc}
+% Include Graphic-files:
+\usepackage{graphicx}
+% Include doc++ generated tex-files:
+%\usepackage{docxx}
+
+% Fuer anderthalbzeiligen Textsatz
+\usepackage{setspace}
+
+% Fuer schoenere Zeilenumbrueche
+\usepackage{microtype}
+
+%for nice icons
+\usepackage{fontawesome}
+
+%for todo notes
+\usepackage{todonotes}
+
+%for smart diagrams
+\usepackage{smartdiagram}
+
+%priority diagram from top to bottom
+\makeatletter
+\NewDocumentCommand{\smartdiagramx}{r[] m}{%
+    \StrCut{#1}{:}\diagramtype\option
+    \IfStrEq{\diagramtype}{priority descriptive diagram}{% true-priority descriptive diagram
+        \pgfmathparse{subtract(\sm@core@priorityarrowwidth,\sm@core@priorityarrowheadextend)}
+        \pgfmathsetmacro\sm@core@priorityticksize{\pgfmathresult/2}
+        \pgfmathsetmacro\arrowtickxshift{(\sm@core@priorityarrowwidth-\sm@core@priorityticksize)/2}
+        \begin{tikzpicture}[every node/.style={align=center,let hypenation}]
+        \foreach \smitem [count=\xi] in {#2}{\global\let\maxsmitem\xi}
+        \foreach \smitem [count=\xi] in {#2}{%
+            \edef\col{\@nameuse{color@\xi}}
+            \node[description,drop shadow](module\xi)
+            at (0,0+\xi*\sm@core@descriptiveitemsysep) {\smitem};
+            \draw[line width=\sm@core@prioritytick,\col]
+            ([xshift=-\arrowtickxshift pt]module\xi.base west)--
+            ($([xshift=-\arrowtickxshift pt]module\xi.base west)-(\sm@core@priorityticksize pt,0)$);
+        }%
+        \coordinate (A) at (module1);
+        \coordinate (B) at (module\maxsmitem);
+        \CalcHeight(A,B){heightmodules}
+        \pgfmathadd{\heightmodules}{\sm@core@priorityarrowheightadvance}
+        \pgfmathsetmacro{\distancemodules}{\pgfmathresult}
+        \pgfmathsetmacro\arrowxshift{\sm@core@priorityarrowwidth/2}
+        \begin{pgfonlayer}{background}
+        \node[priority arrow,rotate=180,transform shape] at ([xshift=-\arrowxshift pt]module\maxsmitem.north west){};
+        \end{pgfonlayer}
+        \end{tikzpicture}
+    }{}% end-priority descriptive diagram
+}%
+\makeatother
+
+
+% hyperrefs in the documents
+\PassOptionsToPackage{hyphens}{url}\usepackage[bookmarks=true,colorlinks,pdfpagelabels,pdfstartview = FitH,bookmarksopen = true,bookmarksnumbered = true,linkcolor = black,plainpages = false,hypertexnames = false,citecolor = black,urlcolor=black]{hyperref}
+%\usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% OTHER SETTINGS:
+
+% Choose language
+\newcommand{\setlang}[1]{\selectlanguage{#1}\nonfrenchspacing}
+
+
+\begin{document}
+
+% TITLE:
+\pagenumbering{roman} 
+\begin{titlepage}
+
+
+\vspace*{1cm}
+\begin{center}
+\vspace*{3cm}
+\textbf{ 
+\Large Heidelberg University\\
+\smallskip
+\Large Institute of Computer Science\\
+\smallskip
+\Large Database Systems Research Group\\
+\smallskip
+}
+
+\vspace{3cm}
+
+\textbf{\large Project Proposal for the lecture Text Analytics}
+
+\vspace{0.5\baselineskip}
+{\huge
+\textbf{Clustering and Enriching Recipes}
+}
+\end{center}
+
+\vfill 
+
+{\large
+\begin{tabular}[l]{ll}
+Team Member: & Tom Rix, 3307600, M.\,Sc.\,Applied Computer Sciences\\
+  & rix@stud.uni-heidelberg.de\\
+Team Member: & Name, Matriculation Number, Course of Study\\
+  & email address\\
+Team Member: & Name, Matriculation Number, Course of Study\\
+  & email address\\
+
+% If the line goes too far to the right, you can alter this slightly, e.g.
+Team Member: & Very long Name, Matriculation Number\\
+  & Course of Study, email address\\
+  
+\end{tabular}
+}
+
+\vspace{1cm}
+\large \centering \faicon{github} Find this project on GitHub: \url{www.github.io}
+
+\end{titlepage}
+
+\pagenumbering{arabic} 
+
+\section{Introduction}
+
+When was the last time you looked into your recipes collection and thought: \emph{Oh, what a mess, why is there no structure in this collection?}. Well, most of us tend to collect interesting recipes from various different sources -- may it be old recipes from grandma or fancy modern, low-carb recipes from lifestyle magazines. Usually, we file all our recipes away in a folder or even digitalize them and throw them into virtual pile of recipes.
+
+But wouldn't it be nice, if there was a structure in our recipes collection? All pasta recipes in one chapter, all starters in a chapter separate from deserts and even a categorization into different cultural cuisines? In our project we aim to solve this everyday-life problem by applying text analytics methods to recipe datasets. For example by clustering recipes into meaningful categories similar recipes can be detected and grouped together. One goal is to find out if recipes can be automatically separated into groups like:
+\begin{itemize}
+  \item types of food: e.~g.~starters, mains, deserts, pastryand drinks,
+  \item cultural origin of the cuisine: e.~g.~all Mediterranean dishes appear in the same cluster whereas Asian food is in another cluster far apart. Analyzing even sub-clusters would be interesting to find out how closely the different cuisines are related to each other.
+\end{itemize}
+
+Further ideas for real-world scenarios are the estimation of a healthiness score and the prediction of a dish's preparation time based on the recipe, similar to reading time estimations on websites. Additionally analyzing the comments of recipes if available with sentiment analysis methods would be interesting for automatically generating ratings. As there is barely anything more fundamental than food, all text analytics that can be performed on recipe data has real-world applications.
+
+In the end, an intelligent recipe collection shall be offered where newly added recipes will automatically be sorted into a suitable position. Thus, one can nicely browse through all items and quickly find a suitable recipe in order to indulge oneself.
+
+
+\section{Research Topic Summary}
+
+Astonishingly, there is a small research community which analyzes recipes. However, the problems that are tackled and the issues that are tried to be solved vary a lot. 
+
+Things to cite (datasets, applications, methods):
+\begin{itemize}
+  \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
+  \item German Recipes Dataset \url{https://www.kaggle.com/sterby/german-recipes-dataset}
+  \item Recipe generation \cite{majumder-etal-2019-generating}
+  \item Food.com Dataset with Interactions \cite{https://www.kaggle.com/shuyangli94/food-com-recipes-and-user-interactions} with notebook on sentiment analysis, most/least favourite ingredients
+  \item Cultural diffusion: \url{https://www.kaggle.com/alonalevy/cultural-diffusion-by-recipes} on the What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
+  \item Recipe box dataset \url{https://eightportions.com/datasets/Recipes/#fn:1}
+  \item Clustering Recipes \url{https://www.kaggle.com/tboonhau/clustering-recipes}
+\end{itemize}
+
+\todo[inline]{definitely a more structured literature review needs to be done here}
+
+\section{Project Description}
+
+Main project goals: Create a meaningful clustering/categorization of recipes and enrich plain recipes with useful additional information.
+
+Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
+
+Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients and instructoins. Extract verbs from instructions might be useful as they are good indicators of what is happening. In Figure~\ref{fig:pipeline} all steps are presented in detail.
+
+
+\begin{figure}[b!]
+  \centering
+  \smartdiagramset{descriptive items y sep=2.5,
+                  description text width=8.5cm,
+                  priority arrow height advance=3cm}
+
+\smartdiagramx[priority descriptive diagram]{
+  Schritt 5, Schritt 4, Schritt 3, Schritt 2, Schritt1, Recipes dataset
+}
+  \caption{Pipeline: From entire recipes to features in matrices...}
+  \label{fig:pipeline}
+\end{figure}
+
+
+Used datasets: There are several large datasets of recipes from different websites so that we might not have to crawl our on recipe dataset. We found the following datasets:
+\begin{enumerate}
+  \item recipes1M+
+  \item German recipes dataset
+  \item epirecipes
+  \item what's cooking dataset
+  \item food.com recipes and interactions
+\end{enumerate}
+All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ... 
+We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
+
+Evaluation: As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread. 
+
+Baselines: Do we know any baselines for our tasks? 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The following is especially useful if you work together on one proposal or report, and want to alter its content independently from each other (e.g., to keep your commit history clean).
+
+% Alternative: put content in separate files
+% Check the difference between including these files using \input{filename} and \include{filename} and see which one you like better
+%\chapter{Einleitung}\label{intro}
+%\input{introduction}
+%
+%\chapter{Voraussetzungen}\label{bg}
+%\input{background}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% References (Literaturverzeichnis):
+% see
+% https://de.wikibooks.org/wiki/LaTeX-W%C3%B6rterbuch:_bibliographystyle
+% for the different formats and styles
+
+\bibliographystyle{plain}
+% b) The File:
+\bibliography{references}
+
+\end{document}
