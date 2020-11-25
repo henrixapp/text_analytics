@@ -22,6 +22,7 @@
 \usepackage{makeidx}
 % Einbinden von URLs:
 \usepackage{url}
+\usepackage{natbib}
 % Special \LaTex symbols (e.g. \BibTeX):
 %\usepackage{doc}
 % Include Graphic-files:
@@ -165,12 +166,12 @@ Astonishingly, there is a small research community which analyzes recipes. Howev
 Things to cite (datasets, applications, methods):
 \begin{itemize}
   \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
-  \item German Recipes Dataset \url{https://www.kaggle.com/sterby/german-recipes-dataset}
+  \item German Recipes Dataset \cite{germanrecipesdataset}
   \item Recipe generation \cite{majumder-etal-2019-generating}
-  \item Food.com Dataset with Interactions \cite{https://www.kaggle.com/shuyangli94/food-com-recipes-and-user-interactions} with notebook on sentiment analysis, most/least favourite ingredients
-  \item Cultural diffusion: \url{https://www.kaggle.com/alonalevy/cultural-diffusion-by-recipes} on the What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
-  \item Recipe box dataset \url{https://eightportions.com/datasets/Recipes/#fn:1}
-  \item Clustering Recipes \url{https://www.kaggle.com/tboonhau/clustering-recipes}
+  \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
+  \item Cultural diffusion: \cite{cultdiffusion} on the What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
+  \item Recipe box dataset \cite{recipebox}
+  \item Clustering Recipes \cite{clusteringrecipes}
 \end{itemize}
 
 \todo[inline]{definitely a more structured literature review needs to be done here}
@@ -233,7 +234,7 @@ Baselines: Do we know any baselines for our tasks?
 % https://de.wikibooks.org/wiki/LaTeX-W%C3%B6rterbuch:_bibliographystyle
 % for the different formats and styles
 
-\bibliographystyle{plain}
+\bibliographystyle{unsrtnat}
 % b) The File:
 \bibliography{references}
 
