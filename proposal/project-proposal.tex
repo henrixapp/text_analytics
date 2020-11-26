@@ -160,10 +160,11 @@ Further ideas for real-world scenarios are the estimation of a healthiness score
 
 In the end, an intelligent recipe collection shall be offered where newly added recipes will automatically be sorted into a suitable position. Thus, one can nicely browse through all items and quickly find a suitable recipe in order to indulge oneself.
 
+\todo[inline]{Am Schluss sollten wir einen Ueberblick über die Struktur dieses Dokumentes geben. Also kurz zwei Saetze, welche Infos man wo findet.}
 
 \section{Research Topic Summary}
 
-Astonishingly, there is a small research community which analyzes recipes. However, the problems that are tackled and the issues that are tried to be solved vary a lot. 
+Astonishingly, there is only a small research community which analyzes recipes, given that understanding recipes is a crucial everyday skills and their ubiquity. So far, the problems that are tackled and the issues that are tried to be solved vary a lot. 
 
 Things to cite (datasets, applications, methods):
 \begin{itemize}
@@ -194,7 +195,7 @@ Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients a
                   priority arrow height advance=3cm}
 
 \smartdiagramx[priority descriptive diagram]{
-  Schritt 5, Schritt 4, Schritt 3, Schritt 2, Schritt1, Recipes dataset
+  part of speech analysis: e.~g.~extracting verbs from cooking instructions, stemming? lemmatization?, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing duplicate recipes; removing outliers, e.~g.~very short recipes without meaningful instructions or ingredients like \emph{How to prepare frozen pizza} or very long recipes which contain sub-recipes), Recipes dataset(s)
 }
   \caption{Pipeline: From entire recipes to features in matrices...}
   \label{fig:pipeline}
