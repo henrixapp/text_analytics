@@ -93,14 +93,14 @@
 \begin{document}
 
 % TITLE:
-\pagenumbering{roman} 
+\pagenumbering{roman}
 \begin{titlepage}
 
 
 \vspace*{1cm}
 \begin{center}
 \vspace*{3cm}
-\textbf{ 
+\textbf{
 \Large Heidelberg University\\
 \smallskip
 \Large Institute of Computer Science\\
@@ -119,21 +119,22 @@
 }
 \end{center}
 
-\vfill 
+\vfill
 
-{\large
+{
+    % \large
 \begin{tabular}[l]{ll}
-Team Member: & Tom Rix, 3307600, M.\,Sc.\,Applied Computer Sciences\\
-  & rix@stud.uni-heidelberg.de\\
-Team Member: & Maximilian Jalea, 3256466, M.\,SC.\,Scientific Computing\\
-  & jalea@stud.uni-heidelberg.de\\
-Team Member: & Name, Matriculation Number, Course of Study\\
-  & email address\\
+    Team Member: & Tom Rix, 3307600, M.\,Sc.\,Applied Computer Science \\
+                 & rix@stud.uni-heidelberg.de \\
+    Team Member: & Maximilian Jalea, 3256466, M.\,SC.\,Scientific Computing \\
+                 & jalea@stud.uni-heidelberg.de\\
+    Team Member: & Christan Heusel, 4020794, B.\,Sc.\,Applied Computer Science, \\
+                 & c.heusel@stud.uni-heidelberg.de \\
 
 % If the line goes too far to the right, you can alter this slightly, e.g.
 Team Member: & Very long Name, Matriculation Number\\
   & Course of Study, email address\\
-  
+
 \end{tabular}
 }
 
@@ -142,7 +143,7 @@ Team Member: & Very long Name, Matriculation Number\\
 
 \end{titlepage}
 
-\pagenumbering{arabic} 
+\pagenumbering{arabic}
 
 \section{Introduction}
 
@@ -163,7 +164,7 @@ In the end, an intelligent recipe collection shall be offered where newly added 
 
 \section{Research Topic Summary}
 
-Astonishingly, there is a small research community which analyzes recipes. However, the problems that are tackled and the issues that are tried to be solved vary a lot. 
+Astonishingly, there is a small research community which analyzes recipes. However, the problems that are tackled and the issues that are tried to be solved vary a lot.
 
 Things to cite (datasets, applications, methods):
 \begin{itemize}
@@ -209,12 +210,12 @@ Used datasets: There are several large datasets of recipes from different websit
   \item what's cooking dataset
   \item food.com recipes and interactions
 \end{enumerate}
-All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ... 
+All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ...
 We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
 
-Evaluation: As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread. 
+Evaluation: As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread.
 
-Baselines: Do we know any baselines for our tasks? 
+Baselines: Do we know any baselines for our tasks?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
