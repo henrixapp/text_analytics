@@ -187,12 +187,24 @@ Things to cite (datasets, applications, methods):
 
 \section{Project Description}
 
-Main project goals: Create a meaningful clustering/categorization of recipes and enrich plain recipes with useful additional information.
+\paragraph{Goals} Our main goal is to create a automatic clustering/ categorization  of recipes that can be visualized as map.  Additionally, it could be interesting to calculate similarity in a cluster or even summarize the given recipes, if they fit. Furthermore, we are interested in enriching recipes with 
+additional information like difficulty level or preparation time automatically or recommending recipes based on left over ingredients.
+%Main project goals: Create a meaningful clustering/categorization of recipes and enrich plain recipes with useful additional information.
 
-Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
+%duplicate finding?
+\paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the enrichment  is somehow a sentiment analysis. %The proposed autosummarization of 
+%Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
 
-Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients and instructions. Extract verbs from instructions might be useful as they are good indicators of what is happening. In Figure~\ref{fig:pipeline} all steps are presented in detail.
+\paragraph{Pipeline} The data we found is already structured in different ways. Most of the sources consists of multiple recipes, nicely seperated in different documents.
+Sometimes the recipes contain subrecipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversly, short recipes 
+might also be removed, as they do not contain enough data, e.g. we are not interested in the instructions on heating up a pizza.
+This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be seperated.Abbreviations,like tbsps=tablespoons,
+need to be normalized.
+After tokenizing a part of speech analysis will take place to distinguish later between instructions and adjectives to processed ingredients.
+It might  be useful to apply some stemming and remove stop words in order to reduce the complexity of our problem. 
 
+%Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients and instructions. Extract verbs from instructions might be useful as they are good indicators of what is happening. In Figure~\ref{fig:pipeline} all steps are presented in detail.
+%part of speech before stemming
 
 \begin{figure}[b!]
   \centering
@@ -201,14 +213,14 @@ Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients a
                   priority arrow height advance=3cm}
 
 \smartdiagramx[priority descriptive diagram]{
-  part of speech analysis: e.~g.~extracting verbs from cooking instructions, stemming? lemmatization?, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing duplicate recipes; removing outliers, e.~g.~very short recipes without meaningful instructions or ingredients like \emph{How to prepare frozen pizza} or very long recipes which contain sub-recipes), Recipes dataset(s)
+  stemming? lemmatization?, part of speech analysis: e.~g.~extracting verbs from cooking instructions, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing duplicate recipes; removing outliers, e.~g.~very short recipes without meaningful instructions or ingredients like \emph{How to prepare frozen pizza} or very long recipes which contain sub-recipes), Recipes dataset(s)
 }
   \caption{Pipeline: From entire recipes to features in matrices...}
   \label{fig:pipeline}
 \end{figure}
 
 
-Used datasets: There are several large datasets of recipes from different websites so that we might not have to crawl our on recipe dataset. We found the following datasets:
+\paragraph{Used Datasets} There are several large datasets of recipes from different websites so that we might not have to crawl our on recipe dataset. We found the following datasets:
 \begin{enumerate}
   \item recipes1M+
   \item German recipes dataset
@@ -219,9 +231,8 @@ Used datasets: There are several large datasets of recipes from different websit
 All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ...
 We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
 
-Evaluation: As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread.
+\paragraph{Evaluation \& Baselines} As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread.
 
-Baselines: Do we know any baselines for our tasks?
 
 \subsection{Project roadmap}
 
