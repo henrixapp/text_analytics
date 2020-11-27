@@ -116,7 +116,7 @@
 
 \vspace{0.5\baselineskip}
 {\huge
-\textbf{Clustering and Enriching Recipes}
+\textbf{Clustering\,and\,Augmenting\,Recipes}
 }
 \end{center}
 
@@ -124,6 +124,7 @@
 
 {
     % \large
+    \hspace{-7mm}
 \begin{tabular}[l]{ll}
     Team Member: & Tom Rix, 3307600, M.\,Sc.\,Applied Computer Science \\
                  & rix@stud.uni-heidelberg.de \\
@@ -150,30 +151,30 @@
 
 \section{Introduction}
 
-When was the last time you looked into your recipes collection and thought: \emph{Oh, what a mess, why is there no structure in this collection?}. Well, most of us tend to collect interesting recipes from various different sources -- may it be old recipes from grandma or fancy modern, low-carb recipes from lifestyle magazines. Usually, we file all our recipes away in a folder or even digitalize them and throw them into virtual pile of recipes.
+When was the last time you looked into your recipes collection and thought: \textquoteleft\emph{Oh, what a mess, why is there no structure in this collection?}\textquoteright~ Well, most of us tend to collect interesting recipes from various different sources -- may it be old recipes from grandma or fancy modern, low-carb recipes from lifestyle magazines. Usually, we file all our recipes away in a folder or even digitalize them and throw them into virtual pile of recipes.
 
-But wouldn't it be nice, if there was a structure in our recipes collection? All pasta recipes in one chapter, all starters in a chapter separate from deserts and even a categorization into different cultural cuisines? In our project we aim to solve this everyday-life problem by applying text analytics methods to recipe datasets. For example by clustering recipes into meaningful categories similar recipes can be detected and grouped together. One goal is to find out if recipes can be automatically separated into groups like:
+But wouldn't it be nice, if there was a structure in our recipes collection? All pasta recipes in one chapter, all starters in a chapter separate from deserts and even a categorization into different cultural cuisines? In our project we aim to solve this everyday-life problem by applying text analytics methods to recipe datasets. For example, by clustering recipes into meaningful categories similar recipes can be detected and grouped together. One goal is to find out if recipes can be automatically separated into groups like:
 \begin{itemize}
-  \item types of food: e.~g.~starters, mains, deserts, pastry and drinks,
-  \item cultural origin of the cuisine: e.~g.~all Mediterranean dishes appear in the same cluster whereas Asian food is in another cluster far apart. Analyzing even sub-clusters would be interesting to find out how closely the different cuisines are related to each other.
+  \item type of food: e.\,g.\,starters, mains, deserts, pastry and drinks,
+  \item cultural origin of the cuisine: e.\,g.\,all Mediterranean dishes appear in the same cluster whereas Asian food is in another cluster far apart. Analyzing even sub-clusters would be interesting to find out how closely the different cuisines are related to each other.
 \end{itemize}
 
-Further ideas for real-world scenarios are the estimation of a healthiness score and the prediction of a dish's preparation time based on the recipe, similar to reading time estimations on websites. Additionally analyzing the comments of recipes if available with sentiment analysis methods would be interesting for automatically generating ratings. Choosing a suitable recipe by interpolating between a set of given recipes might be another task that would be useful in a real-world context. As there is barely anything more fundamental than food, all text analytics that can be performed on recipe data have real-world applications.
+Further ideas for real-world scenarios are the estimation of a healthiness score and the prediction of a dish's preparation time based on the recipe, similar to reading time estimations on websites. Additionally, analyzing the comments of recipes, if available, with sentiment analysis methods would be interesting for generating ratings automatically. Choosing a suitable recipe by interpolating between a set of given recipes in latent space might be another task that would be useful in a real-world context. As there is barely anything more fundamental than food, all text analytics that can be performed on recipe data have real-world applications.
 
-In the end, an intelligent recipe collection shall be offered where newly added recipes will automatically be sorted into a suitable position. Thus, one can nicely browse through all items and quickly find a suitable recipe in order to indulge oneself.
+In the end, an intelligent recipe collection shall be offered, where newly added recipes will automatically be sorted into a suitable position. Thus, one can nicely browse through all items and quickly find a suitable recipe in order to indulge oneself.
 
-An overview over related work is given in section~\ref{sec:research}, including not only domain specific articles but also on the text analytics task in general. In section~\ref{sec:project} our planned project is described in detail and a project roadmap and tasks distribution is presented.
+An overview over related work is given in section~\ref{sec:research}, including not only domain specific articles but also text analytics tasks in general. In section~\ref{sec:project} our planned project is described in detail and a project roadmap as well as tasks and objectives are presented.
 
 \section{Research Topic Summary}
 \label{sec:research}
 
 Astonishingly, there is only a small research community which analyzes recipes, given their ubiquity and that understanding recipes is a crucial everyday skill. Perhaps, this is due to the fact that recipes themselves aren't economically interesting, but only the ingredients and advertising have potential for commercialisation.
 
-So far, the problems that are tackled and the issues that are tried to be solved in relation to recipes vary a lot. The text analytics tasks depend especially on the availability of additional information about the recipes. If labels for type of dish/course and cuisine are available, the dataset is suitable for classification \cite{recipeclassification, cultdiffusion}. In this paper Su et al. applied associative classification and used support vector machines. However, most datasets don't provide labels for all recipes. However, performing an unsupervised clustering of recipes would still be a possibility to gain insights into the similarity and relation of recipes. In his article B. Sturm presents an examination of cuisines through unsupervised learning \cite{unsupervisedclustering}, in particular Principal Component Analysis (PCA) and Latent Dirichlet Allocation (LDA). B. H. Tan performed k-means clustering \cite{clusteringrecipes} on the German Recipes Dataset \cite{germanrecipesdataset}. To the best of our knowledge, there is no published and peer-reviewed paper about clustering of recipes yet.
+The problems that are tackled and the issues that are tried to be solved in relation to recipes vary a lot as the text analytics tasks depend especially on the availability of additional information about the recipes. If labels for type of dish/course and cuisine are available, the dataset is suitable for classification~\cite{recipeclassification, cultdiffusion}. In their paper Su et al.~applied associative classification and used support vector machines. However, most datasets don't provide labels for all recipes. However, performing an unsupervised clustering of recipes would still be a possibility to gain insights into the similarity and relation of recipes. In his article B. Sturm presents an examination of cuisines through unsupervised learning~\cite{unsupervisedclustering}, in particular Principal Component Analysis (PCA) and Latent Dirichlet Allocation (LDA). B. H. Tan performed k-means clustering~\cite{clusteringrecipes} on the German Recipes Dataset~\cite{germanrecipesdataset}. To the best of our knowledge, there is no published and peer-reviewed paper about clustering of recipes yet.
 
-There are several interesting publications that solve similar or related problems dealing with recipes: Shidochi et al. tried to automatically find replaceable materials in recipes considering characteristic cooking actions \cite{replaceablematerials}. Therefore, a detailed analysis and understanding of the recipes was inevitable. J. Jermsurawong and N. Habash tried to extract a tree-like structure of instructions from recipes that models the dependency of steps upon each other \cite{recipestructure}. W. Min et al \cite{multimodal} as well as \cite{marin2019recipe1m} go even further and analyse not only text data but multi-modal data including images of the final dishes. There are several papers about the conversion from images to corresponding recipes and vice-versa \cite{marin2019recipe1m, 8099810}. Majumder et al. generated personalized recipe suggestions based on user preferences and selected ingredients \cite{majumder-etal-2019-generating}.
+There are several interesting publications that solve similar or related problems dealing with recipes: Shidochi et al.~tried to automatically find replaceable materials in recipes considering characteristic cooking actions~\cite{replaceablematerials}. Therefore, a detailed analysis and understanding of the recipes was inevitable. Hanai et al.~developed a method to detect spam recipes based on their similarity using a so called Surprising Degree-Recipe Frequency-Interted Ingredient Frequency (S-RT-IIF)~\cite{recipesspam}. J. Jermsurawong and N. Habash tried to extract a tree-like structure of instructions from recipes that models the dependency of steps upon each other~\cite{recipestructure}. Min et al.~\cite{multimodal} as well as Marin et al.~\cite{marin2019recipe1m} go even further and analyse not only text data but multi-modal data including images of the final dishes. There are several papers about the conversion from images to corresponding recipes and vice-versa~\cite{marin2019recipe1m, 8099810}. Majumder et al.~generated personalized recipe suggestions based on user preferences and selected ingredients~\cite{majumder-etal-2019-generating}.
 
-Apart from recipes, text clustering is a common task where different methods have been developed for. In their review paper N. Allahyari et al. \cite{clusteringreview} categorize these methods into hierarchical clustering, k-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets will be the scientific contribution of our project.
+Apart from recipes, text clustering is a common task for what different methods were developed. In their review paper N. Allahyari et al.~\cite{clusteringreview} categorize these methods into hierarchical clustering, k-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets in particular will be the scientific contribution of our project.
 
 
 
@@ -181,65 +182,65 @@ Apart from recipes, text clustering is a common task where different methods hav
 \section{Project Description}
 \label{sec:project}
 
-\paragraph{Goals} Our main goal is to create a automatic clustering/ categorization  of recipes that can be visualized as map.  Additionally, it could be interesting to calculate similarity in a cluster or even summarize the given recipes, if they fit. Furthermore, we are interested in enriching recipes with 
+\paragraph{Main Project Goals} Our main goal is to create a automatic clustering\,/\,categorization  of recipes that can be visualized as map.  Additionally, it could be interesting to calculate similarity in a cluster or even summarize the given recipes, if they fit. Furthermore, we are interested in augmenting recipes with 
 additional information like difficulty level or preparation time automatically or recommending recipes based on left over ingredients.
 %Main project goals: Create a meaningful clustering/categorization of recipes and enrich plain recipes with useful additional information.
 
 %duplicate finding?
-\paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the enrichment  is somehow a sentiment analysis. %The proposed autosummarization of 
+\paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the augmentation is somehow a sentiment analysis and finding suitable recipes is an information retrieval task. %The proposed autosummarization of 
 %Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
 
-\paragraph{Pipeline} The data we found is already structured in different ways. Most of the sources consists of multiple recipes, nicely separated in different documents.
-Sometimes the recipes contain sub-recipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversely, short recipes 
-might also be removed, as they do not contain enough data, e.g. we are not interested in the instructions on heating up a pizza.
-This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be separated. Abbreviations,like tbsp = tablespoon, need to be normalized.
-After tokenizing a part of speech analysis will take place to distinguish later between instructions and adjectives to processed ingredients.
-It might  be useful to apply some stemming and remove stop words in order to reduce the complexity of our problem. 
+\paragraph{Pipeline} The data we found is already structured, however in different ways. An overview of our planned pipeline can be found in Figure~\ref{fig:pipeline}. Most of the sources consist of multiple recipes, nicely separated in different documents.
+Sometimes, the recipes contain sub-recipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversely, short recipes 
+might also be removed, as they do not contain enough data, e.\,g.\,we are not interested in the simple instructions on heating up a frozen pizza.
+This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be separated. Abbreviations, like tbsp = tablespoon, need to be normalized.
+After stop word removal and tokenization, a part of speech analysis will take place to later on distinguish between instructions that are usually verbs, ingredients and utensils which are nouns and adjectives to processed ingredients.
+It might be useful to apply some stemming and lemmatization in order to reduce the complexity of our problem. 
 
 %Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients and instructions. Extract verbs from instructions might be useful as they are good indicators of what is happening. In Figure~\ref{fig:pipeline} all steps are presented in detail.
 %part of speech before stemming
 
-\begin{figure}[b!]
+\begin{figure}[t!]
   \centering
   \smartdiagramset{descriptive items y sep=1.5,
                   description text width=8.5cm,
                   priority arrow height advance=3cm}
 
 \smartdiagramx[priority descriptive diagram]{
-  stemming/lemmatization, part of speech analysis: e.~g.~extracting verbs from cooking instructions, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing exact duplicate recipes; removing outliers, Recipes dataset(s)
+  stemming\,/\,lemmatization, part of speech analysis (e.~g.~extracting verbs from cooking instructions), tokenization, removing stop words, converting abbreviations into long versions (e.~g.~tbsp into tablespoon), data cleaning: removing exact duplicate recipes; removing outliers, recipes dataset(s)
 }
-  \caption{Pipeline: From entire recipes to features in matrices...}
+  \caption{Pipeline: From entire recipes to pre-processed features that can be encoded into in matrices and processed for analysis purposed.}
   \label{fig:pipeline}
 \end{figure}
 
 
 \paragraph{Used Datasets} There are several large datasets of recipes from different websites so that we might not have to crawl our on recipe dataset. We found the following datasets:
 \begin{itemize}
-  \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
-  \item German Recipes Dataset \cite{germanrecipesdataset}
-  \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
-  \item What's cooking dataset \cite{whatscooking} with cultural diffusion analysis \cite{cultdiffusion}
-  \item Recipe box dataset \cite{recipebox}
-  \item Epicurious: Recipes with Rating and Nutrition from Epicurious \cite{epirecipes}
+  \item Recipes1M+ dataset~\cite{marin2019recipe1m} containing 1,029,720 recipes from multiple cooking websites with corresponding analysis~\cite{8099810}
+  \item German Recipes Dataset~\cite{germanrecipesdataset} containing 12,190 recipes in German language from \url{chefkoch.de}
+  \item \url{Food.com} dataset containing 180K+ recipes with 700K+ interactions~\cite{foodcominteractions} with notebook on sentiment analysis, most\,/\,least favourite ingredients
+  \item What's cooking dataset~\cite{whatscooking} containing recipes from \url{yummly.com} with cultural diffusion analysis~\cite{cultdiffusion}
+  \item Recipe box dataset~\cite{recipebox} with \~125,000 recipes from various food websites
+  \item Epicurious: 20K+ recipes with Rating and Nutrition from Epicurious~\cite{epirecipes}
 \end{itemize}
-All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ...
-We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
+All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, etc.
+We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example, training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
 
-\paragraph{Evaluation \& Baselines} As there aren't many labels available a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread.
-
+\paragraph{Evaluation \& Baselines} As there aren't many labels available, a manual evaluation and qualitative analysis of the results needs to be performed. For clustering one can visually see, if it worked and how the different categories are spread. The baseline to compare against would be our human knowledge about recipes.
 
 \subsection{Project roadmap}
 
 Our planned milestones are the following:
 
 \begin{enumerate}
-  \item Data Inspection: Detailed analysis of the different datasets to get an understanding of the data quality and its distribution. Especially detecting abnormalities that need to be adjusted in consecutive work might be valuable.
-  \item Constructing pre-processing pipeline as outlined above.
-  \item Implementing different methods to cluster recipes. In parallel methods to predict additional information about the recipes like its cuisine association, its preparation time or healthiness score are developed.
+  \item Data Inspection: Detailed analysis of the different datasets to get an understanding of the data quality and their distribution. Especially detecting abnormalities that need to be adjusted in consecutive work might be valuable.
+  \item Constructing a pre-processing pipeline as outlined above.
+  \item Implementing different methods to cluster recipes. In parallel, methods to predict additional information about the recipes like its cuisine association, its preparation time or healthiness score are developed.
   \item Each method's performance will be evaluated. Ultimately all tasks will be combined into an intelligent recipes system.
 \end{enumerate}
-\subsection{Subtask \& Objectives}
-After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.g. PCA, k--Means,hierarchical clustering, probabilistic clustering) as well as topic modeling individually.
+
+\subsection{Subtasks \& Objectives}
+After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.\,g.\,PCA, k--means, hierarchical clustering, probabilistic clustering) as well as topic modeling individually.
 
 We plan to utilize an agile approach to conduct our project. By meeting regularly and presenting our results to each other we hope to obtain fruitful results by utilizing our different scientific backgrounds.
 
@@ -261,7 +262,7 @@ We plan to utilize an agile approach to conduct our project. By meeting regularl
 % see
 % https://de.wikibooks.org/wiki/LaTeX-W%C3%B6rterbuch:_bibliographystyle
 % for the different formats and styles
-
+\newpage
 \bibliographystyle{unsrtnat}
 % b) The File:
 \bibliography{references}
