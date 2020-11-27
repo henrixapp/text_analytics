@@ -167,20 +167,23 @@ In the end, an intelligent recipe collection shall be offered where newly added 
 
 \section{Research Topic Summary}
 
-Astonishingly, there is only a small research community which analyzes recipes, given that understanding recipes is a crucial everyday skills and their ubiquity. So far, the problems that are tackled and the issues that are tried to be solved vary a lot. 
+Astonishingly, there is only a small research community which analyzes recipes, given their ubiquity and that understanding recipes is a crucial everyday skill. Perhaps, this is due to the fact that recipes themselves aren't economically interesting, but only the ingredients and advertising have potential for commercialisation.
+
+So far, the problems that are tackled and the issues that are tried to be solved in relation to recipes vary a lot. The text analytics tasks depend especially on the availability of additional information about the recipes. If labels for type of dish/course and cuisine are available, the dataset is suitable for classification \cite{recipeclassification, cultdiffusion}. In this paper Su et al. applied associative classification and used support vector machines. However, most datasets don't provide labels for all recipes. However, performing an unsupervised clustering of recipes would still be a possibility to gain insights into the similarity and relation of recipes. In his article B. Sturm presents an examination of cuisines through unsupervised learning \cite{unsupervisedclustering}, in particular Principal Component Analysis (PCA) and Latent Dirichlet Allocation (LDA). B. H. Tan performed k-means clustering \cite{clusteringrecipes} on the German Recipes Dataset \cite{germanrecipesdataset}. To the best of our knowledge, there is no published and peer-reviewed paper about clustering of recipes yet.
+
+There are several interesting publications that solve similar or related problems dealing with recipes: Shidochi et al. tried to automatically find replaceable materials in recipes considering characteristic cooking actions (https://dl.acm.org/doi/pdf/10.1145/1630995.1630998). Therefore, a detailed analysis and understanding of the recipes was inevitable. J. Jermsurawong and N. Habash tried to extract a tree-like structure of instructions from recipes that models the dependency of steps upon each other. W. Min et al \cite{multimodal} as well as \cite{marin2019recipe1m} go even further and analyse not only text data but multi-modal data including images of the final dishes. There are several papers about the conversion from images to corresponding recipes and vice-versa \cite{marin2019recipe1m, 8099810}. Majumder et al. generated personalized recipe suggestions based on user preferences and selected ingredients \cite{majumder-etal-2019-generating}.
+
+Apart from recipes, text clustering is a common task where different methods have been developed for. In their review paper N. Allahyari et al. categorize these methods into hierarchical clustering, k-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets will be the scientific contribution of our project.
+
 
 Things to cite (datasets, applications, methods):
 \begin{itemize}
   \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
   \item German Recipes Dataset \cite{germanrecipesdataset}
-  \item Recipe generation \cite{majumder-etal-2019-generating}
   \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
-  \item Cultural diffusion: \cite{cultdiffusion} on the What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
+  \item What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
   \item Recipe box dataset \cite{recipebox}
-  \item Clustering Recipes \cite{clusteringrecipes}
 \end{itemize}
-
-\todo[inline]{definitely a more structured literature review needs to be done here}
 
 \section{Project Description}
 
