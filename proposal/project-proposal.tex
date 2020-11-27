@@ -158,16 +158,14 @@ But wouldn't it be nice, if there was a structure in our recipes collection? All
   \item cultural origin of the cuisine: e.~g.~all Mediterranean dishes appear in the same cluster whereas Asian food is in another cluster far apart. Analyzing even sub-clusters would be interesting to find out how closely the different cuisines are related to each other.
 \end{itemize}
 
-Further ideas for real-world scenarios are the estimation of a healthiness score and the prediction of a dish's preparation time based on the recipe, similar to reading time estimations on websites. Additionally analyzing the comments of recipes if available with sentiment analysis methods would be interesting for automatically generating ratings. As there is barely anything more fundamental than food, all text analytics that can be performed on recipe data has real-world applications.
-
-\todo[inline]{Could it be an idea also to do a search in the cluster over different recipes as an interpolation of them?}
+Further ideas for real-world scenarios are the estimation of a healthiness score and the prediction of a dish's preparation time based on the recipe, similar to reading time estimations on websites. Additionally analyzing the comments of recipes if available with sentiment analysis methods would be interesting for automatically generating ratings. Choosing a suitable recipe by interpolating between a set of given recipes might be another task that would be useful in a real-world context. As there is barely anything more fundamental than food, all text analytics that can be performed on recipe data have real-world applications.
 
 In the end, an intelligent recipe collection shall be offered where newly added recipes will automatically be sorted into a suitable position. Thus, one can nicely browse through all items and quickly find a suitable recipe in order to indulge oneself.
 
 An overview over related work is given in section~\ref{sec:research}, including not only domain specific articles but also on the text analytics task in general. In section~\ref{sec:project} our planned project is described in detail and a project roadmap and tasks distribution is presented.
 
 \section{Research Topic Summary}
-\label{sec:reseach}
+\label{sec:research}
 
 Astonishingly, there is only a small research community which analyzes recipes, given their ubiquity and that understanding recipes is a crucial everyday skill. Perhaps, this is due to the fact that recipes themselves aren't economically interesting, but only the ingredients and advertising have potential for commercialisation.
 
@@ -191,11 +189,10 @@ additional information like difficulty level or preparation time automatically o
 \paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the enrichment  is somehow a sentiment analysis. %The proposed autosummarization of 
 %Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
 
-\paragraph{Pipeline} The data we found is already structured in different ways. Most of the sources consists of multiple recipes, nicely seperated in different documents.
-Sometimes the recipes contain subrecipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversly, short recipes 
+\paragraph{Pipeline} The data we found is already structured in different ways. Most of the sources consists of multiple recipes, nicely separated in different documents.
+Sometimes the recipes contain sub-recipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversely, short recipes 
 might also be removed, as they do not contain enough data, e.g. we are not interested in the instructions on heating up a pizza.
-This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be seperated.Abbreviations,like tbsps=tablespoons,
-need to be normalized.
+This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be separated. Abbreviations,like tbsp = tablespoon, need to be normalized.
 After tokenizing a part of speech analysis will take place to distinguish later between instructions and adjectives to processed ingredients.
 It might  be useful to apply some stemming and remove stop words in order to reduce the complexity of our problem. 
 
@@ -221,9 +218,9 @@ It might  be useful to apply some stemming and remove stop words in order to red
   \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
   \item German Recipes Dataset \cite{germanrecipesdataset}
   \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
-  \item What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
+  \item What's cooking dataset \cite{whatscooking} with cultural diffusion analysis \cite{cultdiffusion}
   \item Recipe box dataset \cite{recipebox}
-  \item epirecipes %TODO cite
+  \item Epicurious: Recipes with Rating and Nutrition from Epicurious \cite{epirecipes}
 \end{itemize}
 All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ...
 We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
@@ -242,9 +239,9 @@ Our planned milestones are the following:
   \item Each method's performance will be evaluated. Ultimately all tasks will be combined into an intelligent recipes system.
 \end{enumerate}
 \subsection{Subtask \& Objectives}
-After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.g. PCA,k--Means,hierarchical clustering) individually.
+After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.g. PCA, k--Means,hierarchical clustering, probabilistic clustering) as well as topic modeling individually.
 
-We plan to utilize an agile approach to conduct our project. By meeting regularly and presenting our results to each other we hope to obtain fruitful results  by utilizing our different scientific backgrounds.
+We plan to utilize an agile approach to conduct our project. By meeting regularly and presenting our results to each other we hope to obtain fruitful results by utilizing our different scientific backgrounds.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
