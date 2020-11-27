@@ -176,14 +176,7 @@ There are several interesting publications that solve similar or related problem
 Apart from recipes, text clustering is a common task where different methods have been developed for. In their review paper N. Allahyari et al. \cite{clusteringreview} categorize these methods into hierarchical clustering, k-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets will be the scientific contribution of our project.
 
 
-Things to cite (datasets, applications, methods):
-\begin{itemize}
-  \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
-  \item German Recipes Dataset \cite{germanrecipesdataset}
-  \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
-  \item What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
-  \item Recipe box dataset \cite{recipebox}
-\end{itemize}
+
 
 \section{Project Description}
 
@@ -208,12 +201,12 @@ It might  be useful to apply some stemming and remove stop words in order to red
 
 \begin{figure}[b!]
   \centering
-  \smartdiagramset{descriptive items y sep=2.5,
+  \smartdiagramset{descriptive items y sep=1.5,
                   description text width=8.5cm,
                   priority arrow height advance=3cm}
 
 \smartdiagramx[priority descriptive diagram]{
-  stemming? lemmatization?, part of speech analysis: e.~g.~extracting verbs from cooking instructions, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing duplicate recipes; removing outliers, e.~g.~very short recipes without meaningful instructions or ingredients like \emph{How to prepare frozen pizza} or very long recipes which contain sub-recipes), Recipes dataset(s)
+  stemming/lemmatization, part of speech analysis: e.~g.~extracting verbs from cooking instructions, removing stop words, converting abbreviations into long versions (e.~g.~tbsps tablespoons), data cleaning: removing exact duplicate recipes; removing outliers, Recipes dataset(s)
 }
   \caption{Pipeline: From entire recipes to features in matrices...}
   \label{fig:pipeline}
@@ -221,13 +214,14 @@ It might  be useful to apply some stemming and remove stop words in order to red
 
 
 \paragraph{Used Datasets} There are several large datasets of recipes from different websites so that we might not have to crawl our on recipe dataset. We found the following datasets:
-\begin{enumerate}
-  \item recipes1M+
-  \item German recipes dataset
-  \item epirecipes
-  \item what's cooking dataset
-  \item food.com recipes and interactions
-\end{enumerate}
+\begin{itemize}
+  \item recipes1M+ dataset \cite{marin2019recipe1m} with corresponding analysis \cite{8099810}
+  \item German Recipes Dataset \cite{germanrecipesdataset}
+  \item Food.com Dataset with Interactions \cite{foodcominteractions} with notebook on sentiment analysis, most/least favourite ingredients
+  \item What's cooking dataset \url{https://www.kaggle.com/c/whats-cooking/overview}
+  \item Recipe box dataset \cite{recipebox}
+  \item epirecipes %TODO cite
+\end{itemize}
 All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, ...
 We plan to compare our developed methods on several datasets to evaluate their generalization performance. So for example training on a dataset with labeled data and then evaluating on others where no labels are available makes sense. One difficulty might be that recipes are written in different languages. So generalization only works within the same language. Also the quality of the recipe data might vary a lot.
 
