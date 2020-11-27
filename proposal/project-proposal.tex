@@ -112,7 +112,7 @@
 
 \vspace{3cm}
 
-\textbf{\large Project Proposal for the lecture Text Analytics}
+\textbf{\large Project Proposal for the Lecture Text Analytics}
 
 \vspace{0.5\baselineskip}
 {\huge
@@ -170,11 +170,11 @@ An overview over related work is given in section~\ref{sec:research}, including 
 
 Astonishingly, there is only a small research community which analyzes recipes, given their ubiquity and that understanding recipes is a crucial everyday skill. Perhaps, this is due to the fact that recipes themselves aren't economically interesting, but only the ingredients and advertising have potential for commercialisation.
 
-The problems that are tackled and the issues that are tried to be solved in relation to recipes vary a lot as the text analytics tasks depend especially on the availability of additional information about the recipes. If labels for type of dish/course and cuisine are available, the dataset is suitable for classification~\cite{recipeclassification, cultdiffusion}. In their paper Su et al.~applied associative classification and used support vector machines. However, most datasets don't provide labels for all recipes. However, performing an unsupervised clustering of recipes would still be a possibility to gain insights into the similarity and relation of recipes. In his article B. Sturm presents an examination of cuisines through unsupervised learning~\cite{unsupervisedclustering}, in particular Principal Component Analysis (PCA) and Latent Dirichlet Allocation (LDA). B. H. Tan performed k-means clustering~\cite{clusteringrecipes} on the German Recipes Dataset~\cite{germanrecipesdataset}. To the best of our knowledge, there is no published and peer-reviewed paper about clustering of recipes yet.
+The problems that are tackled and the issues that are tried to be solved in relation to recipes vary a lot as the text analytics tasks depend especially on the availability of additional information about the recipes. If labels for type of dish/course and cuisine are available, the dataset is suitable for classification~\cite{recipeclassification, cultdiffusion}. In their paper Su et al.~applied associative classification and used support vector machines. Unfortunately, most datasets don't provide labels for all recipes. However, performing an unsupervised clustering of recipes would still be a possibility to gain insights into the similarity and relation of recipes. In his article B. Sturm presents an examination of cuisines through unsupervised learning~\cite{unsupervisedclustering}, in particular Principal Component Analysis (PCA) and Latent Dirichlet Allocation (LDA). B. H. Tan performed $k$-means clustering~\cite{clusteringrecipes} on the German Recipes Dataset~\cite{germanrecipesdataset}. To the best of our knowledge, there is no published and peer-reviewed paper about clustering of recipes yet.
 
 There are several interesting publications that solve similar or related problems dealing with recipes: Shidochi et al.~tried to automatically find replaceable materials in recipes considering characteristic cooking actions~\cite{replaceablematerials}. Therefore, a detailed analysis and understanding of the recipes was inevitable. Hanai et al.~developed a method to detect spam recipes based on their similarity using a so called Surprising Degree-Recipe Frequency-Interted Ingredient Frequency (S-RT-IIF)~\cite{recipesspam}. J. Jermsurawong and N. Habash tried to extract a tree-like structure of instructions from recipes that models the dependency of steps upon each other~\cite{recipestructure}. Min et al.~\cite{multimodal} as well as Marin et al.~\cite{marin2019recipe1m} go even further and analyse not only text data but multi-modal data including images of the final dishes. There are several papers about the conversion from images to corresponding recipes and vice-versa~\cite{marin2019recipe1m, 8099810}. Majumder et al.~generated personalized recipe suggestions based on user preferences and selected ingredients~\cite{majumder-etal-2019-generating}.
 
-Apart from recipes, text clustering is a common task for what different methods were developed. In their review paper N. Allahyari et al.~\cite{clusteringreview} categorize these methods into hierarchical clustering, k-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets in particular will be the scientific contribution of our project.
+Apart from recipes, text clustering is a common task for what different methods were developed. In their review paper N. Allahyari et al.~\cite{clusteringreview} categorize these methods into hierarchical clustering, $k$-means clustering as well as probabilistic clustering and topic models. Applying these methods to recipe datasets in particular will be the scientific contribution of our project.
 
 
 
@@ -182,20 +182,20 @@ Apart from recipes, text clustering is a common task for what different methods 
 \section{Project Description}
 \label{sec:project}
 
-\paragraph{Main Project Goals} Our main goal is to create a automatic clustering\,/\,categorization  of recipes that can be visualized as map.  Additionally, it could be interesting to calculate similarity in a cluster or even summarize the given recipes, if they fit. Furthermore, we are interested in augmenting recipes with 
+\paragraph{Main Project Goals} Our main goal is to create a automatic clustering\,/\,categorization  of recipes that can be visualized as map.  Additionally, it could be interesting to calculate similarity in a cluster or even summarize the given recipes, if they fit. Furthermore, we are interested in augmenting recipes with
 additional information like difficulty level or preparation time automatically or recommending recipes based on left over ingredients.
 %Main project goals: Create a meaningful clustering/categorization of recipes and enrich plain recipes with useful additional information.
 
 %duplicate finding?
-\paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the augmentation is somehow a sentiment analysis and finding suitable recipes is an information retrieval task. %The proposed autosummarization of 
+\paragraph{Text Analytics Tasks} On the one hand we aim to perform a clustering task, on the other hand the augmentation is somehow a sentiment analysis and finding suitable recipes is an information retrieval task. %The proposed autosummarization of
 %Text Analytics Tasks: Clustering, sentiment analysis, $\dots$
 
 \paragraph{Pipeline} The data we found is already structured, however in different ways. An overview of our planned pipeline can be found in Figure~\ref{fig:pipeline}. Most of the sources consist of multiple recipes, nicely separated in different documents.
-Sometimes, the recipes contain sub-recipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversely, short recipes 
+Sometimes, the recipes contain sub-recipes, that are not linked. We might purge them from our datasets, because they increase the complexity. Conversely, short recipes
 might also be removed, as they do not contain enough data, e.\,g.\,we are not interested in the simple instructions on heating up a frozen pizza.
 This cleaning can be done heuristically based on the length of the recipes. From the recipes the ingredients and instructions need to be separated. Abbreviations, like tbsp = tablespoon, need to be normalized.
 After stop word removal and tokenization, a part of speech analysis will take place to later on distinguish between instructions that are usually verbs, ingredients and utensils which are nouns and adjectives to processed ingredients.
-It might be useful to apply some stemming and lemmatization in order to reduce the complexity of our problem. 
+It might be useful to apply some stemming and lemmatization in order to reduce the complexity of our problem.
 
 %Pipeline: Parsing, Tokenization, stemming, $\dots$ How to split up ingredients and instructions. Extract verbs from instructions might be useful as they are good indicators of what is happening. In Figure~\ref{fig:pipeline} all steps are presented in detail.
 %part of speech before stemming
@@ -220,7 +220,7 @@ It might be useful to apply some stemming and lemmatization in order to reduce t
   \item German Recipes Dataset~\cite{germanrecipesdataset} containing 12,190 recipes in German language from \url{chefkoch.de}
   \item \url{Food.com} dataset containing 180K+ recipes with 700K+ interactions~\cite{foodcominteractions} with notebook on sentiment analysis, most\,/\,least favourite ingredients
   \item What's cooking dataset~\cite{whatscooking} containing recipes from \url{yummly.com} with cultural diffusion analysis~\cite{cultdiffusion}
-  \item Recipe box dataset~\cite{recipebox} with \~125,000 recipes from various food websites
+  \item Recipe box dataset~\cite{recipebox} with 125,000 recipes from various food websites
   \item Epicurious: 20K+ recipes with Rating and Nutrition from Epicurious~\cite{epirecipes}
 \end{itemize}
 All of them contain for each recipe a title, a list of ingredients with measurements and preparation instructions. Some datasets include additional information like cuisine, url to website, an image, comments on the recipe, etc.
@@ -240,9 +240,9 @@ Our planned milestones are the following:
 \end{enumerate}
 
 \subsection{Subtasks \& Objectives}
-After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.\,g.\,PCA, k--means, hierarchical clustering, probabilistic clustering) as well as topic modeling individually.
+After inspecting our datasets and successfully constructing our preprocessing pipeline, we might split up and focus on different clustering methods (e.\,g.\,PCA, $k$--means, hierarchical clustering, probabilistic clustering) as well as topic modeling individually.
 
-We plan to utilize an agile approach to conduct our project. By meeting regularly and presenting our results to each other we hope to obtain fruitful results by utilizing our different scientific backgrounds.
+We plan to utilize an agile approach to conduct our project. By meeting regularly and presenting our results to each other we hope to obtain fruitful and convincing results by utilizing our different scientific backgrounds and personal knowledge.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
