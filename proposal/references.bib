@@ -29,7 +29,7 @@
 }
 
 @Misc{germanrecipesdataset,
-  author       = {Sterby},
+  author       = {Tobias (Sterby) Sterbak},
   title        = {German Recipes Dataset},
   howpublished = {Kaggle Dataset},
   url          = {https://www.kaggle.com/sterby/german-recipes-dataset},
@@ -43,10 +43,24 @@
 }
 
 @Misc{cultdiffusion,
-  author       = {alona\_levy},
+  author       = {Alona Levy },
   title        = {Cultural diffusion on the What's cooking dataset},
   howpublished = {Kaggle Python Notebook},
   url          = {https://www.kaggle.com/alonalevy/cultural-diffusion-by-recipes},
+}
+
+@Misc{whatscooking,
+  author       = {Kaggle},
+  title        = {What's Cooking?},
+  howpublished = {Kaggle Dataset},
+  url          = {https://www.kaggle.com/c/whats-cooking/overview},
+}
+
+@Misc{epirecipes,
+  author       = {Hugo Darwood},
+  title        = {Epicurious -- Recipes with Rating and Nutrition Recipes from Epicurious by rating, nutritional content, and categories},
+  howpublished = {Kaggle Dataset},
+  url          = {https://www.kaggle.com/hugodarwood/epirecipes},
 }
 
 @Misc{recipebox,
@@ -81,11 +95,9 @@
 author = {Su, Han and Lin, Ting-Wei and Li, Cheng-Te and Shan, Man-Kwan and Chang, Janet},
 title = {Automatic Recipe Cuisine Classification by Ingredients},
 year = {2014},
-isbn = {9781450330473},
 publisher = {Association for Computing Machinery},
 address = {New York, NY, USA},
 url = {https://doi.org/10.1145/2638728.2641335},
-doi = {10.1145/2638728.2641335},
 abstract = {With the growth of recipe sharing services, online cooking recipes associated with ingredients and cooking procedures are available. Many recipe sharing sites have devoted to the development of recipe recommendation mechanism. While most food related research has been on recipe recommendation, little effort has been done on analyzing the correlation between recipe cuisines and ingredients. In this paper, we aim to investigate the underlying cuisine-ingredient connections by exploiting the classification techniques, including associative classification and support vector machine. Our study conducted on food.com data provides insights about which cuisines are the most similar and what are the essential ingredients for a cuisine, with an application to automatic cuisine labeling for recipes.},
 booktitle = {Proceedings of the 2014 ACM International Joint Conference on Pervasive and Ubiquitous Computing: Adjunct Publication},
 pages = {565–570},
@@ -106,11 +118,9 @@ series = {UbiComp '14 Adjunct}
 author = {Min, Weiqing and Jiang, Shuqiang and Wang, Shuhui and Sang, Jitao and Mei, Shuhuan},
 title = {A Delicious Recipe Analysis Framework for Exploring Multi-Modal Recipes with Various Attributes},
 year = {2017},
-isbn = {9781450349062},
 publisher = {Association for Computing Machinery},
 address = {New York, NY, USA},
 url = {https://doi.org/10.1145/3123266.3123272},
-doi = {10.1145/3123266.3123272},
 abstract = {Human beings have developed a diverse food culture. Many factors like ingredients, visual appearance, courses (e.g., breakfast and lunch), flavor and geographical regions affect our food perception and choice. In this work, we focus on multi-dimensional food analysis based on these food factors to benefit various applications like summary and recommendation. For that solution, we propose a delicious recipe analysis framework to incorporate various types of continuous and discrete attribute features and multi-modal information from recipes. First, we develop a Multi-Attribute Theme Modeling (MATM) method, which can incorporate arbitrary types of attribute features to jointly model them and the textual content. We then utilize a multi-modal embedding method to build the correlation between the learned textual theme features from MATM and visual features from the deep learning network. By learning attribute-theme relations and multi-modal correlation, we are able to fulfill different applications, including (1) flavor analysis and comparison for better understanding the flavor patterns from different dimensions, such as the region and course, (2) region-oriented multi-dimensional food summary with both multi-modal and multi-attribute information and (3) multi-attribute oriented recipe recommendation. Furthermore, our proposed framework is flexible and enables easy incorporation of arbitrary types of attributes and modalities. Qualitative and quantitative evaluation results have validated the effectiveness of the proposed method and framework on the collected Yummly dataset.},
 booktitle = {Proceedings of the 25th ACM International Conference on Multimedia},
 pages = {402–410},
@@ -145,11 +155,9 @@ series = {MM '17}
 author = {Shidochi, Yuka and Takahashi, Tomokazu and Ide, Ichiro and Murase, Hiroshi},
 title = {Finding Replaceable Materials in Cooking Recipe Texts Considering Characteristic Cooking Actions},
 year = {2009},
-isbn = {9781605587639},
 publisher = {Association for Computing Machinery},
 address = {New York, NY, USA},
 url = {https://doi.org/10.1145/1630995.1630998},
-doi = {10.1145/1630995.1630998},
 abstract = {The number of cooking recipe texts published on the Web is increasing in recent years. However, in general, cooking recipe texts have little flexibility. So, it is not always easy to retrieve cooking recipe texts that satisfy users' various demands. Therefore, it is necessary to create and offer recipes that suit the user's requirements. In this paper, we propose a method for finding replaceable materials considering characteristic cooking actions from a large amount of cooking recipe texts. The proposed method finds the replaceable materials by first extracting the cooking actions that correspond to each material than measuring the similarity of the extracted cooking actions. Through an evaluation of recipe texts created by replacing some materials that were found by the proposed method, we verified the effectiveness of the proposed method.},
 booktitle = {Proceedings of the ACM Multimedia 2009 Workshop on Multimedia for Cooking and Eating Activities},
 pages = {9–14},
@@ -171,5 +179,20 @@ series = {CEA '09}
     url = "https://www.aclweb.org/anthology/D15-1090",
     doi = "10.18653/v1/D15-1090",
     pages = "781--786",
-}
+} 
 
+@inproceedings{recipesspam,
+author = {Hanai, Shunsuke and Nanba, Hidetsugu and Nadamoto, Akiyo},
+title = {Clustering for Closely Similar Recipes to Extract Spam Recipes in User-Generated Recipe Sites},
+year = {2015},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2837185.2837269},
+abstract = {Nowadays, many user-generated recipe sites are accessible on the internet. On user-generated recipe sites, however, are various spam recipe pages that describe closely similar recipes requiring special cooking equipment, with no preparation explanations. These spam recipes are not useful for users. In fact, they impede user's recipe searches. In this paper, we target closely similar recipes as a first step in extracting spam recipes. If user search results could be classified to identify closely similar recipes, user's recipe searches would be easier and more productive. Clustering tools of many kinds are proposed, but it is difficult to cluster closely similar recipes using only existing clustering tools because recipe sites have a unique page structure comprising a title, ingredients, directions (preparation instructions), and comments. The importance of words from each part differs. We propose a clustering method for user-generated recipe sites based on page structure and important words. Next, we conducted an experiment to measure the benefits of our proposed method. The result of experiment presents the benefits of our proposed method which classify the closely similar recipes.},
+booktitle = {Proceedings of the 17th International Conference on Information Integration and Web-Based Applications and Services},
+articleno = {31},
+numpages = {5},
+keywords = {user-generated recipe, closely similar recipes, clustering},
+location = {Brussels, Belgium},
+series = {iiWAS '15}
+}
