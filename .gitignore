@@ -278,3 +278,6 @@ TSWLatexianTemp*
 **/*.zip
 **/.ipynb_checkpoints/*
 
+#ignore data files
+assignments/assignment02/data/*
+data/*
