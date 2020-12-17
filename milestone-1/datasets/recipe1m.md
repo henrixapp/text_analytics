@@ -96,3 +96,4 @@ Here is a wordcloud map with the domain names of the recipes.
 
 ![svg](inspection_recipe1m_files/inspection_recipe1m_21_1.svg)
 
+[Back to README.md](../README.md)
