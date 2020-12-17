@@ -15,6 +15,7 @@ The remaining five dataset sources are presented in the following:
 | [Epicurious](datasets/epicurious.md) | | | |
 | [food.com](datasets/foodcom.md) | source | | |
 | [recipe1m+](datasets/foodcom.md) | | | |
+| [recipe1m+ Nutritional](datasets/recipe1m_nutritional.md) | | | |
 | [recipebox](datasets/recipebox.md) | | | | 
 | [yummly.com](datasets/yummlycom.md) | | | |
 
