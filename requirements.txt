@@ -1,0 +1,10 @@
+nltk
+spacy
+gensim
+numpy
+pandas
+tqdm
+wordcloud
+networkx
+matplotlib
+json
