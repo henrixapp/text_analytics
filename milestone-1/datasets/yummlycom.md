@@ -1,4 +1,4 @@
-# RecipeNLG
+# WhatsCooking / yummyly.com
 ## Short Summary
 
 **Number of Recipes:** 39774
