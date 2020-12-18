@@ -2,9 +2,9 @@
 
 **Title:** Clustering and augmenting recipes
 
-**Team Members:** Christian Heusel, Henrik Reinstädtler, Tom Rix
+**Team Members:** Christian Heusel, Henrik Reinstädtler, Tom Rix, Max Jalea
 
-**Mail Adresses:** {c.heusel, reinstaedtler, rix}@stud.uni-heidelberg.de
+**Mail Adresses:** {c.heusel, reinstaedtler, rix, jalea}@stud.uni-heidelberg.de
 
 **Existing Code Fragments:** So far, we don't use any existing code, only the libraries mentioned in the [requirements.txt](../requirements.txt)
 
