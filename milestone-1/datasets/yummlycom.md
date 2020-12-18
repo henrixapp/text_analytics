@@ -1,17 +1,48 @@
-# Yummly.com 
+# RecipeNLG
 ## Short Summary
 
-**Number of Recipes:**
+**Number of Recipes:** 39774
 
-**Source:**
+**Source:** https://www.kaggle.com/c/whats-cooking/data
 
-**Short description:**
 
-**Format:**
+**Format:** JSON
 
-**Level of Tokenization:**
+**Level of Tokenization:** Ingredients w/o instructions.
 
 ## Analysis
 
-Not considered, because of missing instructions. Might be used later, if cusine is extrapolated.
-[Back to README.md](../README.md)
+
+### Ingredients
+
+
+
+![svg](inspection_whats_cooking_files/inspection_whats_cooking_4_0.svg)
+
+
+    Median number of ingredients: 10.0
+    Std. deviation of number of ingredients: 4.43
+
+
+The median number of ingredients is 10, which seems plausible. However, the majority has 4-15 ingredients.
+
+
+
+![svg](inspection_whats_cooking_files/inspection_whats_cooking_6_1.svg)
+
+
+As one can see, olive oil is the most prominent ingredient. There seems to be no extra stop words, that need extra removal.
+
+
+
+### TOP 15 Ingredients network
+
+We want to evaluate the cooccurances of the 15 most common ingredients in the recipes to gain insight into the components of recipes.
+
+
+![svg](inspection_whats_cooking_files/inspection_whats_cooking_11_0.svg)
+
+
+The plot shows that some ingredients co-occur quite often: salt and pepper, or sugar and salt for example. There are variants of salts: non kosher and kosher, and they do occur in the same recipes not often and partion the graph.
+
+Idea compare different cusines, that are given in the dataset.
