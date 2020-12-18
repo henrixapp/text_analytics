@@ -44,13 +44,14 @@ As all recipes datasets consist of instructions and ingredients we mainly focuss
 The remaining five dataset sources as well as the yummly dataset are presented in the following. Click on the dataset name to find the analysis details for this dataset.
 
 | Name |  Number of recipes | Short description | Median number of Ingredients | Median number of Instructions |
-| ---- |  -------------- | ----------------- | --------------------- |--------------------- |
+| ---- |  ----------------- | ----------------- | ---------------------------- |------------------------------ |
 | [epicurious](datasets/epicurious.md) | 20,111| few but long instructions, some empty recipes | 9 | 3 |
 | [food.com](datasets/foodcom.md) | 231,636 | some recipes have a lot of description (>100), interactions, preperation time and nutrition informations are available |9 | 9 |
 | [recipe1m+](datasets/recipe1m.md) | 1,029,720 | one instructions is often one sentence, contains recipes from food.com and epicurious | 9 | 9 |
 | [recipe1m+ nutritional](datasets/recipe1m_nutritional.md) | 51,235 | containing a lot of extra nutritional information | 6 | 6 |
 | [recipebox](datasets/recipebox.md)| 39,522 | contains lots of advertisements | 10 | 4 | 
 | [yummly.com](datasets/yummlycom.md)| | ingredients only, but also cultural cuisine labels | ? | - |
+| [recipenlg](datasets/recipenlg.md)| 2,231,142 | our biggest dataset, contains [recipe1m+](datasets/recipe1m.md) | 8 | 5 |
 
 ### Summary of insights
 
