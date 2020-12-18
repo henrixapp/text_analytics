@@ -115,4 +115,32 @@ This is varying quite a lot! So there is no clue if the directions are especiall
 
 There are some recipes which are really long, the majority of recipes has between 1 and 500 words.
 
+## Sample recipe from the dataset 
+
+```
+directions: ['Fill 2 Old Fashioned glasses with ice. Divide rye, honey liqueur, and bitters between glasses. Stir for 5 seconds. Top with a splash of ginger ale. Garnish with orange twists.']
+
+fat: nan
+
+date: 2011-08-10 04:00:00+00:00
+
+categories: ['Bitters', 'Liqueur', 'Alcoholic', 'Cocktail Party', "Father's Day", 'Cocktail', 'Rye', 'Bon Appétit', 'Drink']
+
+calories: nan
+
+desc: For inspiration, co-owner Eyal Raziel looked to his native Israel, where honey liqueur is popular. "The Bärenjäger balances the kick of the rye," he says.
+
+protein: nan
+
+rating: 0.0
+
+title: Honey Rye 
+
+ingredients: ['5 tablespoons rye whiskey', '3 tablespoons honey liqueur (such as Bärenjäger)', '1/4 teaspoon orange bitters', 'Ginger ale', '2 orange twists', 'Ingredient info: Honey liqueur is available at well-stocked liquor stores and online from bevmo.com.']
+
+sodium: nan
+```
+
+As one can see, there are some columns with nan values.
+
 [Back to README.md](../README.md)

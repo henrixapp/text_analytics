@@ -80,5 +80,21 @@ This is varying quite a lot! So there is no clue if the directions are especiall
 
 ![svg](inspection_eightportions_files/inspection_eightportions_17_0.svg)
 
+## Sample recipe from the dataset 
+```
+Title: Mrs. Sigg's Snickerdoodles
+
+Ingredients: ['1/2 cup butter, softened ADVERTISEMENT', '1/2 cup shortening ADVERTISEMENT', '1 1/2 cups white sugar ADVERTISEMENT', '2 eggs ADVERTISEMENT', '2 teaspoons vanilla extract ADVERTISEMENT', '2 3/4 cups all-purpose flour ADVERTISEMENT', '2 teaspoons cream of tartar ADVERTISEMENT', '1 teaspoon baking soda ADVERTISEMENT', '1/4 teaspoon salt ADVERTISEMENT', '2 tablespoons white sugar ADVERTISEMENT', '2 teaspoons ground cinnamon ADVERTISEMENT', 'ADVERTISEMENT']
+
+Instructions: Preheat oven to 400 degrees F (200 degrees C).
+Cream together butter, shortening, 1 1/2 cups sugar, the eggs and the vanilla. Blend in the flour, cream of tartar, soda and salt. Shape dough by rounded spoonfuls into balls.
+Mix the 2 tablespoons sugar and the cinnamon. Roll balls of dough in mixture. Place 2 inches apart on ungreased baking sheets.
+Bake 8 to 10 minutes, or until set but not too hard. Remove immediately from baking sheets.
+
+Picture Link: 3FkBLTjVQFwQEU46DtI8/j9MROUq27e
+````
+
+As one can see, for each ingredient there is an ADVERTISEMENT tag which probably was introduced while crawling.
+
 
 [Back to README.md](../README.md)

@@ -91,5 +91,21 @@ Some recipies just seem to have very few instructions, but some of the recipies 
 
 This is varying quite a lot! So there is no clue if the directions are especially long or short. Of course the correlation between #words and #sentences is positive. Interestingly it is more a cloud than a line, so some variation.
 
+## Sample recipe from the dataset 
+```
+title: Angel Biscuits
+
+ingredients: ['5 c. flour', '3 Tbsp. sugar', '4 tsp. baking powder', '1 1/2 pkg. dry yeast', '2 c. buttermilk', '1 tsp. soda', '1 1/2 sticks margarine', '1/2 c. warm water']
+
+directions: ['Mix flour, sugar, baking powder, soda and salt together.', 'Cut in margarine, dissolve yeast in warm water.', 'Stir into buttermilk and add to dry mixture.', 'Cover and chill.']
+
+link: www.cookbooks.com/Recipe-Details.aspx?id=378696
+
+source: Gathered
+
+NER: ['flour', 'sugar', 'baking powder', 'yeast', 'buttermilk', 'soda', 'margarine', 'warm water']
+```
+
+As one can see, here the units are abbreviated. An additional column with NER objects exist, so some processing has already been done.
 
 [Back to README.md](../README.md)

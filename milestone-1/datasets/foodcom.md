@@ -103,4 +103,34 @@ This is varying quite a lot! So there is no clue if the directions are especiall
 ![svg](inspection_food-com_files/inspection_food-com_24_0.svg)
 
 
+## Sample recipe from the dataset 
+
+````
+name: i yam what i yam  muffins
+
+id: 93958
+
+minutes: 45
+
+contributor_id: 133174
+
+submitted: 2004-06-22
+
+tags: ['60-minutes-or-less', 'time-to-make', 'course', 'preparation', 'breads', 'muffins', 'quick-breads']
+
+nutrition: [171.8, 9.0, 28.0, 10.0, 8.0, 4.0, 8.0]
+
+n_steps: 10
+
+steps: ['preheat oven to 375 degrees', 'spray muffin tin with non-stick cooking spray and set aside', 'place the raisins in a small bowl and pour the 1 / 4 cup boiling water over them', 'cover and set aside while preparing batter', 'combine the flours , cocoa , baking powder , cinnamon , cloves , baking soda , and salt', 'lightly beat eggs with sorghum , oil , mashed yams and orange juice', 'add the egg mixture and buttermilk alternately to the dry ingredients , stir until well blended', 'drain the raisins and add to batter along with orange peel', 'spoon batter into prepared muffin tins , sprinkle 1 / 4 to 1 / 2 tsp of granulated sugar over each muffin', 'bake in preheated oven for 15 to 20 minutes']
+
+description: these muffins may have slightly different ingredients but the end result is a wonderful rich, moist muffin. the sugar sprinkled on top before cooking gives a slightly sweet crunch and cracked glazed appearance.
+
+ingredients: ['all-purpose flour', 'buckwheat flour', 'unsweetened cocoa', 'baking powder', 'baking soda', 'salt', 'ground cinnamon', 'ground cloves', 'sorghum', 'eggs', 'yam', 'low-fat buttermilk', 'orange rind', 'orange juice', 'canola oil', 'raisins', 'boiling water', 'granulated sugar']
+
+n_ingredients: 18
+````
+
+As one can see, the number of ingredients and steps were already computed. Also additional information like minutes, tags and nutrition. 
+
 [Back to README.md](../README.md)
