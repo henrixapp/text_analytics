@@ -43,17 +43,17 @@ As all recipes datasets consist of instructions and ingredients we mainly focuss
 
 The remaining five dataset sources as well as the yummly dataset are presented in the following. Click on the dataset name to find the analysis details for this dataset.
 
-| Name |  number of recipes | Short description | median number of ingredients | median number of instructions |
+| Name |  Number of recipes | Short description | Median number of Ingredients | Median number of Instructions |
 | ---- |  -------------- | ----------------- | --------------------- |--------------------- |
 | [epicurious](datasets/epicurious.md) | 20,111| few but long instructions, some empty recipes | 9 | 3 |
 | [food.com](datasets/foodcom.md) | 231,636 | some recipes have a lot of description (>100), interactions, preperation time and nutrition informations are available |9 | 9 |
 | [recipe1m+](datasets/recipe1m.md) | 1,029,720 | one instructions is often one sentence, contains recipes from food.com and epicurious | 9 | 9 |
 | [recipe1m+ nutritional](datasets/recipe1m_nutritional.md) | 51,235 | containing a lot of extra nutritional information | 6 | 6 |
 | [recipebox](datasets/recipebox.md)| 39,522 | contains lots of advertisements | 10 | 4 | 
-| [yummly.com](datasets/yummlycom.md)| | ingredients only| ? | - |
+| [yummly.com](datasets/yummlycom.md)| | ingredients only, but also cultural cuisine labels | ? | - |
 
 ### Summary of insights
 
 It seems that on average a recipe has 9 ingredients (only in the nutritional recipe1M+ dataset there are less). In this aspect the datasets are very similar. On the other hand, the number of instructions per recipe varies quite a lot. This might be due to the mechanism how a recipe is split into instructions. Some datasets consider each sentence as one instruction, others use logical paragraphs as one step. When comparing the number of words per recipe the distributions (with a peak at around 120 words) look more similar, i.e. that only the fragmentation into instructions is different not the recipes' length.
 
-The analysis of the most frequent ingredients showed that items like salt, butter, oil etc. are the most common ingredients, which makes sense. Depending on the dataset, some pre-processing needed to be applied to come to this insight.
+The analysis of the most frequent ingredients showed that items like salt, butter, oil etc. are the most common ingredients, which makes sense. Depending on the dataset, some pre-processing needed to be applied to come to this insight. From this we learned that we will have to apply stop-word removal to the ingredients lists to remove units and measures as they would influence the analysis.
