@@ -32,7 +32,7 @@ Also, we've done some rudimentary text-processing using spacy's tokenization, pa
 
 ### Experiments
 
-So far, we haven't done any experiments. 
+So far, we haven't done any experiments, because we have no baseline  and have not started clustering (yet). 
 
 
 ## Data Analysis
