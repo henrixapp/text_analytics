@@ -50,11 +50,22 @@ The remaining five dataset sources as well as the yummly dataset are presented i
 | [recipe1m+](datasets/recipe1m.md) | 1,029,720 | one instructions is often one sentence, contains recipes from food.com and epicurious | 9 | 9 |
 | [recipe1m+ nutritional](datasets/recipe1m_nutritional.md) | 51,235 | containing a lot of extra nutritional information | 6 | 6 |
 | [recipebox](datasets/recipebox.md)| 39,522 | contains lots of advertisements | 10 | 4 | 
-| [yummly.com](datasets/yummlycom.md)| | ingredients only, but also cultural cuisine labels | ? | - |
+| [yummly.com](datasets/yummlycom.md)|39,774 | ingredients only, but also cultural cuisine labels | ? | - |
 | [recipenlg](datasets/recipenlg.md)| 2,231,142 | our biggest dataset, contains [recipe1m+](datasets/recipe1m.md) | 8 | 5 |
 
 ### Summary of insights
 
 It seems that on average a recipe has 9 ingredients (only in the nutritional recipe1M+ dataset there are less). In this aspect the datasets are very similar. On the other hand, the number of instructions per recipe varies quite a lot. This might be due to the mechanism how a recipe is split into instructions. Some datasets consider each sentence as one instruction, others use logical paragraphs as one step. When comparing the number of words per recipe the distributions (with a peak at around 120 words) look more similar, i.e. that only the fragmentation into instructions is different not the recipes' length.
 
+
 The analysis of the most frequent ingredients showed that items like salt, butter, oil etc. are the most common ingredients, which makes sense. Depending on the dataset, some pre-processing needed to be applied to come to this insight. From this we learned that we will have to apply stop-word removal to the ingredients lists to remove units and measures as they would influence the analysis.
+
+| RecipeNLG | WhatsCooking/yummly.com | 
+| ---- | ----- |
+| 
+![svg](datasets/inspection_recipenlg_files/inspection_recipenlg_24_0.svg) | ![svg](datasets/inspection_whats_cooking_files/inspection_whats_cooking_11_0.svg)
+ |
+
+In the figure above you can see the comparision between the two datasets RecipeNLG and WhatsCooking (Yummly) regarding their most prominent ingredients and their cooccurances. For RecipeNLG we used the named entity recognition column, because it is already cleared of the units.
+
+They share some common ingredients, most prominently salt, but the interactions quite differ. RecipeNLG is mostly focussed on baking, whereas the yummly.com dataset is more about cooking, frying etc. by using more oil etc.
