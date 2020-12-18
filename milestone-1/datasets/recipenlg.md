@@ -91,6 +91,17 @@ Some recipies just seem to have very few instructions, but some of the recipies 
 
 This is varying quite a lot! So there is no clue if the directions are especially long or short. Of course the correlation between #words and #sentences is positive. Interestingly it is more a cloud than a line, so some variation.
 
+#### TOP 15
+
+We extracted the top 15 common recipes and generated an adjenancy matrix to see which co occur often.
+
+The results are shown in the figure below.
+
+![svg](inspection_recipenlg_files/inspection_recipenlg_24_0.svg)
+
+
+These recipes seem to be focussed on backing, because many of those contain salt, butter, flour, etc.
+
 ## Sample recipe from the dataset 
 ```
 title: Angel Biscuits

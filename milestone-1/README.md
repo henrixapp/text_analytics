@@ -37,7 +37,7 @@ So far, we haven't done any experiments, because we have no baseline  and have n
 
 ## Data Analysis
 
-We started by an in depth analysis of the selected dataset. We dropped the German dataset, because of concerns that the different language might not be compatible with all methods we would like to implement for recipes in English. Furthermore we had to drop the yummly/what's-cooking dataset because it only contained a list of ingredients per recipe but no cooking instructions. However, this dataset might later on be useful to infer the affiliation to a cultural cuisine as it is given in this dataset. This could then be used once we already have clusters and then be applied to see if the clusters make sense.
+We started by an in depth analysis of the selected dataset. We dropped the German dataset, because of concerns that the different language might not be compatible with all methods we would like to implement for recipes in English. Furthermore, the yummly/what's-cooking dataset is somehow special because it only containes a list of ingredients per recipe but no cooking instructions. However, this dataset might later on be useful to infer the affiliation to a cultural cuisine as it is given in this dataset. This could then be used once we already have clusters and then be applied to see if the clusters make sense.
 
 As all recipes datasets consist of instructions and ingredients we mainly focussed on analysing these. Some datasets contain additional information about nutrition (fat, calories, protein, sodium), categories, rating, interactions but we left out the analysis of these for now.
 
