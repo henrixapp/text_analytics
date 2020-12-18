@@ -50,7 +50,7 @@ The remaining five dataset sources as well as the yummly dataset are presented i
 | [recipe1m+](datasets/recipe1m.md) | 1,029,720 | one instructions is often one sentence, contains recipes from food.com and epicurious | 9 | 9 |
 | [recipe1m+ nutritional](datasets/recipe1m_nutritional.md) | 51,235 | containing a lot of extra nutritional information | 6 | 6 |
 | [recipebox](datasets/recipebox.md)| 39,522 | contains lots of advertisements | 10 | 4 | 
-| [yummly.com](datasets/yummlycom.md)|39,774 | ingredients only, but also cultural cuisine labels | ? | - |
+| [yummly.com](datasets/yummlycom.md)|39,774 | ingredients only, but also cultural cuisine labels | 10 | - |
 | [recipenlg](datasets/recipenlg.md)| 2,231,142 | our biggest dataset, contains [recipe1m+](datasets/recipe1m.md) | 8 | 5 |
 
 ### Summary of insights
