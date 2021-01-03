@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper
+from pipeline.preprocessing import Dropper, StopWordsRemoval
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -34,3 +34,24 @@ def test_negation_dropper():
                SimpleCounter()])
     data, head = pipeline.process(df)
     assert data == 4
+
+
+def test_stopword_removal_none():
+    text = ["i", "have", "a", "dream"]
+    pipeline = Pipeline("test",
+                        steps=[
+                            StopWordsRemoval(tooling="none",
+                                             additional_stopwords=["i", "a"]),
+                            SimpleCounter()
+                        ])
+    count, _ = pipeline.process(text)
+    assert count == 2
+
+
+def test_stopword_removal_spacy():
+    text = "i have a dream"
+    pipeline = Pipeline(
+        "test", steps=[StopWordsRemoval(tooling="spacy"),
+                       SimpleCounter()])
+    count, _ = pipeline.process(text)
+    assert count == 1
