@@ -31,13 +31,12 @@ class DataLoader:
             "whats-cooking": self.__load_whats_cooking,
         }
 
-    def __normalize(self):
-        """make the dataset conform to the schema"""
-        pass
-
-    def __checkSchema(self):
+    def __check_schema(self, dataframe):
         """check whether the dataframe conforms the schema"""
-        pass
+        # name only because M∀x wanted it
+        needed_cols = ["ingredients", "steps", "name"]
+
+        return set(needed_cols) <= set(dataframe.columns)
 
     def __getitem__(self, key):
         """
@@ -50,7 +49,10 @@ class DataLoader:
                 f"'{key}' is not a valid dataset! Possible are {self.dataset_loaders.keys()}"
             )
 
-        return self.dataset_loaders[key]()
+        dataframe = self.dataset_loaders[key]()
+        if not self.__check_schema(dataframe):
+            raise ValueError("Your dataframe is missing important columns!")
+        return dataframe
 
     def __load_recipi1m(self):
         dataframe = pd.read_json(
@@ -108,7 +110,6 @@ def createDataLoaderPipelineStep(name, dataset_names):
 def main():
     d = DataLoader()
     print(d["epirecipes"].head())
-    print(d.__dict__)
 
 
 if __name__ == "__main__":
