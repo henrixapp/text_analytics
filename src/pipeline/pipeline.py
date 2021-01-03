@@ -34,16 +34,10 @@ class PipelineStep:
         self.name = name
         pass
 
-    def process(self, data, head):
+    def process(self, data, head=Head()):
         """
         This is the abstract PipelineStep to be implemented. Make something useful.
         @returns data, head
-        """
-        raise NotImplementedError
-
-    def toInfo(self):
-        """
-        generate the used parameters for the head
         """
         raise NotImplementedError
 
@@ -58,7 +52,7 @@ class Pipeline(PipelineStep):
     aggregate several steps into a processing pipeline
     """
     def __init__(self, name, steps=[]):
-        super(name)
+        super().__init__(name)
         self.steps = steps
         for step in self.steps:
             if not isinstance(step, PipelineStep):
