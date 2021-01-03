@@ -21,9 +21,15 @@ class DataLoader:
             print(f"Creating the {self.pickle_path=} for you!")
             os.mkdir(self.pickle_path)
 
-        self.implemented_datasets = [
-            "epirecipes", "recipes1m", "food-com", "recipenlg", "whats-cooking"
-        ]
+        self.dataset_loaders = {
+            "eightportions": self.__load_eightportions,
+            "epirecipes": self.__load_epirecipes,
+            "food-com": self.__load_food_com,
+            "recipenlg": self.__load_recipenlg,
+            "recipes1m": self.__load_recipi1m,
+            "recipes1m-nutritional": self.__load_recipi1m_nutritional,
+            "whats-cooking": self.__load_whats_cooking,
+        }
 
     def __normalize(self):
         """make the dataset conform to the schema"""
@@ -39,39 +45,50 @@ class DataLoader:
         present
         if not already existent creates a pickle file for the dataset
         """
-        if key not in self.implemented_datasets:
+        if key not in self.dataset_loaders.keys():
             raise NotImplementedError(
-                f"'{key}' is not a valid dataset! Possible are {self.implemented_datasets}"
+                f"'{key}' is not a valid dataset! Possible are {self.dataset_loaders.keys()}"
             )
 
-        df = ""
-        if key == "recipi1m":
-            df = pd.read_json(join(self.dataframe_path,
-                                   "recipe1m/layer1.json"))
-        elif key == "recipi1m_nutritional":
-            df = pd.read_json(
-                join(self.dataframe_path,
-                     "recipe1m/recipes_with_nutritional_info.json"))
-        elif key == "epirecipes":
-            df = pd.read_json(
-                join(self.dataframe_path,
-                     "epirecipes/full_format_recipes.json"))
-        elif key == "food-com":
-            df = pd.read_csv(
-                join(self.dataframe_path, "food-com/RAW_recipes.csv"))
-        elif key == "recipenlg":
-            df = pd.read_csv(join(self.dataframe_path,
-                                  "recipenlg/full_dataset.csv"),
-                             index_col=0)
-        elif key == "whats-cooking":
-            df = pd.read_json(
-                join(self.dataframe_path, "whats-cooking/train.json"))
-        elif key == "eigntportions":
-            df = pd.read_json(
-                join(self.dataframe_path,
-                     "eightportions/recipes_raw_nosource_ar.json"), "index")
+        return self.dataset_loaders[key]()
 
-        return df
+    def __load_recipi1m(self):
+        dataframe = pd.read_json(
+            join(self.dataframe_path, "recipe1m/layer1.json"))
+        return dataframe
+
+    def __load_recipi1m_nutritional(self):
+        dataframe = pd.read_json(
+            join(self.dataframe_path,
+                 "recipe1m/recipes_with_nutritional_info.json"))
+        return dataframe
+
+    def __load_epirecipes(self):
+        dataframe = pd.read_json(
+            join(self.dataframe_path, "epirecipes/full_format_recipes.json"))
+        return dataframe
+
+    def __load_food_com(self):
+        dataframe = pd.read_csv(
+            join(self.dataframe_path, "food-com/RAW_recipes.csv"))
+        return dataframe
+
+    def __load_recipenlg(self):
+        dataframe = pd.read_csv(join(self.dataframe_path,
+                                     "recipenlg/full_dataset.csv"),
+                                index_col=0)
+        return dataframe
+
+    def __load_whats_cooking(self):
+        dataframe = pd.read_json(
+            join(self.dataframe_path, "whats-cooking/train.json"))
+        return dataframe
+
+    def __load_eightportions(self):
+        dataframe = pd.read_json(
+            join(self.dataframe_path,
+                 "eightportions/recipes_raw_nosource_ar.json"), "index")
+        return dataframe
 
     def getMultiple(self, keys):
         """
