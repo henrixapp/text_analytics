@@ -57,17 +57,29 @@ class DataLoader:
     def __load_recipi1m(self):
         dataframe = pd.read_json(
             join(self.dataframe_path, "recipe1m/layer1.json"))
+        dataframe = dataframe.rename(columns={
+            "instructions": "steps",
+            "title": "name"
+        })
         return dataframe
 
     def __load_recipi1m_nutritional(self):
         dataframe = pd.read_json(
             join(self.dataframe_path,
                  "recipe1m/recipes_with_nutritional_info.json"))
+        dataframe = dataframe.rename(columns={
+            "instructions": "steps",
+            "title": "name"
+        })
         return dataframe
 
     def __load_epirecipes(self):
         dataframe = pd.read_json(
             join(self.dataframe_path, "epirecipes/full_format_recipes.json"))
+        dataframe = dataframe.rename(columns={
+            "directions": "steps",
+            "title": "name"
+        })
         return dataframe
 
     def __load_food_com(self):
@@ -79,17 +91,28 @@ class DataLoader:
         dataframe = pd.read_csv(join(self.dataframe_path,
                                      "recipenlg/full_dataset.csv"),
                                 index_col=0)
+        dataframe = dataframe.rename(columns={
+            "directions": "steps",
+            "title": "name"
+        })
         return dataframe
 
     def __load_whats_cooking(self):
         dataframe = pd.read_json(
             join(self.dataframe_path, "whats-cooking/train.json"))
+        dataframe = dataframe.rename(columns={
+            "id": "name"
+        })
         return dataframe
 
     def __load_eightportions(self):
         dataframe = pd.read_json(
             join(self.dataframe_path,
                  "eightportions/recipes_raw_nosource_ar.json"), "index")
+        dataframe = dataframe.rename(columns={
+            "instructions": "steps",
+            "title": "name"
+        })
         return dataframe
 
     def getMultiple(self, keys):
