@@ -2,6 +2,7 @@ from pipeline.pipeline import PipelineStep, Head
 import pandas as pd
 import spacy
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 
 
 class Dropper(PipelineStep):
@@ -70,3 +71,18 @@ class SpacyStep(PipelineStep):
         head.addInfo("spacy_", "-".join(self._disabled))
 
         return self._nlp(data), head
+
+
+class NLTKPorterStemmer(PipelineStep):
+    """
+    Wraps a stemmer.
+    @input single string!
+    @output stemmed string
+    """
+    def __init__(self):
+        self._stemmer = PorterStemmer()
+        super().__init__("nltk_porter")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return self._stemmer.stem(data), head

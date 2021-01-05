@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep
+from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep, NLTKPorterStemmer
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -58,3 +58,10 @@ def test_stopword_removal_spacy():
                         ])
     count, _ = pipeline.process(text)
     assert count == 1
+
+
+def test_nltk_stemmer():
+    text = "cooking"
+    pipeline = Pipeline("test", steps=[NLTKPorterStemmer()])
+    data, head = pipeline.process(text)
+    assert data == "cook"
