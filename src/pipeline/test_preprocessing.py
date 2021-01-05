@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, StopWordsRemoval
+from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -50,8 +50,11 @@ def test_stopword_removal_none():
 
 def test_stopword_removal_spacy():
     text = "i have a dream"
-    pipeline = Pipeline(
-        "test", steps=[StopWordsRemoval(tooling="spacy"),
-                       SimpleCounter()])
+    pipeline = Pipeline("test",
+                        steps=[
+                            SpacyStep(),
+                            StopWordsRemoval(tooling="spacy"),
+                            SimpleCounter()
+                        ])
     count, _ = pipeline.process(text)
     assert count == 1

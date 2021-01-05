@@ -26,8 +26,7 @@ class StopWordsRemoval(PipelineStep):
     """
     Removes stop words.
 
-    Supports two ways: if tooling is spacy it will automatically tookenize and remove stop words.
-    TODO: Remove tokenization, when spacy step is implemented.
+    Supports two ways: if tooling is spacy it will expect data from spacy step and remove stop words.
     Otherwise it will check the already **tokenized** words in additional_stopwords.
     Returns list of spacy tokens or plain strings.
     """
@@ -37,16 +36,13 @@ class StopWordsRemoval(PipelineStep):
         super().__init__("stopwordsremoval")
         self._tooling = tooling
         self._additional_stopwords = additional_stopwords
-        if tooling == "spacy":
-            self.nlp = spacy.load("en_core_web_sm")
 
     def process(self, data, head=Head()):
         head.addInfo("stopwordsremoval",
                      self._tooling + "-".join(self._additional_stopwords))
         if self._tooling == "spacy":
-            doc = self.nlp(data)
             words = []
-            for word in doc:
+            for word in data:
                 if not word.is_stop and not word.text in self._additional_stopwords:
                     words += [word]
             return words, head
@@ -57,3 +53,20 @@ class StopWordsRemoval(PipelineStep):
                 if not word in self._additional_stopwords:
                     words += [word]
             return words, head
+
+
+class SpacyStep(PipelineStep):
+    """
+    This is a common Spacy-Step.
+    @input string
+    @returns array of words 
+    """
+    def __init__(self, model="en_core_web_sm", disable=[]):
+        self._nlp = spacy.load(model, disable=disable)
+        self._disabled = disable
+        super().__init__("spacy")
+
+    def process(self, data, head=Head()):
+        head.addInfo("spacy_", "-".join(self._disabled))
+
+        return self._nlp(data), head
