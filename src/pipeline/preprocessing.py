@@ -86,3 +86,18 @@ class NLTKPorterStemmer(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
         return self._stemmer.stem(data), head
+
+
+class Replacer(PipelineStep):
+    """
+    Replaces all occurances of the dict  in the string.
+    """
+    def __init__(self, rules):
+        self._rules = rules
+        super().__init__("replacer")
+
+    def process(self, data, head=Head()):
+        for old, new in self._rules.items():
+            head.addInfo(self.name, old + "_" + new)
+            data = data.replace(old, new)
+        return data, head

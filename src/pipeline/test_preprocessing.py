@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep, NLTKPorterStemmer
+from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -65,3 +65,14 @@ def test_nltk_stemmer():
     pipeline = Pipeline("test", steps=[NLTKPorterStemmer()])
     data, head = pipeline.process(text)
     assert data == "cook"
+
+
+def test_replacer():
+    text = "old car is the new station"
+    pipeline = Pipeline("test",
+                        steps=[Replacer({
+                            "old": "new",
+                            "car": "train"
+                        })])
+    data, head = pipeline.process(text)
+    assert data == "new train is the new station"
