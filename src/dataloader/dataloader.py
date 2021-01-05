@@ -122,7 +122,11 @@ class DataLoader:
         if not already existent creates a pickle file for the dataset
         combination
         """
-        pass
+        dataframe = pd.DataFrame()
+        for key in keys:
+            dataframe = dataframe.append(self[key])
+
+        return dataframe
 
 
 def createDataLoaderPipelineStep(name, dataset_names):
@@ -133,6 +137,7 @@ def createDataLoaderPipelineStep(name, dataset_names):
 def main():
     d = DataLoader()
     print(d["epirecipes"].head())
+    print(d.getMultiple(["epirecipes","food-com"]).head())
 
 
 if __name__ == "__main__":
