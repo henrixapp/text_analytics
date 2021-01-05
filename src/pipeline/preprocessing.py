@@ -101,3 +101,18 @@ class Replacer(PipelineStep):
             head.addInfo(self.name, old + "_" + new)
             data = data.replace(old, new)
         return data, head
+
+
+class ExtractSentenceParts(PipelineStep):
+    """
+    Extracts all nouns if "NOUN" is in parts and/or all verbs if "VERB"
+    @input expects an array of spacy items
+    """
+    def __init__(self, parts=["NOUN"]):
+        super().__init__("extract_" + "-".join(parts))
+        self._parts = parts
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+
+        return [word for word in data if word.pos_ in self._parts], head

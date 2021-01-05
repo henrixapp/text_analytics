@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer
+from pipeline.preprocessing import Dropper, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -76,3 +76,27 @@ def test_replacer():
                         })])
     data, head = pipeline.process(text)
     assert data == "new train is the new station"
+
+
+def test_extract_sentenceparts_verb():
+    pipe = Pipeline("test",
+                    steps=[
+                        SpacyStep(),
+                        ExtractSentenceParts(parts=["VERB"]),
+                        SimpleCounter()
+                    ])
+    text = "I love programming text analytics"
+    result, head = pipe.process(text)
+    assert result == 1
+
+
+def test_extract_sentenceparts_noun():
+    pipe = Pipeline("test",
+                    steps=[
+                        SpacyStep(),
+                        ExtractSentenceParts(parts=["NOUN"]),
+                        SimpleCounter()
+                    ])
+    text = "I love programming text analytics"
+    result, head = pipe.process(text)
+    assert result == 3
