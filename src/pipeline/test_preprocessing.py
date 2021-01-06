@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
+from pipeline.preprocessing import Dropper, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -114,3 +114,11 @@ def test_sentence_splitter_content():
     text = "This is a sentence. This is another sentence."
     result, _ = pipe.process(text)
     assert result[0] == "This is a sentence."
+
+
+def test_num2words():
+    pipe = Pipeline("test", steps=[SpacyStep(), Numbers2Words()])
+    text = "Take 3 eggs and 35 tablespoons of flour"
+    expected_result = "Take three eggs and thirty-five tablespoons of flour"
+    result, _ = pipe.process(text)
+    assert result == expected_result.split()

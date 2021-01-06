@@ -4,6 +4,7 @@ import spacy
 from spacy.lang.en import English
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from num2words import num2words
 
 
 class Dropper(PipelineStep):
@@ -134,3 +135,19 @@ class SentenceSplitter(PipelineStep):
         assert isinstance(data, str), "data to split must be a string"
         doc = self._nlp(data)
         return [sent.text for sent in doc.sents], head
+
+
+class Numbers2Words(PipelineStep):
+    """
+    Converts numbers (e.g. 2) into words (e.g. two).
+    @input expects an array of spacy items
+    """
+    def __init__(self):
+        super().__init__("num2word")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return [
+            num2words(word.text) if word.like_num else word.text
+            for word in data
+        ], head
