@@ -1,6 +1,7 @@
 from pipeline.pipeline import PipelineStep, Head
 import pandas as pd
 import spacy
+from spacy.lang.en import English
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
@@ -116,3 +117,20 @@ class ExtractSentenceParts(PipelineStep):
         head.addInfo(self.name, "")
 
         return [word for word in data if word.pos_ in self._parts], head
+
+
+class SentenceSplitter(PipelineStep):
+    """
+    Splits a string into a list of substrings based on sentences.
+    """
+    def __init__(self):
+        super().__init__("splitter")
+        self._nlp = English()
+        sentencizer = self._nlp.create_pipe("sentencizer")
+        self._nlp.add_pipe(sentencizer)
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        assert isinstance(data, str), "data to split must be a string"
+        doc = self._nlp(data)
+        return [sent.text for sent in doc.sents], head
