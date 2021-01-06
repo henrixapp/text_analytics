@@ -281,3 +281,6 @@ TSWLatexianTemp*
 #ignore data files
 assignments/assignment02/data/*
 data/*
+
+#ignore cached stuff
+src/pipeline/__pycache__/*
