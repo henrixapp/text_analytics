@@ -1,4 +1,4 @@
-from pipeline.pipeline import PipelineStep, Head
+from pipeline.pipeline import InvalidPipelineStepError, PipelineStep, Head
 import pandas as pd
 import spacy
 from spacy.lang.en import English
@@ -151,3 +151,25 @@ class Numbers2Words(PipelineStep):
             num2words(word.text) if word.like_num else word.text
             for word in data
         ], head
+
+
+class Lower(PipelineStep):
+    """
+    Converts string to lower-cased string
+    @input expects an array of string or a string
+    """
+    def __init__(self):
+        super().__init__("lower")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        if isinstance(data, list):
+            newdata = []
+            for item in data:
+                assert isinstance(item, str), "Values in list must be strings"
+                newdata += [item.lower()]
+            return newdata, head
+        elif isinstance(data, str):
+            return data.lower(), head
+        else:
+            raise InvalidPipelineStepError

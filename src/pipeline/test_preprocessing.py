@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
+from pipeline.preprocessing import Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -122,3 +122,25 @@ def test_num2words():
     expected_result = "Take three eggs and thirty-five tablespoons of flour"
     result, _ = pipe.process(text)
     assert result == expected_result.split()
+
+
+def test_lower():
+    pipe = Pipeline("test", steps=[Lower()])
+    text = "Sometimes PEOPLE mark their Recipes in WEIRD casing LETTers"
+    expected_result = "sometimes people mark their recipes in weird casing letters"
+    result, _ = pipe.process(text)
+    assert result == expected_result
+
+
+def test_lower_multiple():
+    pipe = Pipeline("test", steps=[Lower()])
+    text = [
+        "Sometimes PEOPLE mark their Recipes in WEIRD casing LETTers",
+        "THIS is a Second recipe"
+    ]
+    expected_result = [
+        "sometimes people mark their recipes in weird casing letters",
+        "this is a second recipe"
+    ]
+    result, _ = pipe.process(text)
+    assert result == expected_result
