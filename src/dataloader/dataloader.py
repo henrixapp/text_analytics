@@ -4,6 +4,7 @@ Module to abstract away the diffrent types of datasets and how they have to be l
 from os.path import join, isdir
 import os
 import pandas as pd
+import faulthandler
 
 
 class DataLoader:
@@ -90,7 +91,9 @@ class DataLoader:
     def __load_recipenlg(self):
         dataframe = pd.read_csv(join(self.dataframe_path,
                                      "recipenlg/full_dataset.csv"),
-                                index_col=0)
+                                engine="python")
+        #dataframe.set_index([0], inplace=True)
+
         dataframe = dataframe.rename(columns={
             "directions": "steps",
             "title": "name"
@@ -100,9 +103,7 @@ class DataLoader:
     def __load_whats_cooking(self):
         dataframe = pd.read_json(
             join(self.dataframe_path, "whats-cooking/train.json"))
-        dataframe = dataframe.rename(columns={
-            "id": "name"
-        })
+        dataframe = dataframe.rename(columns={"id": "name"})
         return dataframe
 
     def __load_eightportions(self):
@@ -137,7 +138,7 @@ def createDataLoaderPipelineStep(name, dataset_names):
 def main():
     d = DataLoader()
     print(d["epirecipes"].head())
-    print(d.getMultiple(["epirecipes","food-com"]).head())
+    print(d.getMultiple(["epirecipes", "food-com"]).head())
 
 
 if __name__ == "__main__":

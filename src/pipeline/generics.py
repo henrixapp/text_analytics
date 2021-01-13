@@ -36,3 +36,24 @@ class Sample(PipelineStep):
         random.seed(self._seed)
         head.addInfo(self.name, "")
         return random.sample(data, self._number), head
+
+
+class Unique(PipelineStep):
+    """
+    Makes a unique list.
+    """
+    def __init__(self):
+        super().__init__("unique")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return list(set(data)), head
+
+
+class Flatten(PipelineStep):
+    def __init__(self):
+        super().__init__("flatten")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return [d for t in data for d in t], head

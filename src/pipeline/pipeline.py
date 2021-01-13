@@ -51,9 +51,10 @@ class Pipeline(PipelineStep):
     """
     aggregate several steps into a processing pipeline
     """
-    def __init__(self, name, steps=[]):
+    def __init__(self, name, steps=[], verbosity=False):
         super().__init__(name)
         self.steps = steps
+        self._verbose = verbosity
         for step in self.steps:
             if not isinstance(step, PipelineStep):
                 raise InvalidPipelineStepError(step)
@@ -61,5 +62,7 @@ class Pipeline(PipelineStep):
     def process(self, data, head=Head()):
         # We do not need to create a new head, if we are in a downstream pipeline.
         for step in self.steps:
+            if self._verbose:
+                print(step.name)
             data, head = step.process(data, head)
         return data, head

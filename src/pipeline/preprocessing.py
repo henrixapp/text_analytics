@@ -5,6 +5,7 @@ from spacy.lang.en import English
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from num2words import num2words
+import json
 
 
 class Dropper(PipelineStep):
@@ -173,3 +174,18 @@ class Lower(PipelineStep):
             return data.lower(), head
         else:
             raise InvalidPipelineStepError
+
+
+class ApplyJSON(PipelineStep):
+    def __init__(self):
+        super().__init__("ApplyJSON")
+
+    def process(self, data, head=Head()):
+        '''
+        converts string of json object to json object or empty list if none
+        '''
+        head.addInfo("ApplyJSON", "")
+        result = json.loads(data)
+        if result:
+            return result, head
+        return [], head
