@@ -280,4 +280,5 @@ TSWLatexianTemp*
 
 #ignore data files
 assignments/assignment02/data/*
+assignments/assignment03/data/*
 data/*
