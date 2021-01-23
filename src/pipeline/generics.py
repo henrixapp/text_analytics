@@ -1,4 +1,4 @@
-from pipeline.pipeline import PipelineStep, Head
+from pipeline.pipeline import Pipeline, PipelineStep, Head
 import random
 
 
@@ -38,6 +38,13 @@ class Sample(PipelineStep):
         return random.sample(data, self._number), head
 
 
+class First(PipelineStep):
+    def __init__(self, count):
+        super().__init__("first")
+        self._count = count
+    def process(self, data, head):
+        head.addInfo(self.name,self._count)
+        return data[:self._count],head
 class Unique(PipelineStep):
     """
     Makes a unique list.

@@ -19,7 +19,7 @@ class DataLoader:
 
         self.pickle_path = join(self.dataframe_path, pickle_path)
         if not isdir(self.pickle_path):
-            print(f"Creating the {self.pickle_path=} for you!")
+            print(f"Creating the {self.pickle_path} for you!")
             os.mkdir(self.pickle_path)
 
         self.dataset_loaders = {
