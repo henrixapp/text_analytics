@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
 from sklearn.manifold import TSNE
+from sklearn.cluster import KMeans
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import pandas as pd
 
 
 def tsneplot(model, word):
@@ -118,15 +120,18 @@ def tsne3d(model,word):
 
     ax.scatter(xs, ys, zs)
 
-def tsneplot_words(model, words):
+def tsneplot_words(data):
     """ Plot in seaborn the results from the t-SNE dimensionality reduction for the top 10 most similar and dissimilar words
     """
-    #embs = np.empty((0, 100), dtype='f')# to save all the embeddings
-    word_labels = words
-    color_list  = ['green']* len(words)
-
-   
-    embs = np.array([model.wv[word] for  word in words]) # adds the vector of the query word
+    embs = np.empty((0, 30), dtype='f')# to save all the embeddings
+    word_labels = []
+    color_list  = []
+    for vec,w in data:
+        if vec.ndim >0:
+            word_labels+=[w]
+            color_list+= ["green"]
+            embs = np.append(embs, [vec], axis=0)
+       # embs = np.array([model.wv[word] for  word in words]) # adds the vector of the query word
     
    
     # close_words = model.wv.most_similar(word) # gets list of most similar words
@@ -149,12 +154,12 @@ def tsneplot_words(model, words):
     
     np.set_printoptions(suppress=True)
     Y = TSNE(n_components=2,random_state=42,perplexity=30,n_iter=5000).fit_transform(embs)# with  n_components=2, random_state=42, perplexity=15 
-    
+    kmeans = KMeans(n_clusters=4, random_state=0).fit(Y[:])
     # Sets everything up to plot
     df = pd.DataFrame({'x': [x for x in Y[:, 0]],
                        'y': [y for y in Y[:, 1]],
                        'words': word_labels,
-                       'color': color_list})
+                       'color': [["green","red", "orange", "blue"][i] for i in kmeans.labels_]})
     
     fig, _ = plt.subplots()
     fig.set_size_inches(10, 10)
@@ -186,3 +191,4 @@ def tsneplot_words(model, words):
     plt.ylim(Y[:, 1].min()-50, Y[:, 1].max()+50)
             
     plt.title('t-SNE visualization for {}'.format(str(50)))
+    return kmeans,Y

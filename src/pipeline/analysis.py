@@ -5,6 +5,8 @@ import numpy as np
 
 from gensim.models.phrases import Phrases, Phraser
 from gensim.models import Word2Vec
+
+import numpy as np
 def hash(astring):
     return ord(astring[0])
 
@@ -67,3 +69,14 @@ class W2VStep(PipelineStep):
         w2v.train(data, total_examples=w2v.corpus_count,epochs=100)
         w2v.init_sims(replace=True)
         return w2v, head
+
+
+class VectorizeAndSum(PipelineStep):
+    """
+    Custom install
+    """
+    def __init__(self):
+        super().__init__("vectorize")
+    def process(self, data, head=Head()):
+        head.addInfo(self.name,"")
+        return [np.sum([data[0].wv[w] for w in words if  w in data[0].wv.vocab.keys()],axis=0) for words in data[1]], head

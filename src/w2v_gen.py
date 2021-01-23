@@ -1,11 +1,14 @@
+from matplotlib.pyplot import step
 from pipeline.counters import MostCommonCounter
-from pipeline.pipeline import Pipeline
+from pipeline.pipeline import Fork, Pass, Pipeline
 
 from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
-from pipeline.generics import First, Flatten, IterableApply, Sample, Unique
+from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
 from pipeline.preprocessing import ApplyJSON, Lower
-from pipeline.analysis import PhraserStep, W2VStep
+from pipeline.analysis import PhraserStep, VectorizeAndSum, W2VStep
+
+
 def pipeline():
     p = Pipeline("recipennlg",
                  steps=[
@@ -18,8 +21,11 @@ def pipeline():
                  ],
                  verbosity=True)
     p.process(True)
+
+
 def pipeline2():
-    p = Pipeline("word2vec", steps=[
+    p = Pipeline("word2vec",
+                 steps=[
                      DataSetSource(datasets=["recipenlg"]),
                      PDReduce("NER"),
                      First(500000),
@@ -30,6 +36,8 @@ def pipeline2():
                  ],
                  verbosity=True)
     return p.process(True)
+
+
 def pipeline3():
     p = Pipeline("recipennlg",
                  steps=[
@@ -43,6 +51,39 @@ def pipeline3():
                  ],
                  verbosity=True)
     return p.process(True)
+
+
+def pipeline4():
+    p = Pipeline("word2vecSum",
+                 steps=[
+                     DataSetSource(datasets=["recipenlg"]),
+                     First(50000),
+                     Fork("2",
+                          steps=[
+                              Pipeline(
+                                  "vec2sum",
+                                  steps=[
+                                      PDReduce("NER"),
+                                      IterableApply(ApplyJSON()),
+                                      IterableApply(IterableApply(Lower())),
+                                      PhraserStep(),
+                                      Fork("3",
+                                           steps=[
+                                               Pipeline("1",
+                                                        steps=[W2VStep(4)]),
+                                               Pipeline("2", steps=[Pass()]),
+                                           ]),
+                                      VectorizeAndSum()
+                                  ]),
+                              Pipeline("name",
+                                       steps=[PDReduce("name")],
+                                       verbosity=True)
+                          ]),
+                     ZipList()
+                 ],
+                 verbosity=True)
+    return p.process(True)
+
 
 if __name__ == "__main__":
     '''

@@ -66,3 +66,36 @@ class Pipeline(PipelineStep):
                 print(step.name)
             data, head = step.process(data, head)
         return data, head
+
+class Fork(PipelineStep):
+    """
+    Runs several task with the same data in parallel
+    """
+    def __init__(self, name, steps=[], verbosity=False):
+        super().__init__(name)
+        self.steps = steps
+        self._verbose = verbosity
+        for step in self.steps:
+            if not isinstance(step, PipelineStep):
+                raise InvalidPipelineStepError(step)
+
+    def process(self, data, head=Head()):
+        # We do not need to create a new head, if we are in a downstream pipeline.
+        res = []
+        for step in self.steps:
+            if self._verbose:
+                print(step.name)
+            data2, head = step.process(data, head)
+            res += [data2]
+        return res, head
+
+class Pass(PipelineStep):
+    """
+    
+    """
+    def __init__(self):
+        super().__init__("pass")
+
+    def process(self, data, head=Head()):
+        # We do not need to create a new head, if we are in a downstream pipeline.
+        return data, head

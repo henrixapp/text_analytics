@@ -64,3 +64,12 @@ class Flatten(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
         return [d for t in data for d in t], head
+
+class ZipList(PipelineStep):
+    
+    def __init__(self):
+        super().__init__("ziplist")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return list(zip(*data)), head
