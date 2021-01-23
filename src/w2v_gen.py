@@ -21,11 +21,11 @@ def pipeline2():
     p = Pipeline("word2vec", steps=[
                      DataSetSource(datasets=["recipenlg"]),
                      PDReduce("NER"),
-                     First(50000),
+                     First(500000),
                      IterableApply(ApplyJSON()),
                      IterableApply(IterableApply(Lower())),
                      PhraserStep(),
-                     W2VStep()
+                     W2VStep(4)
                  ],
                  verbosity=True)
     return p.process(True)

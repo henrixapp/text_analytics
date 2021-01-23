@@ -44,15 +44,16 @@ class W2VStep(PipelineStep):
     """
     This step returns a W2V instance of the inputed data
     """
-    def __init__(self):
+    def __init__(self,workers):
         super().__init__("w2v")
+        self._workers =workers
 
     def process(self, data, head=Head()):
         head.addInfo(self.name,"")
         w2v = Word2Vec(
             data,
-            hashfxn=hash,
-            workers=1,
+            #hashfxn=hash,
+            workers=self._workers,
             size=100,
             negative=20,
             min_count=2,
