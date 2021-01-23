@@ -1,3 +1,4 @@
+from pipeline.counters import MostCommonCounter
 from pipeline.pipeline import Pipeline
 
 from pipeline.pipeline import Pipeline
@@ -29,6 +30,20 @@ def pipeline2():
                  ],
                  verbosity=True)
     return p.process(True)
+def pipeline3():
+    p = Pipeline("recipennlg",
+                 steps=[
+                     DataSetSource(datasets=["recipenlg"]),
+                     PDReduce("NER"),
+                     First(500000),
+                     IterableApply(ApplyJSON()),
+                     Flatten(),
+                     IterableApply(Lower()),
+                     MostCommonCounter()
+                 ],
+                 verbosity=True)
+    return p.process(True)
+
 if __name__ == "__main__":
     '''
     Gets ingredients of whats cooking and recipenlg datasets and dumps them into json files.
