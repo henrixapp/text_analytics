@@ -85,6 +85,36 @@ def pipeline4():
     return p.process(True)
 
 
+def pipeline5():
+    p = Pipeline(
+        "word2vecSum",
+        steps=[
+            DataSetSource(datasets=["food-com"]),
+            # First(50000),
+            Fork("2",
+                 steps=[
+                     Pipeline("vec2sum",
+                              steps=[
+                                  PDReduce("ingredients"),
+                                  IterableApply(Split(",")),
+                                  IterableApply(IterableApply(Lower())),
+                                  PhraserStep(),
+                                  Fork("3",
+                                       steps=[
+                                           Pipeline("1", steps=[W2VStep(4)]),
+                                           Pipeline("2", steps=[Pass()]),
+                                       ]),
+                                  VectorizeAndSum()
+                              ],
+                              verbosity=True),
+                     Pipeline("name", steps=[PDReduce("name")], verbosity=True)
+                 ]),
+            ZipList()
+        ],
+        verbosity=True)
+    return p.process(True)
+
+
 if __name__ == "__main__":
     '''
     Gets ingredients of whats cooking and recipenlg datasets and dumps them into json files.

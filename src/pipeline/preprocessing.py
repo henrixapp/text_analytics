@@ -106,6 +106,19 @@ class Replacer(PipelineStep):
         return data, head
 
 
+class Split(PipelineStep):
+    """
+    Replaces all occurances of the dict  in the string.
+    """
+    def __init__(self, rule):
+        self._rule = rule
+        super().__init__("splitter")
+
+    def process(self, data, head=Head()):
+
+        return data.split(self._rule), head
+
+
 class ExtractSentenceParts(PipelineStep):
     """
     Extracts all nouns if "NOUN" is in parts and/or all verbs if "VERB"
