@@ -5,7 +5,7 @@ from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
 from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
-from pipeline.preprocessing import ApplyJSON, Lower
+from pipeline.preprocessing import ApplyJSON, Lower, Split
 from pipeline.analysis import PhraserStep, VectorizeAndSum, W2VStep
 
 
