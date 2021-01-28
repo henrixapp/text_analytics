@@ -5,8 +5,8 @@ from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
 from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
-from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, Split
-from pipeline.analysis import KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
+from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, SpacyStep, Split
+from pipeline.analysis import IngredientsPerStepsOccurrence, KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
 
 
 def pipeline():
@@ -117,6 +117,46 @@ def pipeline5():
                      ZipList()
                  ],
                  verbosity=True)
+    return p.process(True)
+
+
+def pipeline6():
+    p = Pipeline(
+        "word2vecSum",
+        steps=[
+            DataSetSource(datasets=["food-com"]),
+            OutOfDistributionRemover(),
+            First(50000),
+            Fork("2",
+                 steps=[
+                     Fork("ingredientmapping",
+                          steps=[
+                              Pipeline("zutaten zerstoeren",
+                                       steps=[
+                                           PDReduce("ingredients"),
+                                           IterableApply(IterableApply(
+                                               Lower())),
+                                           PhraserStep(),
+                                           Fork("3",
+                                                steps=[
+                                                    W2VStep(8),
+                                                    Pass(),
+                                                ]),
+                                       ],
+                                       verbosity=True),
+                              Pipeline("spacy steps",
+                                       steps=[
+                                           PDReduce("steps"),
+                                           IterableApply(
+                                               IterableApply(SpacyStep()))
+                                       ])
+                          ]),
+                     Pipeline("name", steps=[PDReduce("name")], verbosity=True)
+                 ]),
+            IngredientsPerStepsOccurrence(),
+            ZipList()
+        ],
+        verbosity=True)
     return p.process(True)
 
 

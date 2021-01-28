@@ -10,3 +10,4 @@ matplotlib
 num2words
 pytest
 sklearn
+seaborn

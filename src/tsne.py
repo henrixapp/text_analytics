@@ -289,3 +289,58 @@ def tsneplot_words2(data):
 
     plt.title('t-SNE visualization for {}'.format(str(50)))
     return kmeans, Y
+
+
+def tsneplot_words3(data):
+    """ Plot in seaborn the results from the t-SNE dimensionality reduction for the top 10 most similar and dissimilar words
+    """
+    embs = np.empty((0, 30), dtype='f')  # to save all the embeddings
+    word_labels = []
+    for vec, name in data:
+        if vec.ndim > 0:
+            word_labels += [name]
+            embs = np.append(embs, [vec], axis=0)
+
+    np.set_printoptions(suppress=True)
+    Y = TSNE(n_components=2, random_state=42, perplexity=30,
+             n_iter=5000).fit_transform(
+                 embs)  # with  n_components=2, random_state=42, perplexity=15
+    kmeans = KMeans(n_clusters=8, random_state=0).fit(Y[:])
+    # Sets everything up to plot
+    df = pd.DataFrame({
+        'x': [x for x in Y[:, 0]],
+        'y': [y for y in Y[:, 1]],
+        'words':
+        word_labels,
+        'color': [list(mcolors.XKCD_COLORS)[i] for i in kmeans.labels_]
+    })
+
+    fig, _ = plt.subplots()
+    fig.set_size_inches(10, 10)
+
+    # Basic plot
+    p1 = sns.regplot(data=df,
+                     x="x",
+                     y="y",
+                     fit_reg=False,
+                     marker="x",
+                     scatter_kws={
+                         's': 40,
+                         'facecolors': df['color']
+                     })
+    # adds annotations one by one with a loop
+    for line in range(0, df.shape[0]):
+        p1.text(df["x"][line],
+                df['y'][line],
+                '  ' + df["words"][line].title(),
+                horizontalalignment='left',
+                verticalalignment='bottom',
+                size='medium',
+                color=df['color'][line],
+                weight='normal').set_size(15)
+
+    plt.xlim(Y[:, 0].min() - 50, Y[:, 0].max() + 50)
+    plt.ylim(Y[:, 1].min() - 50, Y[:, 1].max() + 50)
+
+    plt.title('t-SNE visualization for {}'.format(str(50)))
+    return kmeans, Y
