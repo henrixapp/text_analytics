@@ -103,6 +103,8 @@ class DataLoader:
         dataframe = pd.read_json(
             join(self.dataframe_path, "whats-cooking/train.json"))
         dataframe = dataframe.rename(columns={"id": "name"})
+
+        dataframe["name"] = dataframe["name"].apply(str)
         return dataframe
 
     def __load_eightportions(self):
