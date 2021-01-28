@@ -5,7 +5,7 @@ from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
 from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
-from pipeline.preprocessing import ApplyJSON, Lower, Split
+from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, Split
 from pipeline.analysis import KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
 
 
@@ -89,6 +89,7 @@ def pipeline5():
     p = Pipeline("word2vecSum",
                  steps=[
                      DataSetSource(datasets=["food-com"]),
+                     OutOfDistributionRemover(),
                      First(5000),
                      Fork("2",
                           steps=[
@@ -96,7 +97,6 @@ def pipeline5():
                                   "vec2sum",
                                   steps=[
                                       PDReduce("ingredients"),
-                                      IterableApply(Split(",")),
                                       IterableApply(IterableApply(Lower())),
                                       PhraserStep(),
                                       Fork("3", steps=[

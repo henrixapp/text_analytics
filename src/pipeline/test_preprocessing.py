@@ -144,3 +144,6 @@ def test_lower_multiple():
     ]
     result, _ = pipe.process(text)
     assert result == expected_result
+
+
+# TODO: Write test for OutOfDistributionRemover

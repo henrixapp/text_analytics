@@ -202,3 +202,23 @@ class ApplyJSON(PipelineStep):
         if result:
             return result, head
         return [], head
+
+
+class OutOfDistributionRemover(PipelineStep):
+    def __init__(self, max_steps=15, max_ingredients=15):
+        super().__init__("OutOfDistributionRemover")
+        self.max_steps = max_steps
+        self.max_ingredients = max_ingredients
+
+    def process(self, data, head=Head()):
+        '''
+        removes recipes that are out of distribution, e.g. have a lot more steps or ingredients than usual
+        '''
+        head.addInfo(
+            self.name,
+            "Max steps to stay in set: {}, max ingredients {}.".format(
+                self.max_steps, self.max_ingredients))
+        data["n_steps"] = data["steps"].apply(len)
+        data["n_ingredients"] = data["ingredients"].apply(len)
+        return data[(data["n_steps"] <= self.max_steps)
+                    & (data["n_ingredients"] <= self.max_ingredients)], head
