@@ -18,12 +18,8 @@ class TestDataLoader(unittest.TestCase):
     def dataset_interface(self, dataset_name):
         dataset = DataLoader()[dataset_name]
 
-        self.assertTrue(isinstance(dataset["ingredients"], pandas.Series),
-                        dataset_name)
-        self.assertTrue(isinstance(dataset["ingredients"][0], list),
-                        dataset_name)
-        self.assertTrue(isinstance(dataset["ingredients"][0][0], str),
-                        dataset_name)
+        needed_cols = set(["ingredients", "steps", "name"]) - set(exclude)
+        self.assertTrue(set(needed_cols) <= set(dataset.columns))
 
         self.assertTrue(isinstance(dataset["steps"], pandas.Series),
                         dataset_name)

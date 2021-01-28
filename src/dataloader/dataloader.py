@@ -35,13 +35,6 @@ class DataLoader:
         }
         self.datasets = self.dataset_loaders.keys()
 
-    def __check_schema(self, dataframe):
-        """check whether the dataframe conforms the schema"""
-        # name only because M∀x wanted it
-        needed_cols = ["ingredients", "steps", "name"]
-
-        return set(needed_cols) <= set(dataframe.columns)
-
     def __getitem__(self, key):
         """
         Loads a pandas dataframe from a single dataset or pickle file if
@@ -54,8 +47,6 @@ class DataLoader:
             )
 
         dataframe = self.dataset_loaders[key]()
-        if not self.__check_schema(dataframe):
-            raise ValueError("Your dataframe is missing important columns!")
         return dataframe
 
     def __load_recipi1m(self):
@@ -84,8 +75,6 @@ class DataLoader:
             "directions": "steps",
             "title": "name"
         })
-        #dataframe["ingredients"] = dataframe["ingredients"].apply(
-        #    lambda x: json.loads(x))
         return dataframe
 
     def __load_food_com(self):
