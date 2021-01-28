@@ -85,7 +85,8 @@ class TestDataLoader(unittest.TestCase):
 
 
 def main():
-    TestDataLoader().test_datasets_whats()
+    recipenlg = DataLoader()["recipenlg"]
+    print(type(recipenlg["ingredients"][0]), recipenlg["ingredients"][0])
 
 
 if __name__ == "__main__":

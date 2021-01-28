@@ -43,7 +43,7 @@ class DataLoader:
         """
         if key not in self.dataset_loaders.keys():
             raise NotImplementedError(
-                f"'{key}' is not a valid dataset! Possible are {self.dataset_loaders.keys()}"
+                f"'{key}' is not a valid dataset! Possible are {list(self.dataset_loaders.keys())}!"
             )
 
         dataframe = self.dataset_loaders[key]()
@@ -52,20 +52,32 @@ class DataLoader:
     def __load_recipi1m(self):
         dataframe = pd.read_json(
             join(self.dataframe_path, "recipe1m/layer1.json"))
+
         dataframe = dataframe.rename(columns={
             "instructions": "steps",
             "title": "name"
         })
+
+        rm_dict = lambda x: [el["text"] for el in x]
+        dataframe["ingredients"] = dataframe["ingredients"].apply(rm_dict)
+        dataframe["steps"] = dataframe["steps"].apply(rm_dict)
+
         return dataframe
 
     def __load_recipi1m_nutritional(self):
         dataframe = pd.read_json(
             join(self.dataframe_path,
                  "recipe1m/recipes_with_nutritional_info.json"))
+
         dataframe = dataframe.rename(columns={
             "instructions": "steps",
             "title": "name"
         })
+
+        rm_dict = lambda x: [el["text"] for el in x]
+        dataframe["ingredients"] = dataframe["ingredients"].apply(rm_dict)
+        dataframe["steps"] = dataframe["steps"].apply(rm_dict)
+
         return dataframe
 
     def __load_epirecipes(self):
@@ -82,9 +94,8 @@ class DataLoader:
             join(self.dataframe_path, "food-com/RAW_recipes.csv"))
 
         dataframe["ingredients"] = dataframe["ingredients"].apply(
-            lambda x: ast.literal_eval(x))
-        dataframe["steps"] = dataframe["steps"].apply(
-            lambda x: ast.literal_eval(x))
+            ast.literal_eval)
+        dataframe["steps"] = dataframe["steps"].apply(ast.literal_eval)
         return dataframe
 
     def __load_recipenlg(self):
@@ -97,6 +108,10 @@ class DataLoader:
             "title": "name"
         })
 
+        dataframe["ingredients"] = dataframe["ingredients"].apply(
+            ast.literal_eval)
+
+        dataframe["steps"] = dataframe["steps"].apply(ast.literal_eval)
         return dataframe
 
     def __load_whats_cooking(self):
