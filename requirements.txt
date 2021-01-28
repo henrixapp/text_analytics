@@ -7,6 +7,5 @@ tqdm
 wordcloud
 networkx
 matplotlib
-json
 num2words
 pytest

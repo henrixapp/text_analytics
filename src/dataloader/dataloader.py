@@ -5,6 +5,7 @@ from os.path import join, isdir
 import os
 import pandas as pd
 import faulthandler
+import ast
 
 
 class DataLoader:
@@ -31,6 +32,7 @@ class DataLoader:
             "recipes1m-nutritional": self.__load_recipi1m_nutritional,
             "whats-cooking": self.__load_whats_cooking,
         }
+        self.datasets = self.dataset_loaders.keys()
 
     def __check_schema(self, dataframe):
         """check whether the dataframe conforms the schema"""
@@ -81,23 +83,28 @@ class DataLoader:
             "directions": "steps",
             "title": "name"
         })
+        dataframe["ingredients"] = dataframe["ingredients"].apply(
+            lambda x: ast.literal_eval(x))
         return dataframe
 
     def __load_food_com(self):
         dataframe = pd.read_csv(
             join(self.dataframe_path, "food-com/RAW_recipes.csv"))
+
+        dataframe["ingredients"] = dataframe["ingredients"].apply(
+            lambda x: ast.literal_eval(x))
         return dataframe
 
     def __load_recipenlg(self):
         dataframe = pd.read_csv(join(self.dataframe_path,
                                      "recipenlg/full_dataset.csv"),
                                 engine="python")
-        #dataframe.set_index([0], inplace=True)
 
         dataframe = dataframe.rename(columns={
             "directions": "steps",
             "title": "name"
         })
+
         return dataframe
 
     def __load_whats_cooking(self):
@@ -137,8 +144,11 @@ def createDataLoaderPipelineStep(name, dataset_names):
 
 def main():
     d = DataLoader()
-    print(d["epirecipes"].head())
-    print(d.getMultiple(["epirecipes", "food-com"]).head())
+    for i in d["food-com"]["ingredients"].head():
+
+        # i = ast.literal_eval(i)
+        print(type(i), i)
+        # print(type(i), json.loads(i))
 
 
 if __name__ == "__main__":
