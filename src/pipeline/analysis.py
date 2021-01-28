@@ -7,8 +7,13 @@ from gensim.models.phrases import Phrases, Phraser
 from gensim.models import Word2Vec
 
 import numpy as np
+
+from sklearn.cluster import KMeans
+
+
 def hash(astring):
     return ord(astring[0])
+
 
 class TFIDFStep(PipelineStep):
     """
@@ -46,12 +51,12 @@ class W2VStep(PipelineStep):
     """
     This step returns a W2V instance of the inputed data
     """
-    def __init__(self,workers):
+    def __init__(self, workers):
         super().__init__("w2v")
-        self._workers =workers
+        self._workers = workers
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name,"")
+        head.addInfo(self.name, "")
         w2v = Word2Vec(
             data,
             #hashfxn=hash,
@@ -65,8 +70,9 @@ class W2VStep(PipelineStep):
             min_alpha=0.0001,
             iter=0  # in newer versions the iter keyword changed to epoch
         )
-        w2v.build_vocab(data, update=True) ### your code ### # maybe use vocab here?
-        w2v.train(data, total_examples=w2v.corpus_count,epochs=100)
+        w2v.build_vocab(data,
+                        update=True)  ### your code ### # maybe use vocab here?
+        w2v.train(data, total_examples=w2v.corpus_count, epochs=100)
         w2v.init_sims(replace=True)
         return w2v, head
 
@@ -77,6 +83,32 @@ class VectorizeAndSum(PipelineStep):
     """
     def __init__(self):
         super().__init__("vectorize")
+
     def process(self, data, head=Head()):
-        head.addInfo(self.name,"")
-        return [np.sum([data[0].wv[w] for w in words if  w in data[0].wv.vocab.keys()],axis=0) for words in data[1]], head
+        head.addInfo(self.name, "")
+        dim = len(data[0].wv[list(data[0].wv.vocab.keys())[0]])
+        return [
+            x if x.ndim > 0 else np.zeros(dim) for x in [
+                np.sum([
+                    data[0].wv[w]
+                    for w in words if w in data[0].wv.vocab.keys()
+                ],
+                       axis=0) for words in data[1]
+            ]
+        ], head
+
+
+class KMeansClusterer(PipelineStep):
+    """
+    Clusters the given Data in K sects.
+    Returns 
+    """
+    def __init__(self, k):
+        self._k = k
+        super().__init__("kmeans")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, str(self._k))
+        kmeans = KMeans(n_clusters=self._k,
+                        random_state=0).fit(np.stack(data, axis=0))
+        return kmeans.labels_, head

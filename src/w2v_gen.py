@@ -6,7 +6,7 @@ from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
 from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
 from pipeline.preprocessing import ApplyJSON, Lower, Split
-from pipeline.analysis import PhraserStep, VectorizeAndSum, W2VStep
+from pipeline.analysis import KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
 
 
 def pipeline():
@@ -86,32 +86,37 @@ def pipeline4():
 
 
 def pipeline5():
-    p = Pipeline(
-        "word2vecSum",
-        steps=[
-            DataSetSource(datasets=["food-com"]),
-            # First(50000),
-            Fork("2",
+    p = Pipeline("word2vecSum",
                  steps=[
-                     Pipeline("vec2sum",
-                              steps=[
-                                  PDReduce("ingredients"),
-                                  IterableApply(Split(",")),
-                                  IterableApply(IterableApply(Lower())),
-                                  PhraserStep(),
-                                  Fork("3",
-                                       steps=[
-                                           Pipeline("1", steps=[W2VStep(4)]),
-                                           Pipeline("2", steps=[Pass()]),
-                                       ]),
-                                  VectorizeAndSum()
-                              ],
-                              verbosity=True),
-                     Pipeline("name", steps=[PDReduce("name")], verbosity=True)
-                 ]),
-            ZipList()
-        ],
-        verbosity=True)
+                     DataSetSource(datasets=["food-com"]),
+                     First(5000),
+                     Fork("2",
+                          steps=[
+                              Pipeline(
+                                  "vec2sum",
+                                  steps=[
+                                      PDReduce("ingredients"),
+                                      IterableApply(Split(",")),
+                                      IterableApply(IterableApply(Lower())),
+                                      PhraserStep(),
+                                      Fork("3", steps=[
+                                          W2VStep(8),
+                                          Pass(),
+                                      ]),
+                                      VectorizeAndSum(),
+                                      Fork("kmeans",
+                                           steps=[Pass(),
+                                                  KMeansClusterer(8)]),
+                                      ZipList()
+                                  ],
+                                  verbosity=True),
+                              Pipeline("name",
+                                       steps=[PDReduce("name")],
+                                       verbosity=True)
+                          ]),
+                     ZipList()
+                 ],
+                 verbosity=True)
     return p.process(True)
 
 
