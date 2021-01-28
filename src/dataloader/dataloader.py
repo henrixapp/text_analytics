@@ -6,6 +6,7 @@ import os
 import pandas as pd
 import faulthandler
 import ast
+import json
 
 
 class DataLoader:
@@ -83,8 +84,8 @@ class DataLoader:
             "directions": "steps",
             "title": "name"
         })
-        dataframe["ingredients"] = dataframe["ingredients"].apply(
-            lambda x: ast.literal_eval(x))
+        #dataframe["ingredients"] = dataframe["ingredients"].apply(
+        #    lambda x: json.loads(x))
         return dataframe
 
     def __load_food_com(self):
@@ -92,6 +93,8 @@ class DataLoader:
             join(self.dataframe_path, "food-com/RAW_recipes.csv"))
 
         dataframe["ingredients"] = dataframe["ingredients"].apply(
+            lambda x: ast.literal_eval(x))
+        dataframe["steps"] = dataframe["steps"].apply(
             lambda x: ast.literal_eval(x))
         return dataframe
 
@@ -121,6 +124,7 @@ class DataLoader:
             "instructions": "steps",
             "title": "name"
         })
+        dataframe["steps"] = dataframe["steps"].str.split(".")
         return dataframe
 
     def getMultiple(self, keys):
@@ -144,7 +148,7 @@ def createDataLoaderPipelineStep(name, dataset_names):
 
 def main():
     d = DataLoader()
-    for i in d["food-com"]["ingredients"].head():
+    for i in d["recipes1m"]["ingredients"].head():
 
         # i = ast.literal_eval(i)
         print(type(i), i)
