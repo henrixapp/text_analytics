@@ -73,7 +73,7 @@ class SpacyStep(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo("spacy_", "-".join(self._disabled))
 
-        return self._nlp(data), head
+        return self._nlp(str(data)), head
 
 
 class NLTKPorterStemmer(PipelineStep):
@@ -116,7 +116,7 @@ class Split(PipelineStep):
 
     def process(self, data, head=Head()):
 
-        return data.split(self._rule), head
+        return str(data).split(self._rule), head
 
 
 class ExtractSentenceParts(PipelineStep):

@@ -83,3 +83,26 @@ class ZipList(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
         return list(zip(*data)), head
+
+
+class TransformList(PipelineStep):
+    def __init__(self, key, value):
+        self.key = key
+        self.valuefunc = value
+        super().__init__("transform")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        values = set(map(self.key, data))
+        return [[self.valuefunc(y) for y in data if self.key(y) == x]
+                for x in values], head
+
+
+class Lambda(PipelineStep):
+    def __init__(self, l):
+        self.func = l
+        super().__init__("lambda")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        return self.func(data), head

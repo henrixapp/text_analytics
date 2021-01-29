@@ -343,4 +343,4 @@ def tsneplot_words3(data):
     plt.ylim(Y[:, 1].min() - 50, Y[:, 1].max() + 50)
 
     plt.title('t-SNE visualization for {}'.format(str(50)))
-    return kmeans, Y
+    return kmeans, Y, df

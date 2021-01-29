@@ -4,8 +4,8 @@ from pipeline.pipeline import Fork, Pass, Pipeline
 
 from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
-from pipeline.generics import First, Flatten, IterableApply, Sample, Unique, ZipList
-from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, SpacyStep, Split
+from pipeline.generics import First, Flatten, IterableApply, Lambda, Sample, TransformList, Unique, ZipList
+from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, SpacyStep, Split, StopWordsRemoval
 from pipeline.analysis import IngredientsPerStepsOccurrence, KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
 
 
@@ -86,37 +86,50 @@ def pipeline4():
 
 
 def pipeline5():
-    p = Pipeline("word2vecSum",
+    p = Pipeline(
+        "word2vecSum",
+        steps=[
+            DataSetSource(datasets=["food-com"]),
+            OutOfDistributionRemover(),
+            First(50000),
+            Fork("2",
                  steps=[
-                     DataSetSource(datasets=["food-com"]),
-                     OutOfDistributionRemover(),
-                     First(5000),
-                     Fork("2",
-                          steps=[
-                              Pipeline(
-                                  "vec2sum",
-                                  steps=[
-                                      PDReduce("ingredients"),
-                                      IterableApply(IterableApply(Lower())),
-                                      PhraserStep(),
-                                      Fork("3", steps=[
-                                          W2VStep(8),
-                                          Pass(),
-                                      ]),
-                                      VectorizeAndSum(),
-                                      Fork("kmeans",
-                                           steps=[Pass(),
-                                                  KMeansClusterer(8)]),
-                                      ZipList()
-                                  ],
-                                  verbosity=True),
-                              Pipeline("name",
-                                       steps=[PDReduce("name")],
-                                       verbosity=True)
-                          ]),
-                     ZipList()
-                 ],
-                 verbosity=True)
+                     Pipeline("vec2sum",
+                              steps=[
+                                  PDReduce("ingredients"),
+                                  IterableApply(IterableApply(Lower())),
+                                  PhraserStep(),
+                                  Fork("3", steps=[
+                                      W2VStep(8),
+                                      Pass(),
+                                  ]),
+                                  VectorizeAndSum(),
+                                  Fork("kmeans",
+                                       steps=[Pass(),
+                                              KMeansClusterer(4)]),
+                                  ZipList()
+                              ],
+                              verbosity=True),
+                     Pipeline("name", steps=[PDReduce("name")], verbosity=True)
+                 ]),
+            ZipList(),
+            #looking for common text
+            TransformList(key=lambda x: x[0][1], value=lambda x: x[1]),
+            IterableApply(
+                Pipeline("per cluster",
+                         steps=[
+                             IterableApply(Pipeline(
+                                 "cleanup",
+                                 steps=[SpacyStep(),
+                                        StopWordsRemoval()]),
+                                           verbosity=True),
+                             Flatten(),
+                             IterableApply(Lambda(lambda x: x.text)),
+                             MostCommonCounter(),
+                             Lambda(lambda m: m.most_common(5))
+                         ]))
+        ],
+        verbosity=True)
     return p.process(True)
 
 
@@ -124,38 +137,62 @@ def pipeline6():
     p = Pipeline(
         "word2vecSum",
         steps=[
-            DataSetSource(datasets=["food-com"]),
+            DataSetSource(datasets=["recipenlg"]),
             OutOfDistributionRemover(),
-            First(25000),
-            Fork("2",
+            First(50000),
+            Fork("recept",
                  steps=[
-                     Fork("ingredientmapping",
-                          steps=[
-                              Pipeline("zutaten zerstoeren",
+                     Pipeline("2",
+                              steps=[
+                                  Fork("ingredientmapping",
                                        steps=[
-                                           PDReduce("ingredients"),
-                                           IterableApply(IterableApply(
-                                               Lower())),
-                                           PhraserStep(),
-                                           Fork("3",
-                                                steps=[
-                                                    W2VStep(8),
-                                                    Pass(),
-                                                ]),
-                                       ],
-                                       verbosity=True),
-                              Pipeline("spacy steps",
-                                       steps=[
-                                           PDReduce("steps"),
-                                           IterableApply(IterableApply(
-                                               Split(" ")),
-                                                         verbosity=True)
-                                       ])
-                          ]),
-                     Pipeline("name", steps=[PDReduce("name")], verbosity=True)
+                                           Pipeline(
+                                               "zutaten zerstoeren",
+                                               steps=[
+                                                   PDReduce("ingredients"),
+                                                   IterableApply(
+                                                       IterableApply(Lower())),
+                                                   PhraserStep(),
+                                                   Fork("3",
+                                                        steps=[
+                                                            W2VStep(8),
+                                                            Pass(),
+                                                        ]),
+                                               ],
+                                               verbosity=True),
+                                           Pipeline("spacy steps",
+                                                    steps=[
+                                                        PDReduce("steps"),
+                                                        IterableApply(
+                                                            IterableApply(
+                                                                Split(" ")),
+                                                            verbosity=True)
+                                                    ])
+                                       ]),
+                                  IngredientsPerStepsOccurrence(),
+                                  Fork("kmeans",
+                                       steps=[Pass(),
+                                              KMeansClusterer(4)]),
+                                  ZipList()
+                              ]),
+                     PDReduce("name")
                  ]),
-            IngredientsPerStepsOccurrence(),
-            ZipList()
+            ZipList(),
+            # now we group them
+            TransformList(key=lambda x: x[0][1], value=lambda x: x[1]),
+            IterableApply(
+                Pipeline("per cluster",
+                         steps=[
+                             IterableApply(Pipeline(
+                                 "cleanup",
+                                 steps=[SpacyStep(),
+                                        StopWordsRemoval()]),
+                                           verbosity=True),
+                             Flatten(),
+                             IterableApply(Lambda(lambda x: x.text)),
+                             MostCommonCounter(),
+                             Lambda(lambda m: m.most_common(5))
+                         ]))
         ],
         verbosity=True)
     return p.process(True)
@@ -166,4 +203,4 @@ if __name__ == "__main__":
     Gets ingredients of whats cooking and recipenlg datasets and dumps them into json files.
     Does the same with the combined list from both datasets.
     '''
-    #pipeline()
+    #pipeline6()
