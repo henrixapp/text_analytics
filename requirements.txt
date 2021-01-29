@@ -11,3 +11,4 @@ num2words
 pytest
 sklearn
 seaborn
+tqdm

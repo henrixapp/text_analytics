@@ -126,7 +126,7 @@ def pipeline6():
         steps=[
             DataSetSource(datasets=["food-com"]),
             OutOfDistributionRemover(),
-            First(50000),
+            First(25000),
             Fork("2",
                  steps=[
                      Fork("ingredientmapping",
@@ -147,8 +147,9 @@ def pipeline6():
                               Pipeline("spacy steps",
                                        steps=[
                                            PDReduce("steps"),
-                                           IterableApply(
-                                               IterableApply(SpacyStep()))
+                                           IterableApply(IterableApply(
+                                               Split(" ")),
+                                                         verbosity=True)
                                        ])
                           ]),
                      Pipeline("name", steps=[PDReduce("name")], verbosity=True)

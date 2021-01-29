@@ -1,5 +1,6 @@
 from pipeline.pipeline import Pipeline, PipelineStep, Head
 import random
+from tqdm import tqdm
 
 
 class IterableApply(PipelineStep):
@@ -7,18 +8,24 @@ class IterableApply(PipelineStep):
     returns a list.
     No parallelization is done here!
     """
-    def __init__(self, step):
+    def __init__(self, step, verbosity=False):
         super().__init__("iterable_apply")
         self._step = step
+        self._verbosity = verbosity
         assert isinstance(self._step, PipelineStep)
 
     def process(self, data, head=Head()):
         assert hasattr(data, "__iter__")
         newdata = []
         head_i = []
-        for i in data:
-            data_i, _ = self._step.process(i)
-            newdata += [data_i]
+        if self._verbosity:
+            for i in tqdm(data):
+                data_i, _ = self._step.process(i)
+                newdata += [data_i]
+        else:
+            for i in data:
+                data_i, _ = self._step.process(i)
+                newdata += [data_i]
         head.addInfo("iterable_apply", self._step.name)
         return newdata, head
 
@@ -42,9 +49,12 @@ class First(PipelineStep):
     def __init__(self, count):
         super().__init__("first")
         self._count = count
+
     def process(self, data, head):
-        head.addInfo(self.name,self._count)
-        return data[:self._count],head
+        head.addInfo(self.name, self._count)
+        return data[:self._count], head
+
+
 class Unique(PipelineStep):
     """
     Makes a unique list.
@@ -65,8 +75,8 @@ class Flatten(PipelineStep):
         head.addInfo(self.name, "")
         return [d for t in data for d in t], head
 
+
 class ZipList(PipelineStep):
-    
     def __init__(self):
         super().__init__("ziplist")
 

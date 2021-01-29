@@ -136,7 +136,8 @@ class IngredientsPerStepsOccurrence(PipelineStep):
     """
     In this step we compute the first occurrence of an ingredient in all steps of a recipe. This should incorporate the factor that we mean it is irrelevant when special ingredients are added to a recipe, it is more important which ingredients are added first.
     """
-    def __init__(self, activation_function=lambda x: x):
+    def __init__(
+        self, activation_function=lambda x: -np.log(2 - x)):  #1-x is also ok
         self.activation_function = activation_function
         super().__init__("IngredientsPerStepsOccurrence")
 
@@ -155,7 +156,7 @@ class IngredientsPerStepsOccurrence(PipelineStep):
             for ingredient in ingredients:
                 found = False
                 for j, step in enumerate(steps):
-                    if ingredient in [word.text for word in step]:
+                    if ingredient in step:
                         found = True
                         ingredients_per_recipe_occurrence.append(
                             float(j + 1) / len(steps))
@@ -173,7 +174,8 @@ class IngredientsPerStepsOccurrence(PipelineStep):
                     for i, w in enumerate(words)
                     if w in word2vec.wv.vocab.keys()
                 ],
-                       axis=0) for j, words in enumerate(recipe_names)
+                       axis=0)
+                for j, words in enumerate(ingredients_per_recipe)
             ]
         ]
 
