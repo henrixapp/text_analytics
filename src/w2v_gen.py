@@ -174,7 +174,7 @@ def pipeline6():
                                              ])
                                 ]),
                             IngredientsPerStepsOccurrenceBySimilarity(
-                                activation_function=lambda x: 1),
+                                activation_function=lambda x: x),
                             Fork("kmeans", steps=[Pass(),
                                                   KMeansClusterer(4)]),
                             ZipList()
