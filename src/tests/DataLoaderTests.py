@@ -63,29 +63,29 @@ class TestDataLoader(unittest.TestCase):
                              'dataset["name"][0]'))
 
     def test_datasets_eight(self):
-        self.dataset_interface("eightportions")
+        self.dataset_interface(DataLoader.EIGHT_PORTIONS)
 
     def test_datasets_epi(self):
-        self.dataset_interface("epirecipes")
+        self.dataset_interface(DataLoader.EPIRECIPES)
 
     def test_datasets_food(self):
-        self.dataset_interface("food-com")
+        self.dataset_interface(DataLoader.FOOD_COM)
 
     def test_datasets_lg(self):
-        self.dataset_interface("recipenlg")
+        self.dataset_interface(DataLoader.RECIPENLG)
 
     def test_datasets_1m(self):
-        self.dataset_interface("recipes1m")
+        self.dataset_interface(DataLoader.RECIPES1M)
 
     def test_datasets_1mnut(self):
-        self.dataset_interface("recipes1m-nutritional")
+        self.dataset_interface(DataLoader.RECIPES1M_NUTRITIONAL)
 
     def test_datasets_whats(self):
-        self.dataset_interface("whats-cooking", exclude=["steps"])
+        self.dataset_interface(DataLoader.WHATS_COOKING, exclude=["steps"])
 
 
 def main():
-    recipenlg = DataLoader()["recipenlg"]
+    recipenlg = DataLoader()[DataLoader.RECIPENLG]
     print(type(recipenlg["ingredients"][0]), recipenlg["ingredients"][0])
 
 
