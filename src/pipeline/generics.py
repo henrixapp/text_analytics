@@ -45,6 +45,21 @@ class Sample(PipelineStep):
         return random.sample(data, self._number), head
 
 
+class PDSample(PipelineStep):
+    """
+    Samples number out of a dataframe, based on the given seed. 
+    """
+    def __init__(self, number, seed=0):
+        super().__init__("PDsample" + str(number) + "_s" + str(seed))
+        self._seed = seed
+        self._number = number
+
+    def process(self, data, head=Head()):
+        random.seed(self._seed)
+        head.addInfo(self.name, "")
+        return data.sample(self._number, random_state=42), head
+
+
 class First(PipelineStep):
     """
     Returns the first `count` elements of an indexible object (list, dataframe, ...)
