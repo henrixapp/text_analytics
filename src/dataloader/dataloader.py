@@ -10,7 +10,19 @@ import json
 
 
 class DataLoader:
-    """description"""
+    """
+    Class that handels the loading of datasets from raw data (json/csv) and returns pandas dataframes with a specific interface that allows easy accessibility.
+    """
+
+    # Dataset Names as constants
+    EIGHT_PORTIONS = "eightportions"
+    EPIRECIPES = "epirecipes"
+    FOOD_COM = "food-com"
+    RECIPENLG = "recipenlg"
+    RECIPES1M = "recipes1m"
+    RECIPES1M_NUTRITIONAL = "recipes1m-nutritional"
+    WHATS_COOKING = "whats-cooking"
+
     def __init__(self, pickle_path="__pickle__"):
         self.dataframe_path = os.environ.get('RECIPE_DATASET_PATH',
                                              "../../datasets")
@@ -25,13 +37,13 @@ class DataLoader:
             os.mkdir(self.pickle_path)
 
         self.dataset_loaders = {
-            "eightportions": self.__load_eightportions,
-            "epirecipes": self.__load_epirecipes,
-            "food-com": self.__load_food_com,
-            "recipenlg": self.__load_recipenlg,
-            "recipes1m": self.__load_recipi1m,
-            "recipes1m-nutritional": self.__load_recipi1m_nutritional,
-            "whats-cooking": self.__load_whats_cooking,
+            self.EIGHT_PORTIONS: self.__load_eightportions,
+            self.EPIRECIPES: self.__load_epirecipes,
+            self.FOOD_COM: self.__load_food_com,
+            self.RECIPENLG: self.__load_recipenlg,
+            self.RECIPES1M: self.__load_recipi1m,
+            self.RECIPES1M_NUTRITIONAL: self.__load_recipi1m_nutritional,
+            self.WHATS_COOKING: self.__load_whats_cooking,
         }
         self.datasets = self.dataset_loaders.keys()
 
