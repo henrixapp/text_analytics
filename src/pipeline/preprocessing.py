@@ -6,6 +6,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from num2words import num2words
 import json
+import re
 
 
 class Dropper(PipelineStep):
@@ -225,3 +226,16 @@ class OutOfDistributionRemover(PipelineStep):
         data["n_ingredients"] = data["ingredients"].apply(len)
         return data[(data["n_steps"] <= self.max_steps)
                     & (data["n_ingredients"] <= self.max_ingredients)], head
+
+
+class AlphaNumericalizer(PipelineStep):
+    """
+    Removes characters that are not within a-z, A-Z, 0-9 and spaces
+    """
+    def __init__(self):
+        super().__init__("AlphaNumericalizer")
+
+    def process(self, data, head=Head()):
+
+        head.addInfo(self.name, "")
+        return re.sub(r'[^0-9a-zA-Z ]', '', data), head
