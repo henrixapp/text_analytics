@@ -46,6 +46,9 @@ class Sample(PipelineStep):
 
 
 class First(PipelineStep):
+    """
+    Returns the first `count` elements of an indexible object (list, dataframe, ...)
+    """
     def __init__(self, count):
         super().__init__("first")
         self._count = count
@@ -68,6 +71,9 @@ class Unique(PipelineStep):
 
 
 class Flatten(PipelineStep):
+    """
+    Merges nested lists
+    """
     def __init__(self):
         super().__init__("flatten")
 
@@ -77,6 +83,9 @@ class Flatten(PipelineStep):
 
 
 class ZipList(PipelineStep):
+    """
+    Ziplists data
+    """
     def __init__(self):
         super().__init__("ziplist")
 
@@ -86,6 +95,9 @@ class ZipList(PipelineStep):
 
 
 class TransformList(PipelineStep):
+    """
+    Transforms list with given key and valuefunction.
+    """
     def __init__(self, key, value):
         self.key = key
         self.valuefunc = value
@@ -99,6 +111,9 @@ class TransformList(PipelineStep):
 
 
 class Lambda(PipelineStep):
+    """
+    Allows to apply arbitrary lambda functions on the data.
+    """
     def __init__(self, l):
         self.func = l
         super().__init__("lambda")

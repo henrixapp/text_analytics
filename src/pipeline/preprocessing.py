@@ -61,7 +61,7 @@ class StopWordsRemoval(PipelineStep):
 
 class SpacyStep(PipelineStep):
     """
-    This is a common Spacy-Step.
+    This is a common Spacy-Step. It allows disabling steps from Spacy for faster performance.
     @input string
     @returns array of words 
     """
@@ -78,8 +78,8 @@ class SpacyStep(PipelineStep):
 
 class NLTKPorterStemmer(PipelineStep):
     """
-    Wraps a stemmer.
-    @input single string!
+    Wraps an NLTK stemmer.
+    @input **single** string! Must be without leading or trailing punctuation.
     @output stemmed string
     """
     def __init__(self):
@@ -93,7 +93,7 @@ class NLTKPorterStemmer(PipelineStep):
 
 class Replacer(PipelineStep):
     """
-    Replaces all occurances of the dict  in the string.
+    Replaces all occurrences of the dict in the string.
     """
     def __init__(self, rules):
         self._rules = rules
@@ -108,7 +108,7 @@ class Replacer(PipelineStep):
 
 class Split(PipelineStep):
     """
-    Replaces all occurances of the dict  in the string.
+    Splits at rule which is a string.
     """
     def __init__(self, rule):
         self._rule = rule
@@ -190,13 +190,14 @@ class Lower(PipelineStep):
 
 
 class ApplyJSON(PipelineStep):
+    """
+    Converts a string of json object to json object or empty list if none
+    """
     def __init__(self):
         super().__init__("ApplyJSON")
 
     def process(self, data, head=Head()):
-        '''
-        converts string of json object to json object or empty list if none
-        '''
+
         head.addInfo("ApplyJSON", "")
         result = json.loads(data)
         if result:
@@ -205,15 +206,17 @@ class ApplyJSON(PipelineStep):
 
 
 class OutOfDistributionRemover(PipelineStep):
+    """
+    Removes recipes that are out of distribution, e.g. have a lot more steps or ingredients than usual.
+    The limits can be adjusted by setting max_steps and max_ingredients.
+    """
     def __init__(self, max_steps=15, max_ingredients=15):
         super().__init__("OutOfDistributionRemover")
         self.max_steps = max_steps
         self.max_ingredients = max_ingredients
 
     def process(self, data, head=Head()):
-        '''
-        removes recipes that are out of distribution, e.g. have a lot more steps or ingredients than usual
-        '''
+
         head.addInfo(
             self.name,
             "Max steps to stay in set: {}, max ingredients {}.".format(
