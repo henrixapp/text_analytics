@@ -6,7 +6,7 @@ from pipeline.pipeline import Pipeline
 from pipeline.data_access import DataSetSource, JSONSink, PDReduce
 from pipeline.generics import First, Flatten, IterableApply, Lambda, Sample, TransformList, Unique, ZipList
 from pipeline.preprocessing import ApplyJSON, Lower, OutOfDistributionRemover, SpacyStep, Split, StopWordsRemoval
-from pipeline.analysis import IngredientsPerStepsOccurrence, KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
+from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, KMeansClusterer, PhraserStep, VectorizeAndSum, W2VStep
 
 
 def pipeline():
@@ -140,43 +140,47 @@ def pipeline6():
             DataSetSource(datasets=["recipenlg"]),
             OutOfDistributionRemover(),
             First(50000),
-            Fork("recept",
-                 steps=[
-                     Pipeline("2",
-                              steps=[
-                                  Fork("ingredientmapping",
-                                       steps=[
-                                           Pipeline(
-                                               "zutaten zerstoeren",
-                                               steps=[
-                                                   PDReduce("ingredients"),
-                                                   IterableApply(
-                                                       IterableApply(Lower())),
-                                                   PhraserStep(),
-                                                   Fork("3",
-                                                        steps=[
-                                                            W2VStep(8),
-                                                            Pass(),
-                                                        ]),
-                                               ],
-                                               verbosity=True),
-                                           Pipeline("spacy steps",
-                                                    steps=[
-                                                        PDReduce("steps"),
-                                                        IterableApply(
-                                                            IterableApply(
-                                                                Split(" ")),
-                                                            verbosity=True)
-                                                    ])
-                                       ]),
-                                  IngredientsPerStepsOccurrence(),
-                                  Fork("kmeans",
-                                       steps=[Pass(),
-                                              KMeansClusterer(4)]),
-                                  ZipList()
-                              ]),
-                     PDReduce("name")
-                 ]),
+            Fork(
+                "recept",
+                steps=[
+                    Pipeline(
+                        "2",
+                        steps=[
+                            Fork(
+                                "ingredientmapping",
+                                steps=[
+                                    Pipeline(
+                                        "zutaten zerstoeren",
+                                        steps=[
+                                            PDReduce(
+                                                "ingredients"
+                                            ),  # TODO Clean, or make NER
+                                            IterableApply(
+                                                IterableApply(Lower())),
+                                            PhraserStep(),
+                                            Fork("3",
+                                                 steps=[
+                                                     W2VStep(8),
+                                                     Pass(),
+                                                 ]),
+                                        ],
+                                        verbosity=True),
+                                    Pipeline("spacy steps",
+                                             steps=[
+                                                 PDReduce("steps"),
+                                                 IterableApply(IterableApply(
+                                                     Split(" ")),
+                                                               verbosity=True)
+                                             ])
+                                ]),
+                            IngredientsPerStepsOccurrenceBySimilarity(
+                                activation_function=lambda x: x),
+                            Fork("kmeans", steps=[Pass(),
+                                                  KMeansClusterer(4)]),
+                            ZipList()
+                        ]),
+                    PDReduce("name")
+                ]),
             ZipList(),
             # now we group them
             TransformList(key=lambda x: x[0][1], value=lambda x: x[1]),
