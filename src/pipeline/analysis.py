@@ -179,3 +179,56 @@ class IngredientsPerStepsOccurrence(PipelineStep):
         ]
 
         return result, head
+
+
+class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
+    """
+    In this step we compute the first occurrence of an ingredient in all steps of a recipe by similarity score. This should incorporate the factor that we mean it is irrelevant when special ingredients are added to a recipe, it is more important which ingredients are added first.
+    """
+    def __init__(self,
+                 activation_function=lambda x: 1 - x
+                 ):  #-np.log(2 - x) is also a try worth
+        self.activation_function = activation_function
+        super().__init__("IngredientsPerStepsOccurrenceBySimilarity")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        ingredients_per_recipe = data[0][1]
+        word2vec = data[0][0]
+        steps_per_recipe = data[1]
+        recipe_ingredients = []
+
+        for i, ingredients in enumerate(ingredients_per_recipe):
+            steps = steps_per_recipe[i]
+            ingredients_per_recipe_occurrence = []
+            for ingredient in ingredients:
+                score = 0
+                step_j = 0
+                for j, step in enumerate(steps):
+                    if ingredient in word2vec.wv.vocab.keys():
+                        for word in step:
+                            if word in word2vec.wv.vocab.keys(
+                            ) and word2vec.wv.similarity(ingredient,
+                                                         word) > score:
+                                step_j = j
+                                score = word2vec.wv.similarity(
+                                    ingredient, word)
+                ingredients_per_recipe_occurrence.append(
+                    float(step_j + 1) / len(steps))
+            recipe_ingredients += [ingredients_per_recipe_occurrence]
+
+        dim = len(word2vec.wv[list(word2vec.wv.vocab.keys())[0]])
+        result = [
+            x if x.ndim > 0 else np.zeros(dim) for x in [
+                np.sum([
+                    word2vec.wv[w] *
+                    self.activation_function(recipe_ingredients[j][i])
+                    for i, w in enumerate(words)
+                    if w in word2vec.wv.vocab.keys()
+                ],
+                       axis=0)
+                for j, words in enumerate(ingredients_per_recipe)
+            ]
+        ]
+
+        return result, head
