@@ -2,7 +2,7 @@ from dataloader.dataloader import DataLoader
 from pipeline.data_access import DataSetSource, PDReduce
 from pipeline.generics import IterableApply, Lambda, PDSample
 from pipeline.pipeline import Fork, Pass, Pipeline
-from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, Lower, NLTKPorterStemmer, OutOfDistributionRemover, Replacer, Split, StopWordsRemoval
+from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 import scipy.cluster.hierarchy as shc
@@ -14,45 +14,57 @@ def pipeline():
     p = Pipeline(
         "word2vecSum",
         steps=[
-            DataSetSource(datasets=[DataLoader.RECIPENLG]),
+            DataSetSource(datasets=[DataLoader.FOOD_COM]),
             Dropper(columns_causing_drop=['steps']),
             OutOfDistributionRemover(),
-            PDSample(250000),
-            PDReduce(['name', 'steps', 'NER']),
-            Fork("calc w2v and pass names",
-                 steps=[
-                     Pipeline("2",
-                              steps=[
-                                  Fork("ingredientmapping",
-                                       steps=[
-                                           Pipeline("zutaten zerstoeren",
-                                                    steps=[
-                                                        PDReduce("NER"),
-                                                        IterableApply(
-                                                            ApplyJSON(),
-                                                            verbosity=True),
-                                                        PhraserStep(),
-                                                        Fork("3",
-                                                             steps=[
-                                                                 W2VStep(8),
-                                                                 Pass(),
-                                                             ]),
-                                                    ],
-                                                    verbosity=True),
-                                           Pipeline("spacy steps",
-                                                    steps=[
-                                                        PDReduce("steps"),
-                                                        IterableApply(
-                                                            IterableApply(
-                                                                Split(" ")),
-                                                            verbosity=True)
-                                                    ])
-                                       ]),
-                                  IngredientsPerStepsOccurrenceBySimilarity(
-                                      activation_function=lambda x: x)
-                              ]),
-                     PDReduce("name")
-                 ]),
+            PDSample(100, 65510),
+            PDReduce(['name', 'steps', 'ingredients']),
+            Fork(
+                "calc w2v and pass names",
+                steps=[
+                    Pipeline(
+                        "2",
+                        steps=[
+                            Fork(
+                                "ingredientmapping",
+                                steps=[
+                                    Pipeline(
+                                        "zutaten zerstoeren",
+                                        steps=[
+                                            PDReduce("ingredients"),
+                                            ## For Food.com this doesnt make sense, POS recognition is not good enough, maybe be more forcefull
+                                            # IterableApply(IterableApply(
+                                            #     Pipeline(
+                                            #         "reduce ingredient",
+                                            #         steps=[
+                                            #             SpacyStep(
+                                            #                 disable=["NER"]),
+                                            #             ExtractSentenceParts(),
+                                            #             Lambda(lambda x: x[
+                                            #                 0].text if len(x) >
+                                            #                    0 else "")
+                                            #         ])),
+                                            #               verbosity=True),
+                                            Fork("3",
+                                                 steps=[
+                                                     W2VStep(8),
+                                                     Pass(),
+                                                 ]),
+                                        ],
+                                        verbosity=True),
+                                    Pipeline("spacy steps",
+                                             steps=[
+                                                 PDReduce("steps"),
+                                                 IterableApply(IterableApply(
+                                                     Split(" ")),
+                                                               verbosity=True)
+                                             ])
+                                ]),
+                            IngredientsPerStepsOccurrenceBySimilarity(
+                                activation_function=lambda x: x)
+                        ]),
+                    PDReduce("name")
+                ]),
             #ZipList()
         ],
         verbosity=True)
