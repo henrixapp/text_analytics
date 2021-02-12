@@ -10,9 +10,9 @@ class DataSetSource(PipelineStep):
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
-        dl = DataLoader()
-        ds = dl.getMultiple(self._datasets)
-        return ds, head
+        loader = DataLoader()
+        dataset = loader.get_multiple(self._datasets)
+        return dataset, head
 
 
 class JSONSink(PipelineStep):

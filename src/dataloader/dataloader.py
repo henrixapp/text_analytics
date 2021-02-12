@@ -3,17 +3,42 @@ Module to abstract away the diffrent types of datasets and how they have to be l
 """
 from os.path import join, isdir
 import os
-import pandas as pd
-import faulthandler
 import ast
-import json
+import pandas as pd
 
 
 class DataLoader:
-    """description"""
-    def __init__(self, pickle_path="__pickle__"):
-        self.dataframe_path = os.environ.get('RECIPE_DATASET_PATH',
-                                             "../../datasets")
+    """
+    This is the DataLoader Class which abstracts away the access and norming of
+    our datasets.
+
+    The datasets are expected to be layed out like this:
+    $RECIPE_DATASET_PATH
+    ├── eightportions
+    │   └── ...
+    ├── epirecipes
+    │   └── ...
+    ├── food-com
+    │   └── ...
+    ├── recipe1m
+    │   └── ...
+    └── recipenlg
+        └── full_dataset.csv
+
+    """
+    def __init__(self,
+                 pickle_path="__pickle__",
+                 dataframe_path=os.environ.get('RECIPE_DATASET_PATH',
+                                               '../../datasets')):
+        """
+        Args:
+            pickle_path: name of the folder where the pickle files are saved
+            dataframe_path: place where the datasets are stored
+
+        Raises:
+            NotADirectoryError: the provided dataframe_path is not a dir
+        """
+        self.dataframe_path = dataframe_path
         if not isdir(self.dataframe_path):
             raise NotADirectoryError(
                 f"Given Path '{self.dataframe_path}' in 'RECIPE_DATASET_PATH' is not a Directory"
@@ -40,6 +65,15 @@ class DataLoader:
         Loads a pandas dataframe from a single dataset or pickle file if
         present
         if not already existent creates a pickle file for the dataset
+
+        Args:
+            key: A string-like object, key must be in self.dataset_loaders
+
+        Returns:
+            A pandas dataframe with normed names for the relevant columns
+
+        Raises:
+            NotImplementedError: When no loader is found for the key
         """
         if key not in self.dataset_loaders.keys():
             raise NotImplementedError(
@@ -133,7 +167,7 @@ class DataLoader:
         dataframe["steps"] = dataframe["steps"].str.split(".")
         return dataframe
 
-    def getMultiple(self, keys):
+    def get_multiple(self, keys):
         """
         Loads a pandas dataframe from multiple datasets of pickle file if
         present
@@ -145,11 +179,6 @@ class DataLoader:
             dataframe = dataframe.append(self[key])
 
         return dataframe
-
-
-def createDataLoaderPipelineStep(name, dataset_names):
-    """create a pipline.PipelineStep for a given combination of datasets"""
-    pass
 
 
 def main():
