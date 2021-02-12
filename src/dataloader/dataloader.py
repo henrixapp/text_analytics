@@ -32,8 +32,8 @@ class DataLoader:
                                                '../../datasets')):
         """
         Args:
-            pickle_path: name of the folder where the pickle files are saved
-            dataframe_path: place where the datasets are stored
+            pickle_path: Optional; name of the folder where the pickle files are saved
+            dataframe_path: Optional; place where the datasets are stored
 
         Raises:
             NotADirectoryError: the provided dataframe_path is not a dir
