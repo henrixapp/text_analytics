@@ -239,3 +239,17 @@ class AlphaNumericalizer(PipelineStep):
 
         head.addInfo(self.name, "")
         return re.sub(r'[^0-9a-zA-Z ]', '', data), head
+
+
+class OneHotEnc(PipelineStep):
+    """
+    OneHot encoding. expects list of str or dataframe?
+    """
+    def __init__(self):
+        super().__init__("Onehot")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        #TODO(max)
+        # DO THe one Hot Encoding stuff
+        return data, head
