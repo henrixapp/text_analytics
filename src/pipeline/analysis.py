@@ -66,9 +66,10 @@ class W2VStep(PipelineStep):
     """
     This step returns a W2V instance of the inputed data
     """
-    def __init__(self, workers):
+    def __init__(self, workers, dim=30):
         super().__init__("w2v")
         self._workers = workers
+        self._size = dim
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
@@ -76,7 +77,7 @@ class W2VStep(PipelineStep):
             data,
             #hashfxn=hash,
             workers=self._workers,
-            size=30,
+            size=self._size,
             negative=20,
             min_count=5,
             window=10,

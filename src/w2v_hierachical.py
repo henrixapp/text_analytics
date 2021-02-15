@@ -17,7 +17,7 @@ def pipeline():
             DataSetSource(datasets=[DataLoader.FOOD_COM]),
             Dropper(columns_causing_drop=['steps']),
             OutOfDistributionRemover(),
-            PDSample(100, 65510),
+            PDSample(25000, 65510),
             PDReduce(['name', 'steps', 'ingredients']),
             Fork(
                 "calc w2v and pass names",
@@ -47,7 +47,7 @@ def pipeline():
                                             #               verbosity=True),
                                             Fork("3",
                                                  steps=[
-                                                     W2VStep(8),
+                                                     W2VStep(8, 60),
                                                      Pass(),
                                                  ]),
                                         ],
