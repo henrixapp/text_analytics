@@ -8,7 +8,7 @@ from nltk.stem import PorterStemmer
 from num2words import num2words
 import json
 import re
-
+from math import ceil
 
 class Dropper(PipelineStep):
     """
@@ -266,4 +266,42 @@ class OneHotEnc(PipelineStep):
 
         assert (cuisines_unique[targets] == data).all(), "Something went wrong inside the one hot encoding."
         data = targets, cuisines_unique
+        return data, head
+
+class CuisineSetSplit(PipelineStep):
+    """
+    Training and Testing Dataset Split for Cuisine Pipeline.
+
+    Call Input: training split size in percent [Default: 80]
+
+    Process:
+        Input: w2v, cuisine (onehot, encoding), names
+        Output: 2 times split input with training%, 1-training% split as tuple
+    """
+    def __init__(self, training = 80):
+        super().__init__("CuisineSetSplit")
+        self.training = training
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+
+        w2v, cuisine, names = data
+        names = names.tolist()
+        onehot, encoding = cuisine
+        n_set = onehot.shape[0]
+        t_set = ceil(n_set*(self.training/100))
+
+        permutation = list(np.random.permutation(n_set))
+        print(f"Sizes: Dataset: {len(permutation)}, TrainingSet: {len(permutation[0:t_set])}, TestSet: {len(permutation[t_set:])}")
+
+        trainings_w2v = [w2v[0][i] for i in permutation[0:t_set]]
+        trainings_onehot = [onehot[i] for i in permutation[0:t_set]]
+        trainings_names = [names[i] for i in permutation[0:t_set]]
+        trainings_data = trainings_w2v, (trainings_onehot, encoding), trainings_names
+
+        test_w2v = [w2v[0][i] for i in permutation[t_set:]]
+        test_onehot = [onehot[i] for i in permutation[t_set:]]
+        test_names = [names[i] for i in permutation[t_set:]]
+        test_data = test_w2v, (test_onehot, encoding), test_names
+
         return data, head
