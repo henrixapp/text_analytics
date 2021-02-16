@@ -1,6 +1,7 @@
 from pipeline.pipeline import InvalidPipelineStepError, PipelineStep, Head
 import pandas as pd
 import spacy
+import numpy as np
 from spacy.lang.en import English
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -243,13 +244,26 @@ class AlphaNumericalizer(PipelineStep):
 
 class OneHotEnc(PipelineStep):
     """
-    OneHot encoding. expects list of str or dataframe?
+    OneHot encoding. expects 1-D numpy array or pandas.core.series.Series
+
+    Output: data: vector of one hot encoding and vector with encoding
+            head
     """
     def __init__(self):
         super().__init__("Onehot")
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
-        #TODO(max)
-        # DO THe one Hot Encoding stuff
+        if (type(data) == pd.core.series.Series): data = data.to_numpy()
+
+        cuisines_unique = np.sort(np.unique(data))
+        n_cuisines_unique = cuisines_unique.shape[0]
+
+        targets = np.empty(data.shape,dtype=int)
+        for index in range(n_cuisines_unique):
+            added_targets = np.where(data == cuisines_unique[index])
+            targets[added_targets] = index
+
+        assert (cuisines_unique[targets] == data).all(), "Something went wrong inside the one hot encoding."
+        data = targets, cuisines_unique
         return data, head
