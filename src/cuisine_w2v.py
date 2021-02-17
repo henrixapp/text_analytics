@@ -3,7 +3,7 @@ from pipeline.data_access import DataSetSource, PDReduce
 from pipeline.generics import IterableApply, Lambda, PDSample, ZipList
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OneHotEnc, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval, CuisineSetSplit
-from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestCentroid, CuisineMLP, CuisineGaussian
+from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep,CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian
 
 import numpy as np
 
@@ -13,7 +13,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(10000, 65510),
+            PDSample(50, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -47,8 +47,9 @@ def pipeline():
             Fork(  # Classification Fork
                 "calc NearestCentroid and MLP on split dataset",
                 steps=[
-                    CuisineNearestCentroid(),
                     # TODO NearestNeighbors, Decision Tree and other
+                    CuisineNearestNeighbors(n_neighbors=5),
+                    CuisineNearestCentroid(),
                     CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 25, 10),
                                max_iter=20000),

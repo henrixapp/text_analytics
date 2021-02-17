@@ -9,7 +9,7 @@ from gensim.models import Word2Vec
 import numpy as np
 
 from sklearn.cluster import KMeans
-from sklearn.neighbors import NearestCentroid
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.neural_network import MLPClassifier
 from sklearn.gaussian_process import GaussianProcessClassifier
 
@@ -237,6 +237,53 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
 
         return result, head
 
+class CuisineNearestNeighbors(PipelineStep):
+    """
+    Classification using scikit-learn implementation of k-nearest Neighbors. It passes all keyword arguments through to sklearn.neighbors.KNeighborsClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                NNclf: Trained k-nearest neighbors classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineNearestCentroid")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "cuisineNearestCentroid")
+
+        NNclf = KNeighborsClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        NNclf.fit(training_w2v, training_onehot)
+
+        test_clf = NNclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines {NNclf.n_neighbors}-nearest Neighbors gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (NNclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
 
 class CuisineNearestCentroid(PipelineStep):
     """
