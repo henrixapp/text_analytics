@@ -1,9 +1,9 @@
 from dataloader.dataloader import DataLoader
 from pipeline.data_access import DataSetSource, PDReduce
-from pipeline.generics import IterableApply, Lambda, PDSample, ZipList
+from pipeline.generics import PDSample
 from pipeline.pipeline import Fork, Pass, Pipeline
-from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OneHotEnc, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval, CuisineSetSplit
-from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
+from pipeline.preprocessing import OneHotEnc, CuisineSetSplit
+from pipeline.analysis import VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
 
 import numpy as np
 
@@ -13,7 +13,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(10000, 65510),
+            PDSample(100, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -48,14 +48,13 @@ def pipeline():
             Fork(  # Classification Fork
                 "calc classifiers on split dataset",
                 steps=[
-                    CuisineNearestNeighbors(n_neighbors=5),
+                    CuisineNearestNeighbors(n_neighbors=10),
                     CuisineNearestCentroid(),
                     CuisineDecisionTree(),
                     CuisineRandomForest(n_estimators=100),
                     CuisineAdaBoost(n_estimators=50),
-                    ##CuisineGaussian(),
-                    CuisineMLP(hidden_layer_sizes=(10, 25, 10),
-                               max_iter=20000),
+                    #CuisineGaussian(),
+                    CuisineMLP(hidden_layer_sizes=(10, 15, 20), max_iter=2000),
                 ])
         ],
         verbosity=True)
@@ -68,6 +67,7 @@ def main():
     '''
     data, _ = pipeline()
 
+    print(len(data))
 
 if __name__ == "__main__":
     main()
