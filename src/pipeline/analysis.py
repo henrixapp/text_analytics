@@ -11,6 +11,8 @@ import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.neighbors import NearestCentroid
 from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+
 
 def hash(astring):
     return ord(astring[0])
@@ -235,6 +237,7 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
 
         return result, head
 
+
 class CuisineNearestCentroid(PipelineStep):
     """
     Classification using scikit-learn implementation of NearestCentroid.
@@ -266,18 +269,22 @@ class CuisineNearestCentroid(PipelineStep):
         test_onehot, test_encode = test_cuisine
         test_onehot = np.array(test_onehot)
 
-        assert (training_encode == test_encode).all(), "Something went wrong in a step before. Encoding vectores are not the same!"
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
 
         NCclf.fit(training_w2v, training_onehot)
 
         test_clf = NCclf.predict(test_w2v)
 
-        acc = np.sum(test_clf == test_onehot)/len(test_clf)
-        print(f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {acc*100}% on the test set.")
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {acc*100}% on the test set."
+        )
 
         data = (NCclf, acc, test_clf, test_onehot, test_encode, test_name)
 
         return data, head
+
 
 class CuisineMLP(PipelineStep):
     """
@@ -311,15 +318,67 @@ class CuisineMLP(PipelineStep):
         test_onehot, test_encode = test_cuisine
         test_onehot = np.array(test_onehot)
 
-        assert (training_encode == test_encode).all(), "Something went wrong in a step before. Encoding vectores are not the same!"
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
 
         MLPclf.fit(training_w2v, training_onehot)
 
         test_clf = MLPclf.predict(test_w2v)
 
-        acc = np.sum(test_clf == test_onehot)/len(test_clf)
-        print(f"With {len(training_encode)} different cuisines MLP gets an accuray of {acc*100}% on the test set with {MLPclf.n_iter_} iterations.")
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines MLP gets an accuray of {acc*100}% on the test set with {MLPclf.n_iter_} iterations."
+        )
 
         data = (MLPclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineGaussian(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Gaussion Process Classifier. It passes all keyword arguments through to sklearn.gaussian_process.GaussianProcessClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                GPclf: Trained GP Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineGP")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "cuisineGP")
+
+        GPclf = GaussianProcessClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        GPclf.fit(training_w2v, training_onehot)
+
+        test_clf = GPclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines GP gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (GPclf, acc, test_clf, test_onehot, test_encode, test_name)
 
         return data, head
