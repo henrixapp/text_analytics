@@ -240,7 +240,7 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
 
 class CuisineNearestCentroid(PipelineStep):
     """
-    Classification using scikit-learn implementation of NearestCentroid.
+    Classification using scikit-learn implementation of NearestCentroid. It passes all keyword arguments through to sklearn.neighbors.NearestCentroid.
 
     Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
     Output: Data-Tuple constisting of:
@@ -251,13 +251,14 @@ class CuisineNearestCentroid(PipelineStep):
                 test_encode: Encoding vector to names
                 test_names: Names of cuisines
     """
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__("CuisineNearestCentroid")
+        self.args = kwargs
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "cuisineNearestCentroid")
 
-        NCclf = NearestCentroid()
+        NCclf = NearestCentroid(**self.args)
 
         training, test = data
         training_w2v, training_cuisine, training_name = training
