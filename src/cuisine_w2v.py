@@ -43,8 +43,7 @@ def pipeline():
                     PDReduce("name")
                 ]),
             # Output from for is w2v, cuisine (onehot, encoding), names
-            CuisineSetSplit(training=80
-                            ),  # Splits dataset into training and test set
+            CuisineSetSplit(training=80),  # Splits dataset into training and test set
             Fork(  # Classification Fork
                 "calc NearestCentroid and MLP on split dataset",
                 steps=[
