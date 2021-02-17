@@ -3,7 +3,7 @@ from pipeline.data_access import DataSetSource, PDReduce
 from pipeline.generics import IterableApply, Lambda, PDSample, ZipList
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OneHotEnc, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval, CuisineSetSplit
-from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep,CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian
+from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree
 
 import numpy as np
 
@@ -43,14 +43,15 @@ def pipeline():
                     PDReduce("name")
                 ]),
             # Output from for is w2v, cuisine (onehot, encoding), names
-            CuisineSetSplit(training=80),  # Splits dataset into training and test set
+            CuisineSetSplit(training=80
+                            ),  # Splits dataset into training and test set
             Fork(  # Classification Fork
                 "calc NearestCentroid and MLP on split dataset",
                 steps=[
-                    # TODO NearestNeighbors, Decision Tree and other
                     CuisineNearestNeighbors(n_neighbors=5),
                     CuisineNearestCentroid(),
-                    CuisineGaussian(),
+                    CuisineDecisionTree(),
+                    #CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 25, 10),
                                max_iter=20000),
                 ])
