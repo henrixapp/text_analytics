@@ -236,7 +236,16 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
 
 class CuisineNearestCentroid(PipelineStep):
     """
+    Classification using scikit-learn implementation of NearestCentroid.
 
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                NCclf: Trained NearestCentroid Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
     """
     def __init__(self):
         super().__init__("CuisineNearestCentroid")
@@ -262,7 +271,9 @@ class CuisineNearestCentroid(PipelineStep):
 
         test_clf = NCclf.predict(test_w2v)
 
-        data = np.sum(test_clf == test_onehot)/len(test_clf)
-        print(f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {data*100}% on the test set.")
+        acc = np.sum(test_clf == test_onehot)/len(test_clf)
+        print(f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {acc*100}% on the test set.")
+
+        data = (NCclf, acc, test_clf, test_onehot, test_encode, test_name)
 
         return data, head
