@@ -304,4 +304,5 @@ class CuisineSetSplit(PipelineStep):
         test_names = [names[i] for i in permutation[t_set:]]
         test_data = test_w2v, (test_onehot, encoding), test_names
 
+        data = (trainings_data, test_data)
         return data, head
