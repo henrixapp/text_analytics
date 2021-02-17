@@ -9,7 +9,7 @@ from gensim.models import Word2Vec
 import numpy as np
 
 from sklearn.cluster import KMeans
-
+from sklearn.neighbors import NearestCentroid
 
 def hash(astring):
     return ord(astring[0])
@@ -233,3 +233,36 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
         ]
 
         return result, head
+
+class CuisineNearestCentroid(PipelineStep):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("CuisineNearestCentroid")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "cuisineNearestCentroid")
+
+        NCclf = NearestCentroid()
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        NCclf.fit(training_w2v, training_onehot)
+
+        test_clf = NCclf.predict(test_w2v)
+
+        data = np.sum(test_clf == test_onehot)/len(test_clf)
+        print(f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {data*100}% on the test set.")
+
+        return data, head
