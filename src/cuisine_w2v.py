@@ -3,7 +3,7 @@ from pipeline.data_access import DataSetSource, PDReduce
 from pipeline.generics import IterableApply, Lambda, PDSample, ZipList
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OneHotEnc, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval, CuisineSetSplit
-from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest
+from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
 
 import numpy as np
 
@@ -13,7 +13,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(1000, 65510),
+            PDSample(10000, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -52,7 +52,7 @@ def pipeline():
                     CuisineNearestCentroid(),
                     CuisineDecisionTree(),
                     CuisineRandomForest(n_estimators=100),
-                    #CuisineAdaBoost(),
+                    CuisineAdaBoost(n_estimators=50),
                     ##CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 25, 10),
                                max_iter=20000),
