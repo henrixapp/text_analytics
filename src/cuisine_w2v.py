@@ -3,7 +3,7 @@ from pipeline.data_access import DataSetSource, PDReduce
 from pipeline.generics import IterableApply, Lambda, PDSample, ZipList
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, ApplyJSON, Dropper, ExtractSentenceParts, Lower, NLTKPorterStemmer, OneHotEnc, OutOfDistributionRemover, Replacer, SpacyStep, Split, StopWordsRemoval, CuisineSetSplit
-from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree
+from pipeline.analysis import IngredientsPerStepsOccurrence, IngredientsPerStepsOccurrenceBySimilarity, PhraserStep, VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest
 
 import numpy as np
 
@@ -13,7 +13,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(50, 65510),
+            PDSample(1000, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -46,12 +46,14 @@ def pipeline():
             CuisineSetSplit(training=80
                             ),  # Splits dataset into training and test set
             Fork(  # Classification Fork
-                "calc NearestCentroid and MLP on split dataset",
+                "calc classifiers on split dataset",
                 steps=[
                     CuisineNearestNeighbors(n_neighbors=5),
                     CuisineNearestCentroid(),
                     CuisineDecisionTree(),
-                    #CuisineGaussian(),
+                    CuisineRandomForest(n_estimators=100),
+                    #CuisineAdaBoost(),
+                    ##CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 25, 10),
                                max_iter=20000),
                 ])
