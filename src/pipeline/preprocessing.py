@@ -10,6 +10,7 @@ import json
 import re
 from math import ceil
 
+
 class Dropper(PipelineStep):
     """
     drops data in a dataframe, if they are none for given columns.
@@ -242,6 +243,7 @@ class AlphaNumericalizer(PipelineStep):
         return re.sub(r'[^0-9a-zA-Z ]', '', data), head
 
 
+
 class OneHotEnc(PipelineStep):
     """
     OneHot encoding. expects 1-D numpy array or pandas.core.series.Series
@@ -306,3 +308,4 @@ class CuisineSetSplit(PipelineStep):
 
         data = (trainings_data, test_data)
         return data, head
+
