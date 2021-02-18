@@ -285,3 +285,9 @@ data/*
 
 #ignore cached stuff
 src/pipeline/__pycache__/*
+src/dataloader/__pycache__/*
+src/visualization/__pycache__/*
+src/tests/__pycache__/*
+
+#ignore environments
+toms-env/*

@@ -1,4 +1,4 @@
-from pipeline.preprocessing import Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
+from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
@@ -147,3 +147,21 @@ def test_lower_multiple():
 
 
 # TODO: Write test for OutOfDistributionRemover
+
+
+def test_non_alphanumerical_input():
+    pipe = Pipeline("alphanum", steps=[AlphaNumericalizer()])
+
+    text = "This, is. a strange Text with # and other ^ characters"
+    expected_result = "This is a strange Text with  and other  characters"
+    result, _ = pipe.process(text)
+    assert result == expected_result
+
+
+def test_alphanumerical_input():
+    pipe = Pipeline("alphanum", steps=[AlphaNumericalizer()])
+
+    text = "this is a normal text with 100 words"
+    expected_result = "this is a normal text with 100 words"
+    result, _ = pipe.process(text)
+    assert result == expected_result

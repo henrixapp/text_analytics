@@ -4,6 +4,9 @@ import json
 
 
 class DataSetSource(PipelineStep):
+    """
+    Accesses the given datasets and returns a pandas dataframe
+    """
     def __init__(self, datasets=[]):
         super().__init__("Source" + "_".join(datasets))
         self._datasets = datasets
@@ -16,6 +19,9 @@ class DataSetSource(PipelineStep):
 
 
 class JSONSink(PipelineStep):
+    """
+    Dumps current data into a json file.
+    """
     def __init__(self, filename):
         super().__init__("TOJSON")
         self._filename = filename
@@ -28,6 +34,9 @@ class JSONSink(PipelineStep):
 
 
 class PDReduce(PipelineStep):
+    """
+    Accesses the given field(s) of a pandas dataframe.
+    """
     def __init__(self, field):
         super().__init__("PDReduce")
         self._field = field
