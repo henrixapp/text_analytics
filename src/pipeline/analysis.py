@@ -9,6 +9,11 @@ from gensim.models import Word2Vec
 import numpy as np
 
 from sklearn.cluster import KMeans
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
+from sklearn.neural_network import MLPClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 
 
 def hash(astring):
@@ -66,9 +71,10 @@ class W2VStep(PipelineStep):
     """
     This step returns a W2V instance of the inputed data
     """
-    def __init__(self, workers):
+    def __init__(self, workers, dim=30):
         super().__init__("w2v")
         self._workers = workers
+        self._size = dim
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
@@ -76,7 +82,7 @@ class W2VStep(PipelineStep):
             data,
             #hashfxn=hash,
             workers=self._workers,
-            size=30,
+            size=self._size,
             negative=20,
             min_count=5,
             window=10,
@@ -232,3 +238,347 @@ class IngredientsPerStepsOccurrenceBySimilarity(PipelineStep):
         ]
 
         return result, head
+
+
+class CuisineNearestNeighbors(PipelineStep):
+    """
+    Classification using scikit-learn implementation of k-nearest Neighbors. It passes all keyword arguments through to sklearn.neighbors.KNeighborsClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                NNclf: Trained k-nearest neighbors classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineNearestNeighbors")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Nearest Neighbors Classifier")
+
+        NNclf = KNeighborsClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        NNclf.fit(training_w2v, training_onehot)
+
+        test_clf = NNclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines {NNclf.n_neighbors}-nearest Neighbors gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (NNclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineNearestCentroid(PipelineStep):
+    """
+    Classification using scikit-learn implementation of NearestCentroid. It passes all keyword arguments through to sklearn.neighbors.NearestCentroid.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                NCclf: Trained NearestCentroid Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineNearestCentroid")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Nearest Centroid Classifier")
+
+        NCclf = NearestCentroid(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        NCclf.fit(training_w2v, training_onehot)
+
+        test_clf = NCclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines NearestCentroid gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (NCclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineMLP(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Multi-layer Perceptron. It passes all keyword arguments through to sklearn.neural_network.MLPClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                MLPclf: Trained MLP Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineMLP")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Multi-Layer Perceptron Classifier")
+
+        MLPclf = MLPClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        MLPclf.fit(training_w2v, training_onehot)
+
+        test_clf = MLPclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines MLP gets an accuray of {acc*100}% on the test set with {MLPclf.n_iter_} iterations."
+        )
+
+        data = (MLPclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineGaussian(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Gaussion Process Classifier. It passes all keyword arguments through to sklearn.gaussian_process.GaussianProcessClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                GPclf: Trained GP Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisineGP")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Gaussian Process Classifier")
+
+        GPclf = GaussianProcessClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        GPclf.fit(training_w2v, training_onehot)
+
+        test_clf = GPclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines GP gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (GPclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineDecisionTree(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Decision Tree. It passes all keyword arguments through to sklearn.tree.DecisionTreeClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                GPclf: Trained Decision Tree Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisienDT")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Decision Tree Classifier")
+
+        DTclf = DecisionTreeClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        DTclf.fit(training_w2v, training_onehot)
+
+        test_clf = DTclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines DT gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (DTclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineRandomForest(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Random Forest. It passes all keyword arguments through to sklearn.ensemble.RandomForestClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                RFclf: Trained Random Forest Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisienRF")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Random Forest Classifier")
+
+        RFclf = RandomForestClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        RFclf.fit(training_w2v, training_onehot)
+
+        test_clf = RFclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines RF gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (RFclf, acc, test_clf, test_onehot, test_encode, test_name)
+
+        return data, head
+
+
+class CuisineAdaBoost(PipelineStep):
+    """
+    Classification using scikit-learn implementation of a Adaptive Boosting Classifier. It passes all keyword arguments through to sklearn.ensemble.AdaBoostClassifier.
+
+    Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
+    Output: Data-Tuple constisting of:
+                RFclf: Trained Ada Boost Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisines
+    """
+    def __init__(self, **kwargs):
+        super().__init__("CuisienAdaBoost")
+        self.args = kwargs
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Adaptive Boosting Classifier")
+
+        AdaBoostclf = AdaBoostClassifier(**self.args)
+
+        training, test = data
+        training_w2v, training_cuisine, training_name = training
+        training_w2v = np.array(training_w2v)
+        training_onehot, training_encode = training_cuisine
+        training_onehot = np.array(training_onehot)
+        test_w2v, test_cuisine, test_name = test
+        test_w2v = np.array(test_w2v)
+        test_onehot, test_encode = test_cuisine
+        test_onehot = np.array(test_onehot)
+
+        assert (training_encode == test_encode).all(
+        ), "Something went wrong in a step before. Encoding vectores are not the same!"
+
+        AdaBoostclf.fit(training_w2v, training_onehot)
+
+        test_clf = AdaBoostclf.predict(test_w2v)
+
+        acc = np.sum(test_clf == test_onehot) / len(test_clf)
+        print(
+            f"With {len(training_encode)} different cuisines AdaBoost gets an accuray of {acc*100}% on the test set."
+        )
+
+        data = (AdaBoostclf, acc, test_clf, test_onehot, test_encode,
+                test_name)
+
+        return data, head

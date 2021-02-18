@@ -1,12 +1,14 @@
 from pipeline.pipeline import InvalidPipelineStepError, PipelineStep, Head
 import pandas as pd
 import spacy
+import numpy as np
 from spacy.lang.en import English
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from num2words import num2words
 import json
 import re
+from math import ceil
 
 
 class Dropper(PipelineStep):
@@ -239,3 +241,71 @@ class AlphaNumericalizer(PipelineStep):
 
         head.addInfo(self.name, "")
         return re.sub(r'[^0-9a-zA-Z ]', '', data), head
+
+
+
+class OneHotEnc(PipelineStep):
+    """
+    OneHot encoding. expects 1-D numpy array or pandas.core.series.Series
+
+    Output: data: vector of one hot encoding and vector with encoding
+            head
+    """
+    def __init__(self):
+        super().__init__("Onehot")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+        if (type(data) == pd.core.series.Series): data = data.to_numpy()
+
+        cuisines_unique = np.sort(np.unique(data))
+        n_cuisines_unique = cuisines_unique.shape[0]
+
+        targets = np.empty(data.shape,dtype=int)
+        for index in range(n_cuisines_unique):
+            added_targets = np.where(data == cuisines_unique[index])
+            targets[added_targets] = index
+
+        assert (cuisines_unique[targets] == data).all(), "Something went wrong inside the one hot encoding."
+        data = targets, cuisines_unique
+        return data, head
+
+class CuisineSetSplit(PipelineStep):
+    """
+    Training and Testing Dataset Split for Cuisine Pipeline.
+
+    Call Input: training split size in percent [Default: 80]
+
+    Process:
+        Input: w2v, cuisine (onehot, encoding), names
+        Output: 2 times split input with training%, 1-training% split as tuple
+    """
+    def __init__(self, training = 80):
+        super().__init__("CuisineSetSplit")
+        self.training = training
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "")
+
+        w2v, cuisine, names = data
+        names = names.tolist()
+        onehot, encoding = cuisine
+        n_set = onehot.shape[0]
+        t_set = ceil(n_set*(self.training/100))
+
+        permutation = list(np.random.permutation(n_set))
+        print(f"Sizes: Dataset: {len(permutation)}, TrainingSet: {len(permutation[0:t_set])}, TestSet: {len(permutation[t_set:])}")
+
+        trainings_w2v = [w2v[0][i] for i in permutation[0:t_set]]
+        trainings_onehot = [onehot[i] for i in permutation[0:t_set]]
+        trainings_names = [names[i] for i in permutation[0:t_set]]
+        trainings_data = trainings_w2v, (trainings_onehot, encoding), trainings_names
+
+        test_w2v = [w2v[0][i] for i in permutation[t_set:]]
+        test_onehot = [onehot[i] for i in permutation[t_set:]]
+        test_names = [names[i] for i in permutation[t_set:]]
+        test_data = test_w2v, (test_onehot, encoding), test_names
+
+        data = (trainings_data, test_data)
+        return data, head
+
