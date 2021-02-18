@@ -4,7 +4,7 @@ from pipeline.generics import PDSample
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import OneHotEnc, CuisineSetSplit
 from pipeline.analysis import VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
-from pipeline.visualization import CuisineConfMat
+from pipeline.visualization import CuisineConfMat, CuisineHist
 
 import numpy as np
 
@@ -74,6 +74,7 @@ def pipeline():
                                 ]),
                         ]),
                 ]),
+            CuisineHist(),
         ],
         verbosity=True)
     return p.process(True)

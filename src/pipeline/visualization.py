@@ -21,6 +21,7 @@ class CuisineConfMat(PipelineStep):
             test_encode: Encoding vector to names
             test_names: Names of cuisine
     Output: List of saved matplotlib diagrams save locations
+            Confusion Matrices as list
     """
     def __init__(self, save_dir="./viz/", show_plot=False):
         super().__init__("CuisineConfMat")
@@ -72,4 +73,38 @@ class CuisineConfMat(PipelineStep):
             plt.close()
 
         data = self.saved_img, conf_mats
+        return data, head
+
+
+class CuisineHist(PipelineStep):
+    """
+    Implementation of Plotting Pipeline for Cuisine Histograms. Histograms for the distribution of the whole dataset, the training and test set as well as each classified set will be generated.
+    Using matplotlib and seaborn in background.
+
+    Important notice. Only works right directly behind one classifier or a fork of multiple classifiers.
+
+    Input:  Training-Test Split consistig of (w2v, cuisine (onehot, encode), names)
+            (Fork List of) n-Data-Tuple consisting of:
+                *clf: Trained Classifier
+                acc: Accuracy on the test set
+                test_clf: predicted classes of test_set
+                test_onehot: ground_truth classes of test_set
+                test_encode: Encoding vector to names
+                test_names: Names of cuisine
+            ConfMat-Tuple consisting of:
+                List of saved matplotlib diagrams save locations
+                Confusion Matrices as list
+    Output: List of saved matplotlib diagrams save locations
+    """
+    def __init__(self, save_dir="./viz/", show_plot=False):
+        super().__init__("CuisineHist")
+        self.save_dir = save_dir
+        self.show_plot = show_plot
+        self.saved_img = []
+
+        if not os.path.exists(save_dir): os.mkdir(save_dir)
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Cuisine Histograms")
+
         return data, head
