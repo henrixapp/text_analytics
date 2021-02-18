@@ -14,7 +14,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(50, 65510),
+            PDSample(500, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -57,7 +57,7 @@ def pipeline():
                     #CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 15, 20), max_iter=2000),
                 ]),
-            CuisineConfMat(),
+            CuisineConfMat(show_plot=False),
         ],
         verbosity=True)
     return p.process(True)
@@ -69,7 +69,7 @@ def main():
     '''
     data, head = pipeline()
 
-    print(data)
+    #print(data)
 
 
 if __name__ == "__main__":
