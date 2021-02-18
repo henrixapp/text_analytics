@@ -4,6 +4,7 @@ from pipeline.generics import PDSample
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import OneHotEnc, CuisineSetSplit
 from pipeline.analysis import VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
+from pipeline.visualization import CuisineConfMat
 
 import numpy as np
 
@@ -13,7 +14,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(100, 65510),
+            PDSample(50, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -55,7 +56,8 @@ def pipeline():
                     CuisineAdaBoost(n_estimators=50),
                     #CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 15, 20), max_iter=2000),
-                ])
+                ]),
+            CuisineConfMat(),
         ],
         verbosity=True)
     return p.process(True)
@@ -65,9 +67,10 @@ def main():
     '''
     Implements different approaches to learn a ingredients to cuisine embedding and analyzes it.
     '''
-    data, _ = pipeline()
+    data, head = pipeline()
 
-    print(len(data))
+    print(data)
+
 
 if __name__ == "__main__":
     main()
