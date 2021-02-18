@@ -44,8 +44,8 @@ def pipeline():
                     PDReduce("name")
                 ]),
             # Output from for is w2v, cuisine (onehot, encoding), names
-            CuisineSetSplit(training=80
-                            ),  # Splits dataset into training and test set
+            # Splits dataset into training and test set
+            CuisineSetSplit(training=80),
             Fork(  # Classification Fork
                 "calc classifiers on split dataset",
                 steps=[
@@ -57,7 +57,7 @@ def pipeline():
                     #CuisineGaussian(),
                     CuisineMLP(hidden_layer_sizes=(10, 15, 20), max_iter=2000),
                 ]),
-            CuisineConfMat(show_plot=False),
+            CuisineConfMat(show_plot=False),  # ConfMat Viz
         ],
         verbosity=True)
     return p.process(True)
