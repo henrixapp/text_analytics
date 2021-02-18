@@ -33,8 +33,8 @@ class DataLoader:
     RECIPES1M_NUTRITIONAL = "recipes1m-nutritional"
     WHATS_COOKING = "whats-cooking"
 
-    This is the DataLoader Class which abstracts away the access and norming of
-    our datasets.
+    #This is the DataLoader Class which abstracts away the access and norming of
+    #our datasets.
 
     
     def __init__(self,
