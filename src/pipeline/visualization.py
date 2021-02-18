@@ -68,7 +68,8 @@ class CuisineConfMat(PipelineStep):
             if self.show_plot: plt.show()
             self.saved_img.append(
                 os.path.join(self.save_dir,
-                             (clf_names[i] + ".jpg")).replace(" ", ""))
+                             ("confmat_" + clf_names[i] + ".jpg")).replace(
+                                 " ", ""))
             plt.savefig(self.saved_img[-1], dpi=300)
             plt.close()
 
@@ -140,6 +141,20 @@ class CuisineHist(PipelineStep):
         clf_names = head._infos[-((6 + 2) * 2):][1:-2:2]
 
         for i, clf_data in enumerate(clfs_data):
-            print(i)
+            _, _, test_clf, _, _, _ = clf_data
+            bins = np.bincount(test_clf, minlength=20)
 
-        return data, head
+            fig, ax = plt.subplots(figsize=(11, 10))
+            ax.barh(names_encode, bins)
+            plt.xlabel('Count')
+            plt.title(
+                f'Histogram of classification of test set with {clf_names[i]}')
+            if self.show_plot: plt.show()
+            self.saved_img.append(
+                os.path.join(self.save_dir,
+                             ("hist_" + clf_names[i] + ".jpg")).replace(
+                                 " ", ""))
+            plt.savefig(self.saved_img[-1], dpi=300)
+            plt.close()
+
+        return self.saved_img, head
