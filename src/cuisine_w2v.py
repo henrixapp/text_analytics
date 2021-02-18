@@ -14,7 +14,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            PDSample(1000, 65510),
+            PDSample(50, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -86,7 +86,7 @@ def main():
     '''
     data, head = pipeline()
 
-    print(len(data[0]))
+    #print(len(data[0]))
 
 
 if __name__ == "__main__":

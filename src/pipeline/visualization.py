@@ -4,7 +4,6 @@ import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set(style="darkgrid")
 
 
 class CuisineConfMat(PipelineStep):
@@ -51,6 +50,7 @@ class CuisineConfMat(PipelineStep):
                     np.transpose(conf_mat_test) / conf_mat_test.sum(1))
             conf_mats.append(conf_mat_test)
 
+            sns.set(style="darkgrid")
             figure = plt.figure(figsize=(14, 12))
             sns.heatmap(conf_mat_test,
                         annot=True,
@@ -84,16 +84,17 @@ class CuisineHist(PipelineStep):
     Important notice. Only works right directly behind one classifier or a fork of multiple classifiers.
 
     Input:  Training-Test Split consistig of (w2v, cuisine (onehot, encode), names)
-            (Fork List of) n-Data-Tuple consisting of:
-                *clf: Trained Classifier
-                acc: Accuracy on the test set
-                test_clf: predicted classes of test_set
-                test_onehot: ground_truth classes of test_set
-                test_encode: Encoding vector to names
-                test_names: Names of cuisine
-            ConfMat-Tuple consisting of:
-                List of saved matplotlib diagrams save locations
-                Confusion Matrices as list
+            Fork List consisting of:
+                (Fork List of) n-Data-Tuple consisting of:
+                    *clf: Trained Classifier
+                    acc: Accuracy on the test set
+                    test_clf: predicted classes of test_set
+                    test_onehot: ground_truth classes of test_set
+                    test_encode: Encoding vector to names
+                    test_names: Names of cuisine
+                ConfMat-Tuple consisting of:
+                    List of saved matplotlib diagrams save locations
+                    Confusion Matrices as list
     Output: List of saved matplotlib diagrams save locations
     """
     def __init__(self, save_dir="./viz/", show_plot=False):
@@ -106,5 +107,39 @@ class CuisineHist(PipelineStep):
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "Cuisine Histograms")
+        # Data Extraction
+        split_data, (clfs_data, _) = data
+        (_, (train_oh, names_encode), _), (_, (test_oh, _), _) = split_data
+        names_encode = np.append(
+            names_encode, np.repeat('Not found', (20 - len(names_encode))))
+
+        # Histograms for whole Dataset and Train/Test Split
+        train_set = np.array(train_oh)
+        test_set = np.array(test_oh)
+        data_sets = {
+            "Training Set": train_set,
+            "Test Set": test_set,
+            "Data Set": np.append(train_set, test_set)
+        }
+        for set_name in data_sets.keys():
+            bins = np.bincount(data_sets[set_name], minlength=20)
+
+            fig, ax = plt.subplots(figsize=(11, 10))
+            ax.barh(names_encode, bins)
+            plt.xlabel('Count')
+            plt.title(f'Histogram of {set_name}')
+            if self.show_plot: plt.show()
+            self.saved_img.append(
+                os.path.join(self.save_dir,
+                             ("hist_" + set_name + ".jpg")).replace(" ", ""))
+            plt.savefig(self.saved_img[-1], dpi=300)
+            plt.close()
+
+        # Histograms for predicted classes of different clfs
+        n_clf = len(clfs_data)
+        clf_names = head._infos[-((6 + 2) * 2):][1:-2:2]
+
+        for i, clf_data in enumerate(clfs_data):
+            print(i)
 
         return data, head
