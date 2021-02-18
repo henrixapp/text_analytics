@@ -258,7 +258,7 @@ class CuisineNearestNeighbors(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineNearestNeighbors")
+        head.addInfo(self.name, "Nearest Neighbors Classifier")
 
         NNclf = KNeighborsClassifier(**self.args)
 
@@ -307,7 +307,7 @@ class CuisineNearestCentroid(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineNearestCentroid")
+        head.addInfo(self.name, "Nearest Centroid Classifier")
 
         NCclf = NearestCentroid(**self.args)
 
@@ -356,7 +356,7 @@ class CuisineMLP(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineMLP")
+        head.addInfo(self.name, "Multi-Layer Perceptron Classifier")
 
         MLPclf = MLPClassifier(**self.args)
 
@@ -405,7 +405,7 @@ class CuisineGaussian(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineGP")
+        head.addInfo(self.name, "Gaussian Process Classifier")
 
         GPclf = GaussianProcessClassifier(**self.args)
 
@@ -454,7 +454,7 @@ class CuisineDecisionTree(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineDT")
+        head.addInfo(self.name, "Decision Tree Classifier")
 
         DTclf = DecisionTreeClassifier(**self.args)
 
@@ -503,7 +503,7 @@ class CuisineRandomForest(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineRF")
+        head.addInfo(self.name, "Random Forest Classifier")
 
         RFclf = RandomForestClassifier(**self.args)
 
@@ -536,7 +536,7 @@ class CuisineRandomForest(PipelineStep):
 
 class CuisineAdaBoost(PipelineStep):
     """
-    Classification using scikit-learn implementation of a Ada Boost Classifier. It passes all keyword arguments through to sklearn.ensemble.AdaBoostClassifier.
+    Classification using scikit-learn implementation of a Adaptive Boosting Classifier. It passes all keyword arguments through to sklearn.ensemble.AdaBoostClassifier.
 
     Input: Training-Test Split of (w2v, cuisine (onehot, encode), names)
     Output: Data-Tuple constisting of:
@@ -552,7 +552,7 @@ class CuisineAdaBoost(PipelineStep):
         self.args = kwargs
 
     def process(self, data, head=Head()):
-        head.addInfo(self.name, "cuisineAdaBoost")
+        head.addInfo(self.name, "Adaptive Boosting Classifier")
 
         AdaBoostclf = AdaBoostClassifier(**self.args)
 
@@ -578,6 +578,7 @@ class CuisineAdaBoost(PipelineStep):
             f"With {len(training_encode)} different cuisines AdaBoost gets an accuray of {acc*100}% on the test set."
         )
 
-        data = (AdaBoostclf, acc, test_clf, test_onehot, test_encode, test_name)
+        data = (AdaBoostclf, acc, test_clf, test_onehot, test_encode,
+                test_name)
 
         return data, head
