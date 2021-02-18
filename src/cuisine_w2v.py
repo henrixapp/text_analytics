@@ -43,7 +43,7 @@ def pipeline():
                              ]),
                     PDReduce("name")
                 ]),
-            # Output from for is w2v, cuisine (onehot, encoding), names
+            # Output from fork is w2v, cuisine (onehot, encoding), names
             # Splits dataset into training and test set
             CuisineSetSplit(training=80),
             Fork(  # Classification Fork
