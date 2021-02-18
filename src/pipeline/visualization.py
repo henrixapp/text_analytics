@@ -1,5 +1,6 @@
 from pipeline.pipeline import PipelineStep, Head
 import os
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -42,8 +43,11 @@ class CuisineConfMat(PipelineStep):
             conf_mat_test = np.zeros((len(test_encode), len(test_encode)))
             for test, gt in zip(test_clf, test_onehot):
                 conf_mat_test[test, gt] += 1
-            conf_mat_test = np.transpose(
-                np.transpose(conf_mat_test) / conf_mat_test.sum(1))
+            # Division by 0 warning can be ignored because of stability against it inside of numpy and an output in these colums of NaN
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                conf_mat_test = np.transpose(
+                    np.transpose(conf_mat_test) / conf_mat_test.sum(1))
             conf_mats.append(conf_mat_test)
 
             figure = plt.figure(figsize=(14, 12))
