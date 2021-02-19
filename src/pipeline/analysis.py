@@ -138,6 +138,22 @@ class KMeansClusterer(PipelineStep):
         return kmeans.labels_, head
 
 
+class KMeansNew(PipelineStep):
+    """
+    Clusters the given Data in K sects.
+    Returns the kMeans object
+    """
+    def __init__(self, k):
+        self._k = k
+        super().__init__("kmeans")
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, str(self._k))
+        kmeans = KMeans(n_clusters=self._k,
+                        random_state=0).fit(np.stack(data, axis=0))
+        return kmeans, head
+
+
 class IngredientsPerStepsOccurrence(PipelineStep):
     """
     In this step we compute the first occurrence of an ingredient in all steps of a recipe. This should incorporate the factor that we mean it is irrelevant when special ingredients are added to a recipe, it is more important which ingredients are added first.
