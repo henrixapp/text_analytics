@@ -7,8 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import DBSCAN, OPTICS, SpectralClustering, KMeans
 from sklearn.decomposition import PCA
 from nltk.corpus import stopwords
-import matplotlib.colors as mcolors
-from visualization.interactive import Tooltipped2DScatterPlot
+from visualization.interactive import Tooltipped2DScatterPlot, TooltippedTSNEPlot
 import numpy as np
 
 
@@ -19,7 +18,7 @@ def pipeline():
             DataSetSource(datasets=[DataLoader.EPIRECIPES]),
             Dropper(columns_causing_drop=['steps']),
             OutOfDistributionRemover(),
-            PDSample(2000),
+            # PDSample(2000),
             PDReduce(['name', 'steps']),
             Fork(
                 "split names and steps",
@@ -62,7 +61,8 @@ def pipeline():
                                                             'stir', 'cook',
                                                             'tablespoon',
                                                             'larg', 'cup',
-                                                            'transfer', 'cut'
+                                                            'transfer', 'cut',
+                                                            'prepar'
                                                         ]),
                                                     Lambda(
                                                         lambda x: " ".join(x)),
@@ -78,11 +78,13 @@ def pipeline():
 
 
 def kmeans(tfidf, names, terms):
-    kmeans_clustering = KMeans(n_clusters=6).fit(tfidf)
+    kmeans_clustering = KMeans(n_clusters=7).fit(tfidf)
     labels = kmeans_clustering.labels_
 
-    top_terms_per_cluster(terms, tfidf.todense(), labels)
-    plot_clusters_in_2D(tfidf, names, labels)
+    top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
+    print(top_terms)
+    # plot_clusters_in_2D(tfidf, names, labels)
+    plot_clusters_with_tSNE(tfidf, names, labels, extras=top_terms)
 
 
 def dbscan(tfidf, names, terms):
@@ -100,12 +102,13 @@ def optics(tfidf, names, terms):
 
 
 def spectral(tfidf, names, terms):
-    spectral_clustering = SpectralClustering(
-        n_clusters=10, n_components=20).fit(tfidf.todense())
+    spectral_clustering = SpectralClustering(n_clusters=7).fit(tfidf.todense())
     labels = spectral_clustering.labels_
 
-    top_terms_per_cluster(terms, tfidf.todense(), labels)
-    plot_clusters_in_2D(tfidf, names, labels)
+    top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
+    print(top_terms)
+    # plot_clusters_in_2D(tfidf, names, labels)
+    plot_clusters_with_tSNE(tfidf, names, labels, extras=top_terms)
 
 
 def plot_clusters_in_2D(tfidf, names, labels):
@@ -113,16 +116,23 @@ def plot_clusters_in_2D(tfidf, names, labels):
     reduced_data = pca.fit_transform(tfidf.todense())
     data = reduced_data.T
 
-    color_list = list(mcolors.XKCD_COLORS)
-    colors = [color_list[label] for label in labels]
+    plot = Tooltipped2DScatterPlot(data, list(names), labels, colors)
+    plot.plot()
 
-    plot = Tooltipped2DScatterPlot(data, list(names), colors)
+
+def plot_clusters_with_tSNE(tfidf, names, labels, extras=None):
+
+    plot = TooltippedTSNEPlot(tfidf.todense(),
+                              list(names),
+                              labels,
+                              extras=extras)
     plot.plot()
 
 
 def top_terms_per_cluster(terms, tfidf, labels, top_n=10):
     # tfidf must be dense
-    # for each cluser compute 5 highest tfidf scores after sum and normalization
+    # for each cluster compute top_n highest tfidf scores after sum and normalization
+    top_terms_lists = []
     for clusterid in list(set(labels)):
         cluster_indices = np.argwhere(labels == clusterid)
         tfidf_per_cluster = np.sum(
@@ -130,7 +140,10 @@ def top_terms_per_cluster(terms, tfidf, labels, top_n=10):
             axis=0) / cluster_indices.shape[0]  #normalise
         top_term_indices = np.asarray(
             tfidf_per_cluster)[0].argsort()[-top_n:][::-1]
-        print([terms[id] for id in top_term_indices])
+        top_terms_list = [terms[id] for id in top_term_indices]
+        print(top_terms_list)
+        top_terms_lists += [", ".join(top_terms_list)]
+    return top_terms_lists
 
 
 def main():
