@@ -7,7 +7,12 @@ class Tooltipped2DScatterPlot():
     Creates two dimensional scatter plot which shows labels when you hover over data points.
     Expects data to be 2D array-like structure with coordinates for each data point.
     """
-    def __init__(self, data, labels, colors, title, extras):
+    def __init__(self,
+                 data,
+                 labels,
+                 colors,
+                 title="Recipe Clusters",
+                 extras=None):
         self.data = data
         self.labels = labels
         self.colors = colors
