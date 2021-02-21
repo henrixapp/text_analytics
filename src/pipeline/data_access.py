@@ -1,6 +1,7 @@
 from pipeline.pipeline import Head, PipelineStep
 from dataloader.dataloader import DataLoader
 import json
+import pickle
 
 
 class DataSetSource(PipelineStep):
@@ -44,3 +45,33 @@ class PDReduce(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo(self.name, self._field)
         return data[self._field], head
+
+
+class PickleDump(PipelineStep):
+    """
+    Saves the data under the given filename
+    Returns the data
+    """
+    def __init__(self, filename):
+        super().__init__("PickleDump")
+        self.filename = filename
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, self.filename)
+        pickle.dump(data, open(self.filename, "wb"))
+        return data, head
+
+
+class PickleLoad(PipelineStep):
+    """
+    Loads the data under the given filename
+    Returns the data
+    """
+    def __init__(self, filename):
+        super().__init__("PickleLoad")
+        self.filename = filename
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, self.filename)
+        data = pickle.load(open(self.filename, "rb"))
+        return data, head
