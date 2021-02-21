@@ -1,6 +1,6 @@
 from dataloader.dataloader import DataLoader
 from pipeline.data_access import DataSetSource, PDReduce
-from pipeline.generics import PDSample
+from pipeline.generics import PDSample, Show
 from pipeline.pipeline import Fork, Pass, Pipeline
 from pipeline.preprocessing import OneHotEnc, CuisineSetSplit
 from pipeline.analysis import VectorizeAndSum, W2VStep, CuisineNearestNeighbors, CuisineNearestCentroid, CuisineMLP, CuisineGaussian, CuisineDecisionTree, CuisineRandomForest, CuisineAdaBoost
@@ -14,7 +14,7 @@ def pipeline():
         "cuisine",
         steps=[
             DataSetSource(datasets=[DataLoader.WHATS_COOKING]),
-            #PDSample(50, 65510),
+            PDSample(15, 65510),
             PDReduce(['name', 'cuisine', 'ingredients']),
             Fork(  # Pre-Procesing Fork
                 "calc w2v, one hot, and pass names",
@@ -45,6 +45,7 @@ def pipeline():
                 ]),
             # Output from fork is w2v, cuisine (onehot, encoding), names
             # Splits dataset into training and test set
+            Show(head=False),
             CuisineSetSplit(training=80),
             Fork(  # Pre-Procesing Fork
                 "First data retention for histogram phase",
