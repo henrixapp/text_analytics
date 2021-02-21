@@ -29,6 +29,27 @@ class IterableApply(PipelineStep):
         head.addInfo("iterable_apply", self._step.name)
         return newdata, head
 
+    def begin_viz(self):
+        """
+        returns the node of the beginning
+        """
+        return self._step.begin_viz()
+
+    def end_viz(self):
+        """
+        returns the node of the beginning
+        """
+        return self._step.end_viz()
+
+    def visualize(self):
+        return """subgraph cluster_{0} {{
+style=bold;
+label="{1}"
+{2}
+graph[style=dashed];
+}}
+""".format(str(id(self)), self.name, self._step.visualize())
+
 
 class Sample(PipelineStep):
     """
