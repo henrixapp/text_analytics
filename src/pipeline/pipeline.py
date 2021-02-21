@@ -104,11 +104,11 @@ class Pipeline(PipelineStep):
                 content += "{0}->{1}\n".format(prev.end_viz(),
                                                step.begin_viz())
             prev = step
-        res = """subgraph {0} {{
+        res = """subgraph cluster_{0} {{
 style=filled;
-color=lightgrey;
 label="{1}"
 {2}
+graph[style=dashed];
 }}
 """.format(str(id(self)), self.name, content)
 
@@ -150,15 +150,16 @@ class Fork(PipelineStep):
         return res, head
 
     def visualize(self):
-        res = """subgraph {0} {{
+        res = """subgraph cluster_{0} {{
+            node [style=filled];
 style=filled;
-color=lightgreen;
-label="{1}"
+label="{1}";
+    graph[style=dotted];
 {2}
 """.format(str(id(self)), self.name,
-           super().visualize())
+           str(id(self)) + ' [label="split",shape=diamond]')
         id_ = str(id(self)) + "2"
-        res += id_ + ' [ label="' + self.name + '-end"]\n'
+        res += id_ + ' [ label="union" shape=diamond]\n'
         for step in self.steps:
             res = res + step.visualize()
             res += self.begin_viz() + "->" + step.begin_viz() + "\n"
