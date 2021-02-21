@@ -116,7 +116,19 @@ def test_pipeline():
             VisualizeBoundaries(100)
         ],
         verbosity=True)
-    return p.process(True)
+    pi = Pipeline("test",
+                  steps=[
+                      Fork("nothin",
+                           steps=[
+                               PDReduce("1"),
+                               PDReduce("3"),
+                               Pipeline("inner",
+                                        steps=[PDReduce(3),
+                                               PDReduce(5)])
+                           ])
+                  ])
+    open("test.dot", "w").write(p.visualize_digraph())
+    return  #p.process(True)
 
 
 if __name__ == "__main__":
