@@ -1,7 +1,8 @@
-from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
+from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts, OneHotEnc
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
+import numpy as np
 
 
 def test_dropper():
@@ -165,3 +166,26 @@ def test_alphanumerical_input():
     expected_result = "this is a normal text with 100 words"
     result, _ = pipe.process(text)
     assert result == expected_result
+
+
+def test_onehotenc_numpy():
+    pipe = Pipeline("OneHot", steps=[OneHotEnc()])
+
+    input = np.array(["Eins", "Zwei", "Drei", "Zwei", "Drei", "Drei"])
+    one_hot = np.array([1, 2, 0, 2, 0, 0])
+    enc = (np.array(["Drei", "Eins", "Zwei"]))
+    (result1, result2), _ = pipe.process(input)
+    assert (result1 == one_hot).all()
+    assert (result2 == enc).all()
+
+
+def test_onehotenc_pdseries():
+    pipe = Pipeline("OneHot", steps=[OneHotEnc()])
+
+    d = {1: "Eins", 2: "Zwei", 3: "Drei"}
+    input = pd.core.series.Series(data=d, index=[1, 2, 3, 2, 3, 3])
+    one_hot = np.array([1, 2, 0, 2, 0, 0])
+    enc = (np.array(["Drei", "Eins", "Zwei"]))
+    (result1, result2), _ = pipe.process(input)
+    assert (result1 == one_hot).all()
+    assert (result2 == enc).all()
