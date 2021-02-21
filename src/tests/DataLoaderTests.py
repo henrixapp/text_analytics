@@ -10,14 +10,6 @@ def error_string(dataset_name, type_name, col):
 
 
 class TestDataLoader(unittest.TestCase):
-    def test_creation_wrong_path(self):
-        cache_env = os.environ["RECIPE_DATASET_PATH"]
-        os.environ["RECIPE_DATASET_PATH"] = "/dev/null"
-        with self.assertRaises(NotADirectoryError) as ctx:
-            DataLoader()
-        self.assertTrue("not a Directory" in str(ctx.exception))
-        os.environ["RECIPE_DATASET_PATH"] = cache_env
-
     def dataset_interface(self, dataset_name, exclude=[]):
         dataset = DataLoader()[dataset_name]
 
