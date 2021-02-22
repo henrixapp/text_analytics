@@ -1,0 +1,100 @@
+digraph G {
+subgraph cluster_140562246489280 {
+style=filled;
+label="word2vecSum"
+140565657063488 [ label="Sourcefood-com"]
+140565656968544 [ label="dropper_"]
+140565657063488->140565656968544
+140565656107280 [ label="OutOfDistributionRemover"]
+140565656968544->140565656107280
+140562325799024 [ label="PDsample25000_s65510"]
+140565656107280->140562325799024
+140562325799600 [ label="PDReduce"]
+140562325799024->140562325799600
+subgraph cluster_140562246489136 {
+            node [style=filled];
+style=filled;
+label="calc w2v and pass names";
+    graph[style=dotted];
+140562246489136 [label="split",shape=diamond]
+1405622464891362 [ label="union" shape=diamond]
+subgraph cluster_140562246488944 {
+style=filled;
+label="2"
+subgraph cluster_140562246488752 {
+            node [style=filled];
+style=filled;
+label="ingredientmapping";
+    graph[style=dotted];
+140562246488752 [label="split",shape=diamond]
+1405622464887522 [ label="union" shape=diamond]
+subgraph cluster_140562325801424 {
+style=filled;
+label="zutaten zerstoeren"
+140562325800128 [ label="PDReduce"]
+subgraph cluster_140562325801232 {
+            node [style=filled];
+style=filled;
+label="3";
+    graph[style=dotted];
+140562325801232 [label="split",shape=diamond]
+1405623258012322 [ label="union" shape=diamond]
+140562325800656 [ label="w2v"]
+140562325801232->140562325800656
+140562325800656->1405623258012322
+140562325801040 [ label="pass"]
+140562325801232->140562325801040
+140562325801040->1405623258012322
+
+}
+140562325800128->140562325801232
+
+graph[style=dashed];
+}
+140562246488752->140562325800128
+1405623258012322->1405622464887522
+subgraph cluster_140562246488656 {
+style=filled;
+label="spacy steps"
+140562325801616 [ label="PDReduce"]
+subgraph cluster_140562246488560 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_140562246488464 {
+style=bold;
+label="iterable_apply"
+140562246488368 [ label="splitter"]
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+140562325801616->140562246488368
+
+graph[style=dashed];
+}
+140562246488752->140562325801616
+140562246488368->1405622464887522
+
+}
+140562246488848 [ label="IngredientsPerStepsOccurrenceBySimilarity"]
+1405622464887522->140562246488848
+
+graph[style=dashed];
+}
+140562246489136->140562246488752
+140562246488848->1405622464891362
+140562246489040 [ label="PDReduce"]
+140562246489136->140562246489040
+140562246489040->1405622464891362
+
+}
+140562325799600->140562246489136
+
+graph[style=dashed];
+}
+
+start -> 140565657063488
+1405622464891362->end
+}

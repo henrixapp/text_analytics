@@ -1,0 +1,36 @@
+digraph G {
+subgraph cluster_139718333714592 {
+style=filled;
+label="recipennlg"
+139721541406784 [ label="Sourcerecipenlg"]
+139721541311840 [ label="PDReduce"]
+139721541406784->139721541311840
+subgraph cluster_139718333697568 {
+style=bold;
+label="iterable_apply"
+139721540450960 [ label="ApplyJSON"]
+
+graph[style=dashed];
+}
+139721541311840->139721540450960
+139718333697664 [ label="flatten"]
+139721540450960->139718333697664
+subgraph cluster_139718333697856 {
+style=bold;
+label="iterable_apply"
+139718333697760 [ label="lower"]
+
+graph[style=dashed];
+}
+139718333697664->139718333697760
+139718333697952 [ label="unique"]
+139718333697760->139718333697952
+139718333714496 [ label="TOJSON"]
+139718333697952->139718333714496
+
+graph[style=dashed];
+}
+
+start -> 139721541406784
+139718333714496->end
+}
