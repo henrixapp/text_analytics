@@ -5,7 +5,7 @@ from pipeline.pipeline import Fork, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, NLTKPorterStemmer, OutOfDistributionRemover, Replacer, Split, StopWordsRemoval
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import DBSCAN, OPTICS, SpectralClustering, KMeans
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, TruncatedSVD
 from nltk.corpus import stopwords
 from visualization.interactive import Tooltipped2DScatterPlot, TooltippedTSNEPlot
 import numpy as np
@@ -15,7 +15,7 @@ def pipeline():
     p = Pipeline(
         "basline",
         steps=[
-            DataSetSource(datasets=[DataLoader.EPIRECIPES]),
+            DataSetSource(datasets=[DataLoader.RECIPENLG]),
             Dropper(columns_causing_drop=['steps']),
             OutOfDistributionRemover(),
             # PDSample(2000),
@@ -78,13 +78,16 @@ def pipeline():
 
 
 def kmeans(tfidf, names, terms):
-    kmeans_clustering = KMeans(n_clusters=7).fit(tfidf)
+    svd = TruncatedSVD(n_components=10, n_iter=7, random_state=42)
+    svd.fit(tfidf.T)
+    print(svd.components_.shape)
+    kmeans_clustering = KMeans(n_clusters=7).fit(svd.components_.T)
     labels = kmeans_clustering.labels_
 
     top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
     print(top_terms)
     # plot_clusters_in_2D(tfidf, names, labels)
-    plot_clusters_with_tSNE(tfidf, names, labels, extras=top_terms)
+    plot_clusters_with_tSNE(svd.components_.T, names, labels, extras=top_terms)
 
 
 def dbscan(tfidf, names, terms):
@@ -116,16 +119,17 @@ def plot_clusters_in_2D(tfidf, names, labels):
     reduced_data = pca.fit_transform(tfidf.todense())
     data = reduced_data.T
 
-    plot = Tooltipped2DScatterPlot(data, list(names), labels, colors)
+    plot = Tooltipped2DScatterPlot(data, list(names), labels)
     plot.plot()
 
 
 def plot_clusters_with_tSNE(tfidf, names, labels, extras=None):
 
-    plot = TooltippedTSNEPlot(tfidf.todense(),
-                              list(names),
-                              labels,
-                              extras=extras)
+    plot = TooltippedTSNEPlot(
+        tfidf,  #.todense(),
+        list(names),
+        labels,
+        extras=extras)
     plot.plot()
 
 
