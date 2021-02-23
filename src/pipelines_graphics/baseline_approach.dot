@@ -1,0 +1,100 @@
+digraph G {
+subgraph cluster_140534147271264 {
+style=filled;
+label="basline"
+140537478737984 [ label="Sourceepirecipes"]
+140537478643040 [ label="dropper_"]
+140537478737984->140537478643040
+140537477781536 [ label="OutOfDistributionRemover"]
+140537478643040->140537477781536
+140534223656704 [ label="PDsample200_s0"]
+140537477781536->140534223656704
+140534147269152 [ label="PDReduce"]
+140534223656704->140534147269152
+subgraph cluster_140534147270928 {
+            node [style=filled];
+style=filled;
+label="split names and steps";
+    graph[style=dotted];
+140534147270928 [label="split",shape=diamond]
+1405341472709282 [ label="union" shape=diamond]
+subgraph cluster_140534147269056 {
+style=filled;
+label="names branch"
+140534147269344 [ label="PDReduce"]
+
+graph[style=dashed];
+}
+140534147270928->140534147269344
+140534147269344->1405341472709282
+subgraph cluster_140534147271024 {
+style=filled;
+label="steps branch"
+140534147269440 [ label="PDReduce"]
+subgraph cluster_140534147270640 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_140534147270688 {
+style=filled;
+label="work on recipes"
+subgraph cluster_140534147271456 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_140534147271312 {
+style=filled;
+label="work on steps"
+140534147269536 [ label="lower"]
+140534147269824 [ label="replacer"]
+140534147269536->140534147269824
+140534147269680 [ label="splitter"]
+140534147269824->140534147269680
+subgraph cluster_140534147270064 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_140534147269968 {
+style=filled;
+label="work on words"
+140534147269776 [ label="AlphaNumericalizer"]
+140534147269248 [ label="nltk_porter"]
+140534147269776->140534147269248
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+140534147269680->140534147269776
+140534147270736 [ label="stopwordsremoval"]
+140534147269248->140534147270736
+140534147271504 [ label="lambda"]
+140534147270736->140534147271504
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+140534147270544 [ label="lambda"]
+140534147271504->140534147270544
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+140534147269440->140534147269536
+
+graph[style=dashed];
+}
+140534147270928->140534147269440
+140534147270544->1405341472709282
+
+}
+140534147269152->140534147270928
+
+graph[style=dashed];
+}
+
+start -> 140537478737984
+1405341472709282->end
+}

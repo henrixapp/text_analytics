@@ -1,0 +1,121 @@
+digraph G {
+subgraph cluster_140187594717120 {
+style=filled;
+label="word2vecSum"
+140191017790144 [ label="Sourcewhats-cooking"]
+subgraph cluster_140187594716832 {
+            node [style=filled];
+style=filled;
+label="recept";
+    graph[style=dotted];
+140187594716832 [label="split",shape=diamond]
+1401875947168322 [ label="union" shape=diamond]
+subgraph cluster_140187594716736 {
+style=filled;
+label="KMeans"
+subgraph cluster_140188064105280 {
+style=filled;
+label="zutaten zerstoeren"
+140191017790816 [ label="PDReduce"]
+subgraph cluster_140187733570272 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_140187810151584 {
+style=bold;
+label="iterable_apply"
+140191016929888 [ label="lower"]
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+140191017790816->140191016929888
+subgraph cluster_140188064104992 {
+            node [style=filled];
+style=filled;
+label="3";
+    graph[style=dotted];
+140188064104992 [label="split",shape=diamond]
+1401880641049922 [ label="union" shape=diamond]
+140188064104800 [ label="PickleLoad"]
+140188064104992->140188064104800
+140188064104800->1401880641049922
+140188064104896 [ label="pass"]
+140188064104992->140188064104896
+140188064104896->1401880641049922
+
+}
+140191016929888->140188064104992
+140188064105088 [ label="vectorize"]
+1401880641049922->140188064105088
+
+graph[style=dashed];
+}
+subgraph cluster_140187594717408 {
+            node [style=filled];
+style=filled;
+label="kmeans";
+    graph[style=dotted];
+140187594717408 [label="split",shape=diamond]
+1401875947174082 [ label="union" shape=diamond]
+140188064106672 [ label="pass"]
+140187594717408->140188064106672
+140188064106672->1401875947174082
+subgraph cluster_140188064106768 {
+style=filled;
+label="kMeansClusterer"
+140188064105472 [ label="kmeans"]
+
+graph[style=dashed];
+}
+140187594717408->140188064105472
+140188064105472->1401875947174082
+subgraph cluster_140187594718368 {
+style=filled;
+label="cuisine MLP"
+subgraph cluster_140187595255136 {
+            node [style=filled];
+style=filled;
+label="Load MLP from Pickle";
+    graph[style=dotted];
+140187595255136 [label="split",shape=diamond]
+1401875952551362 [ label="union" shape=diamond]
+140188064105232 [ label="PickleLoad"]
+140187595255136->140188064105232
+140188064105232->1401875952551362
+140187595185888 [ label="pass"]
+140187595255136->140187595185888
+140187595185888->1401875952551362
+
+}
+140187595255184 [ label="lambda"]
+1401875952551362->140187595255184
+
+graph[style=dashed];
+}
+140187594717408->140187595255136
+140187595255184->1401875947174082
+
+}
+140188064105088->140187594717408
+
+graph[style=dashed];
+}
+140187594716832->140191017790816
+1401875947174082->1401875947168322
+140187594717600 [ label="PDReduce"]
+140187594716832->140187594717600
+140187594717600->1401875947168322
+
+}
+140191017790144->140187594716832
+140187594717264 [ label="visualize boundaries"]
+1401875947168322->140187594717264
+
+graph[style=dashed];
+}
+
+start -> 140191017790144
+140187594717264->end
+}

@@ -1,0 +1,104 @@
+digraph G {
+subgraph cluster_140013150521520 {
+style=filled;
+label="cuisine"
+140016573459136 [ label="Sourcewhats-cooking"]
+140016573459808 [ label="PDReduce"]
+140016573459136->140016573459808
+subgraph cluster_140013151059344 {
+            node [style=filled];
+style=filled;
+label="calc w2v, one hot, and pass names";
+    graph[style=dotted];
+140013151059344 [label="split",shape=diamond]
+1400131510593442 [ label="union" shape=diamond]
+subgraph cluster_140013622113280 {
+style=filled;
+label="2"
+subgraph cluster_140013622114480 {
+            node [style=filled];
+style=filled;
+label="ingredientmapping";
+    graph[style=dotted];
+140013622114480 [label="split",shape=diamond]
+1400136221144802 [ label="union" shape=diamond]
+subgraph cluster_140013622113088 {
+style=filled;
+label="zutaten zerstoeren"
+140016572598880 [ label="PDReduce"]
+subgraph cluster_140013622112800 {
+            node [style=filled];
+style=filled;
+label="3";
+    graph[style=dotted];
+140013622112800 [label="split",shape=diamond]
+1400136221128002 [ label="union" shape=diamond]
+subgraph cluster_140013622112608 {
+style=filled;
+label="store"
+140013365955744 [ label="w2v"]
+140013289374432 [ label="PickleDump"]
+140013365955744->140013289374432
+
+graph[style=dashed];
+}
+140013622112800->140013365955744
+140013289374432->1400136221128002
+140013622112704 [ label="pass"]
+140013622112800->140013622112704
+140013622112704->1400136221128002
+
+}
+140016572598880->140013622112800
+140013622112896 [ label="vectorize"]
+1400136221128002->140013622112896
+
+graph[style=dashed];
+}
+140013622114480->140016572598880
+140013622112896->1400136221144802
+
+}
+
+graph[style=dashed];
+}
+140013151059344->140013622114480
+1400136221144802->1400131510593442
+subgraph cluster_140013150994144 {
+style=filled;
+label="onehot_cuisine"
+140013622114576 [ label="PDReduce"]
+140013622113040 [ label="Onehot"]
+140013622114576->140013622113040
+
+graph[style=dashed];
+}
+140013151059344->140013622114576
+140013622113040->1400131510593442
+140013151059296 [ label="PDReduce"]
+140013151059344->140013151059296
+140013151059296->1400131510593442
+
+}
+140016573459808->140013151059344
+140013150522528 [ label="CuisineSetSplit"]
+1400131510593442->140013150522528
+subgraph cluster_140013150520992 {
+style=filled;
+label="calc classifiers on split dataset"
+140013150521568 [ label="CuisineMLP"]
+140013150520896 [ label="lambda"]
+140013150521568->140013150520896
+140013150521760 [ label="PickleDump"]
+140013150520896->140013150521760
+
+graph[style=dashed];
+}
+140013150522528->140013150521568
+
+graph[style=dashed];
+}
+
+start -> 140016573459136
+140013150521760->end
+}

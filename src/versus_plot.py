@@ -5,6 +5,7 @@ from pipeline.generics import First, IterableApply, Lambda, ZipList
 from pipeline.analysis import CuisineMLP, IngredientsPerStepsOccurrenceBySimilarity, KMeansClusterer, KMeansNew, PhraserStep, VectorizeAndSum, W2VStep
 from pipeline.visualization import VisualizeBoundaries
 from dataloader.dataloader import DataLoader
+import sys
 
 
 def train_pipeline():
@@ -63,6 +64,8 @@ def train_pipeline():
                 ])
         ],
         verbosity=True)
+    open("pipelines_graphics/versus_plot_train.dot",
+         "w").write(p.visualize_digraph())
     return p.process(True)
 
 
@@ -116,8 +119,13 @@ def test_pipeline():
             VisualizeBoundaries(100)
         ],
         verbosity=True)
-    return p.process(True)
+    open("pipelines_graphics/versus_plot_test.dot",
+         "w").write(p.visualize_digraph())
+    return  #p.process(True)
 
 
 if __name__ == "__main__":
-    test_pipeline()
+    if sys.argv[1] == "train":
+        train_pipeline()
+    else:
+        test_pipeline()
