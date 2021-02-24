@@ -1,8 +1,9 @@
-from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts, OneHotEnc
+from pipeline.preprocessing import AlphaNumericalizer, CuisineSetSplit, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts, OneHotEnc
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
 import numpy as np
+import pytest
 
 
 def test_dropper():
@@ -189,3 +190,34 @@ def test_onehotenc_pdseries():
     (result1, result2), _ = pipe.process(input)
     assert (result1 == one_hot).all()
     assert (result2 == enc).all()
+
+
+def test_CuisineSplitSet():
+    pipe = Pipeline("CuisineSplitSet",
+                    steps=[CuisineSetSplit(training=50, rand_perm=False)])
+
+    w2v_1 = np.array([0, 0.5, -0.5, 1, -1], dtype=np.float32)
+    w2v_2 = np.array([-1, 0.4, -0.6, 0, 1], dtype=np.float32)
+    onehot = np.array([0, 1])
+    cuisine = np.array(['test1', 'test2'], dtype=np.object)
+    names = pd.core.series.Series({0: 10, 1: 11})
+
+    names_list = names.tolist()
+
+    input = [[[w2v_1, w2v_2]], (onehot, cuisine), names]
+    output_train = [[w2v_1], (), names]
+    output_test = [[w2v_2], (), names]
+    output = [output_train, output_test]
+
+    (result_train, result_test), _ = pipe.process(input)
+    train_w2v, (train_onehot, train_cuisine), train_names = result_train
+    test_w2v, (test_onehot, test_cuisine), test_names = result_test
+
+    assert (train_w2v == w2v_1).all()
+    assert (test_w2v == w2v_2).all()
+    assert (train_onehot == onehot[0:1]).all()
+    assert (test_onehot == onehot[1:1]).all()
+    assert (train_cuisine == cuisine).all()
+    assert (test_cuisine == cuisine).all()
+    assert (train_names == [names_list[0]])
+    assert (test_names == [names_list[1]])

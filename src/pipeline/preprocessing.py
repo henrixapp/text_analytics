@@ -243,7 +243,6 @@ class AlphaNumericalizer(PipelineStep):
         return re.sub(r'[^0-9a-zA-Z ]', '', data), head
 
 
-
 class OneHotEnc(PipelineStep):
     """
     OneHot encoding. expects 1-D numpy array or pandas.core.series.Series
@@ -261,14 +260,16 @@ class OneHotEnc(PipelineStep):
         cuisines_unique = np.sort(np.unique(data))
         n_cuisines_unique = cuisines_unique.shape[0]
 
-        targets = np.empty(data.shape,dtype=int)
+        targets = np.empty(data.shape, dtype=int)
         for index in range(n_cuisines_unique):
             added_targets = np.where(data == cuisines_unique[index])
             targets[added_targets] = index
 
-        assert (cuisines_unique[targets] == data).all(), "Something went wrong inside the one hot encoding."
+        assert (cuisines_unique[targets] == data
+                ).all(), "Something went wrong inside the one hot encoding."
         data = targets, cuisines_unique
         return data, head
+
 
 class CuisineSetSplit(PipelineStep):
     """
@@ -280,9 +281,10 @@ class CuisineSetSplit(PipelineStep):
         Input: w2v, cuisine (onehot, encoding), names
         Output: 2 times split input with training%, 1-training% split as tuple
     """
-    def __init__(self, training = 80):
+    def __init__(self, training=80, rand_perm=True):
         super().__init__("CuisineSetSplit")
         self.training = training
+        self.rand_perm = rand_perm
 
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
@@ -291,15 +293,22 @@ class CuisineSetSplit(PipelineStep):
         names = names.tolist()
         onehot, encoding = cuisine
         n_set = onehot.shape[0]
-        t_set = ceil(n_set*(self.training/100))
+        t_set = ceil(n_set * (self.training / 100))
 
-        permutation = list(np.random.permutation(n_set))
-        print(f"Sizes: Dataset: {len(permutation)}, TrainingSet: {len(permutation[0:t_set])}, TestSet: {len(permutation[t_set:])}")
+        if self.rand_perm:
+            permutation = list(np.random.permutation(n_set))
+        else:
+            permutation = list(range(n_set))
+
+        print(
+            f"Sizes: Dataset: {len(permutation)}, TrainingSet: {len(permutation[0:t_set])}, TestSet: {len(permutation[t_set:])}"
+        )
 
         trainings_w2v = [w2v[0][i] for i in permutation[0:t_set]]
         trainings_onehot = [onehot[i] for i in permutation[0:t_set]]
         trainings_names = [names[i] for i in permutation[0:t_set]]
-        trainings_data = trainings_w2v, (trainings_onehot, encoding), trainings_names
+        trainings_data = trainings_w2v, (trainings_onehot,
+                                         encoding), trainings_names
 
         test_w2v = [w2v[0][i] for i in permutation[t_set:]]
         test_onehot = [onehot[i] for i in permutation[t_set:]]
@@ -308,4 +317,3 @@ class CuisineSetSplit(PipelineStep):
 
         data = (trainings_data, test_data)
         return data, head
-
