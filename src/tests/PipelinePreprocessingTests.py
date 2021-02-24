@@ -148,9 +148,6 @@ def test_lower_multiple():
     assert result == expected_result
 
 
-# TODO: Write test for OutOfDistributionRemover
-
-
 def test_non_alphanumerical_input():
     pipe = Pipeline("alphanum", steps=[AlphaNumericalizer()])
 
