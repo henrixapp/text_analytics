@@ -4,12 +4,13 @@ from pipeline.generics import IterableApply, Lambda, PDSample
 from pipeline.pipeline import Fork, Pipeline
 from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, NLTKPorterStemmer, OutOfDistributionRemover, Replacer, Split, StopWordsRemoval
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import DBSCAN, OPTICS, SpectralClustering, KMeans
+from sklearn.cluster import DBSCAN, OPTICS, SpectralClustering, KMeans, AgglomerativeClustering, Birch, MiniBatchKMeans
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 from nltk.corpus import stopwords
 from visualization.interactive import Tooltipped2DScatterPlot, TooltippedEmbeddingPlot
 import numpy as np
+import functools
 '''
 Implements a very basic baseline approach which can be used to compare more sophisticated approaches to.
 Uses epirecipes dataset, does pre-processing and computes TF-IDF features which are then used by different clustering algorithms.
@@ -86,27 +87,48 @@ def pipeline():
 ### Clustering algorithms ###
 
 
-def kmeans(data):
-    kmeans_clustering = KMeans(n_clusters=7).fit(data)
+def kmeans(data, n_clusters=7):
+    kmeans_clustering = KMeans(n_clusters=n_clusters).fit(data)
     labels = kmeans_clustering.labels_
     return labels
 
 
-def dbscan(data):
-    db_clustering = DBSCAN(eps=5, min_samples=20).fit(data)
+def mini_batch_kmeans(data, n_clusters=7):
+    mini_batch_kmeans_clustering = MiniBatchKMeans(
+        n_clusters=n_clusters).fit(data)
+    labels = mini_batch_kmeans_clustering.labels_
+    return labels
+
+
+def dbscan(data, eps=5, min_samples=2):
+    db_clustering = DBSCAN(eps=eps, min_samples=min_samples).fit(data)
     labels = db_clustering.labels_
     return labels
 
 
-def optics(data):
-    optics_clustering = OPTICS(min_samples=2).fit(data)
+def optics(data, min_samples=2):
+    optics_clustering = OPTICS(min_samples=min_samples).fit(data)
     labels = optics_clustering.labels_
     return labels
 
 
-def spectral(data):
-    spectral_clustering = SpectralClustering(n_clusters=7).fit(data)
+def spectral(data, n_clusters=7):
+    spectral_clustering = SpectralClustering(n_clusters=n_clusters).fit(data)
     labels = spectral_clustering.labels_
+    return labels
+
+
+def agglomerative(data, n_clusters=7, linkage="ward"):
+    agglomerative_clustering = AgglomerativeClustering(
+        n_clusters=n_clusters, linkage=linkage).fit(data)
+    labels = agglomerative_clustering.labels_
+    return labels
+
+
+def birch(data, n_clusters=7, threshold=0.01):
+    birch_clustering = Birch(n_clusters=n_clusters,
+                             threshold=threshold).fit(data)
+    labels = birch_clustering.labels_
     return labels
 
 
@@ -186,19 +208,28 @@ def main():
     # print(svd.components_.shape)
     data = svd.components_.T
 
-    for clustering_algorithm in [kmeans, optics, spectral]:
+    # cluster for each clustering algorithm. If keyword arguments are changed, partial objects need to be used
+    for clustering_algorithm in [
+            functools.partial(kmeans, n_clusters=5),
+            functools.partial(kmeans, n_clusters=7), mini_batch_kmeans, optics,
+            spectral,
+            functools.partial(agglomerative, linkage="ward"),
+            functools.partial(agglomerative, linkage="single"),
+            functools.partial(agglomerative, linkage="complete"),
+            functools.partial(agglomerative, linkage="average"), birch
+    ]:
         print(str(clustering_algorithm))
         # Clustering
         labels = clustering_algorithm(data)
         # print(labels.shape)
-        print(labels)
+        # print(labels)
 
         # Find top terms per cluster
-        #top_terms = top_terms_per_cluster(terms, dense_tfidf, labels)
+        # top_terms = top_terms_per_cluster(terms, dense_tfidf, labels)
         # print(top_terms)
 
         # Plot
-        #plot_clusters_with_embedding(data, names, labels, extras=top_terms)
+        # plot_clusters_with_embedding(data, names, labels, extras=top_terms)
 
         # Report metrics
         report_metrics(data, labels)
