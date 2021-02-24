@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import DBSCAN, OPTICS, SpectralClustering, KMeans
 from sklearn.decomposition import PCA, TruncatedSVD
 from nltk.corpus import stopwords
-from visualization.interactive import Tooltipped2DScatterPlot, TooltippedTSNEPlot
+from visualization.interactive import Tooltipped2DScatterPlot, TooltippedEmbeddingPlot
 import numpy as np
 
 
@@ -15,7 +15,7 @@ def pipeline():
     p = Pipeline(
         "basline",
         steps=[
-            DataSetSource(datasets=[DataLoader.RECIPENLG]),
+            DataSetSource(datasets=[DataLoader.EIGHT_PORTIONS]),
             Dropper(columns_causing_drop=['steps']),
             OutOfDistributionRemover(),
             # PDSample(2000),
@@ -77,44 +77,59 @@ def pipeline():
         True)  #set data to true as we provided data with DataSetSource step
 
 
-def kmeans(tfidf, names, terms):
-    svd = TruncatedSVD(n_components=10, n_iter=7, random_state=42)
-    svd.fit(tfidf.T)
-    print(svd.components_.shape)
-    kmeans_clustering = KMeans(n_clusters=7).fit(svd.components_.T)
+### Clustering algorithms ###
+
+
+def kmeans(tfidf, names, terms, data=None):
+    if data is None:
+        data = tfidf
+
+    kmeans_clustering = KMeans(n_clusters=7).fit(data)
     labels = kmeans_clustering.labels_
 
     top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
     print(top_terms)
-    # plot_clusters_in_2D(tfidf, names, labels)
-    plot_clusters_with_tSNE(svd.components_.T, names, labels, extras=top_terms)
+    plot_clusters_with_embedding(data, names, labels, extras=top_terms)
 
 
-def dbscan(tfidf, names, terms):
+def dbscan(tfidf, names, terms, data=None):
+    if data is None:
+        data = tfidf
+
     db_clustering = DBSCAN(eps=.5, min_samples=2).fit(tfidf)
     labels = db_clustering.labels_
 
-    plot_clusters_in_2D(tfidf, names, labels)
+    top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
+    print(top_terms)
+    plot_clusters_with_embedding(data, names, labels, extras=top_terms)
 
 
-def optics(tfidf, names, terms):
+def optics(tfidf, names, terms, data=None):
+    if data is None:
+        data = tfidf
+
     optics_clustering = OPTICS(min_samples=2).fit(tfidf.todense())
     labels = optics_clustering.labels_
 
     plot_clusters_in_2D(tfidf, names, labels)
 
 
-def spectral(tfidf, names, terms):
+def spectral(tfidf, names, terms, data=None):
+    if data is None:
+        data = tfidf
+
     spectral_clustering = SpectralClustering(n_clusters=7).fit(tfidf.todense())
     labels = spectral_clustering.labels_
 
     top_terms = top_terms_per_cluster(terms, tfidf.todense(), labels)
-    print(top_terms)
-    # plot_clusters_in_2D(tfidf, names, labels)
-    plot_clusters_with_tSNE(tfidf, names, labels, extras=top_terms)
+    plot_clusters_with_embedding(tfidf, names, labels, extras=top_terms)
+
+
+### plotting functions ###
 
 
 def plot_clusters_in_2D(tfidf, names, labels):
+    # for 2D scatter plots using PCA
     pca = PCA(n_components=2)
     reduced_data = pca.fit_transform(tfidf.todense())
     data = reduced_data.T
@@ -123,14 +138,22 @@ def plot_clusters_in_2D(tfidf, names, labels):
     plot.plot()
 
 
-def plot_clusters_with_tSNE(tfidf, names, labels, extras=None):
+def plot_clusters_with_embedding(tfidf,
+                                 names,
+                                 labels,
+                                 extras=None,
+                                 embedding='UMAP'):
+    # for plotting using embeddings (either UMAP or tSNE)
 
-    plot = TooltippedTSNEPlot(
+    plot = TooltippedEmbeddingPlot(
         tfidf,  #.todense(),
         list(names),
         labels,
         extras=extras)
-    plot.plot()
+    if embedding == 'UMAP':
+        plot.plot_UMAP()
+    else:
+        plot.plot_tSNE()
 
 
 def top_terms_per_cluster(terms, tfidf, labels, top_n=10):
@@ -153,20 +176,27 @@ def top_terms_per_cluster(terms, tfidf, labels, top_n=10):
 def main():
     '''
     Implements a very basic baseline approach which can be used to compare more sophisticated approaches to.
-    Uses ... dataset, does pre-processing and computes TF-IDF features which are then used by ... clustering algorithm.
+    Uses epirecipes dataset, does pre-processing and computes TF-IDF features which are then used by different clustering algorithms.
+    Optionally you can perfrom dimensionality reduction using TruncatedSVD and even plot the results interactively.
     '''
     data, _ = pipeline()
     names, steps = data
 
+    # TF-IDF Vectorization
     vectorizer = TfidfVectorizer(min_df=5)
     tfidf = vectorizer.fit_transform(steps)
     terms = vectorizer.get_feature_names()
     print(terms)
     print(tfidf.shape)
 
-    kmeans(tfidf, names, terms)
+    # Dimensionality reduction
+    svd = TruncatedSVD(n_components=10, n_iter=7, random_state=42)
+    svd.fit(tfidf.T)
+    print(svd.components_.shape)
+
+    # Clustering
+    kmeans(tfidf, names, terms, data=svd.components_.T)
 
 
 if __name__ == "__main__":
-    # print(type(stopwords.words('english') + ['tom']))
     main()

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import mplcursors
 from sklearn.manifold import TSNE
 import matplotlib.colors as mcolors
+from umap import UMAP
 
 COLOR_LIST = [
     '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4',
@@ -80,7 +81,11 @@ class Tooltipped2DScatterPlot():
         plt.show()
 
 
-class TooltippedTSNEPlot():
+class TooltippedEmbeddingPlot():
+    """
+    Creates two dimensional scatter plot which shows names when you hover over data points.
+    Data can be high-dimensional and will be reduced to two dimension by either using tSNE or UMAP embedding, use plot_tSNE or plot_UMAP functions.
+    """
     def __init__(self,
                  data,
                  names,
@@ -96,11 +101,15 @@ class TooltippedTSNEPlot():
         self.title = title
         self.extras = extras
 
-    def perform_tSNE(self):
+    def plot_UMAP(self):
+        self.embedded = UMAP().fit_transform(self.data)
+        self.plot()
+
+    def plot_tSNE(self):
         self.embedded = TSNE(n_components=2).fit_transform(self.data)
+        self.plot()
 
     def plot(self):
-        self.perform_tSNE()
         fig, ax = plt.subplots()
         plt.subplots_adjust(right=0.5)
         plt.axis('off')
