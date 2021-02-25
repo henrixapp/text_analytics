@@ -196,7 +196,7 @@ def test_CuisineSplitSet():
     w2v_1 = np.array([0, 0.5, -0.5, 1, -1], dtype=np.float32)
     w2v_2 = np.array([-1, 0.4, -0.6, 0, 1], dtype=np.float32)
     onehot = np.array([0, 1])
-    cuisine = np.array(['test1', 'test2'], dtype=np.object)
+    cuisine = np.array(['test1', 'test2'], dtype=object)
     names = pd.core.series.Series({0: 10, 1: 11})
 
     names_list = names.tolist()

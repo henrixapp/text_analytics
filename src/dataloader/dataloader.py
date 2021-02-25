@@ -36,7 +36,6 @@ class DataLoader:
     #This is the DataLoader Class which abstracts away the access and norming of
     #our datasets.
 
-    
     def __init__(self,
                  pickle_path="__pickle__",
                  dataframe_path=os.environ.get('RECIPE_DATASET_PATH',
@@ -168,9 +167,9 @@ class DataLoader:
         return dataframe
 
     def __load_eightportions(self):
-        dataframe = pd.read_json(
-            join(self.dataframe_path,
-                 "eightportions/recipes_raw_nosource_ar.json"), "index")
+        dataframe = pd.read_json(join(
+            self.dataframe_path, "eightportions/recipes_raw_nosource_ar.json"),
+                                 orient="index")
         dataframe = dataframe.rename(columns={
             "instructions": "steps",
             "title": "name"
