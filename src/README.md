@@ -86,7 +86,7 @@ Uses a hierarchical clustering algorithm (not part of the pipeline).
 
 **Design:**
 
-![Pipeline design of cuisine_w2v](pipelines_graphics/cuisine_w2v.png)
+[![Pipeline design of cuisine_w2v](pipelines_graphics/cuisine_w2v.png)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ### `ingredients_crawler.py`
 
