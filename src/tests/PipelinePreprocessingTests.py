@@ -1,7 +1,9 @@
-from pipeline.preprocessing import AlphaNumericalizer, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts
+from pipeline.preprocessing import AlphaNumericalizer, CuisineSetSplit, Dropper, Lower, Numbers2Words, SentenceSplitter, StopWordsRemoval, SpacyStep, NLTKPorterStemmer, Replacer, ExtractSentenceParts, OneHotEnc
 from pipeline.pipeline import Pipeline
 from pipeline.counters import SimpleCounter
 import pandas as pd
+import numpy as np
+import pytest
 
 
 def test_dropper():
@@ -146,9 +148,6 @@ def test_lower_multiple():
     assert result == expected_result
 
 
-# TODO: Write test for OutOfDistributionRemover
-
-
 def test_non_alphanumerical_input():
     pipe = Pipeline("alphanum", steps=[AlphaNumericalizer()])
 
@@ -165,3 +164,57 @@ def test_alphanumerical_input():
     expected_result = "this is a normal text with 100 words"
     result, _ = pipe.process(text)
     assert result == expected_result
+
+
+def test_onehotenc_numpy():
+    pipe = Pipeline("OneHot", steps=[OneHotEnc()])
+
+    input = np.array(["Eins", "Zwei", "Drei", "Zwei", "Drei", "Drei"])
+    one_hot = np.array([1, 2, 0, 2, 0, 0])
+    enc = (np.array(["Drei", "Eins", "Zwei"]))
+    (result1, result2), _ = pipe.process(input)
+    assert (result1 == one_hot).all()
+    assert (result2 == enc).all()
+
+
+def test_onehotenc_pdseries():
+    pipe = Pipeline("OneHot", steps=[OneHotEnc()])
+
+    d = {1: "Eins", 2: "Zwei", 3: "Drei"}
+    input = pd.core.series.Series(data=d, index=[1, 2, 3, 2, 3, 3])
+    one_hot = np.array([1, 2, 0, 2, 0, 0])
+    enc = (np.array(["Drei", "Eins", "Zwei"]))
+    (result1, result2), _ = pipe.process(input)
+    assert (result1 == one_hot).all()
+    assert (result2 == enc).all()
+
+
+def test_CuisineSplitSet():
+    pipe = Pipeline("CuisineSplitSet",
+                    steps=[CuisineSetSplit(training=50, rand_perm=False)])
+
+    w2v_1 = np.array([0, 0.5, -0.5, 1, -1], dtype=np.float32)
+    w2v_2 = np.array([-1, 0.4, -0.6, 0, 1], dtype=np.float32)
+    onehot = np.array([0, 1])
+    cuisine = np.array(['test1', 'test2'], dtype=object)
+    names = pd.core.series.Series({0: 10, 1: 11})
+
+    names_list = names.tolist()
+
+    input = [[[w2v_1, w2v_2]], (onehot, cuisine), names]
+    output_train = [[w2v_1], (), names]
+    output_test = [[w2v_2], (), names]
+    output = [output_train, output_test]
+
+    (result_train, result_test), _ = pipe.process(input)
+    train_w2v, (train_onehot, train_cuisine), train_names = result_train
+    test_w2v, (test_onehot, test_cuisine), test_names = result_test
+
+    assert (train_w2v == w2v_1).all()
+    assert (test_w2v == w2v_2).all()
+    assert (train_onehot == onehot[0:1]).all()
+    assert (test_onehot == onehot[1:1]).all()
+    assert (train_cuisine == cuisine).all()
+    assert (test_cuisine == cuisine).all()
+    assert (train_names == [names_list[0]])
+    assert (test_names == [names_list[1]])

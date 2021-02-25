@@ -157,3 +157,19 @@ class Lambda(PipelineStep):
     def process(self, data, head=Head()):
         head.addInfo(self.name, "")
         return self.func(data), head
+
+
+class Show(PipelineStep):
+    """
+    Prints data and head to cmd.
+    """
+    def __init__(self, data=True, head=True):
+        super().__init__("show")
+        self.data = data
+        self.head = head
+
+    def process(self, data, head=Head()):
+        head.addInfo(self.name, "Show Data and Head")
+        if self.data: print(data)
+        if self.head: print(head._infos)
+        return data, head
