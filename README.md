@@ -15,4 +15,4 @@ In our project we are clustering and augmenting recipes. A detailed description 
 
 ### Appetizer
 Just to give a taste, here is a clustering visualization using [UMAP](https://umap-learn.readthedocs.io/en/latest/), k-Means clustering and baseline approach (TF-IDF, TruncatedSVD).
-![Baseline Gif](visualisations/baseline.gif)
+[![Baseline Gif](visualisations/baseline.gif)](https://www.youtube.com/watch?v=SewE9nil0Nc)
