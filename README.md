@@ -7,9 +7,9 @@
 
 The assignments 1 to 4 can be found in the respective folders.
 
-## [Project](scr/)
+## [Project](src/)
 
-To get started with running the example pipelines [read more here](scr/). Our project implementation is found in the [src folder](scr/) together with a [README](scr/), where all important steps are described.
+To get started with running the example pipelines [read more here](src/). Our project implementation is found in the [src folder](src/) together with a [README](src/), where all important steps are desrcibed.
 
 In our project we are clustering and augmenting recipes. A detailed description of the project idea can be found in the [proposal](proposal/project-proposal.pdf). An overview over the progress and an analysis of the dataset in particular can be found in our report for the [first milestone](milestone-1/README.md). Our issue tracking and meetings are documented in the folder [meetings](meetings/).
 
