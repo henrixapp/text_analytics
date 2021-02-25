@@ -1,0 +1,98 @@
+digraph G {
+subgraph cluster_139985388802496 {
+style=filled;
+label="basline"
+139988412547136 [ label="Sourceepirecipes"]
+139988412456288 [ label="dropper_"]
+139988412547136->139988412456288
+139988411412192 [ label="OutOfDistributionRemover"]
+139988412456288->139988411412192
+139986664474080 [ label="PDReduce"]
+139988411412192->139986664474080
+subgraph cluster_139985388802352 {
+            node [style=filled];
+style=filled;
+label="split names and steps";
+    graph[style=dotted];
+139985388802352 [label="split",shape=diamond]
+1399853888023522 [ label="union" shape=diamond]
+subgraph cluster_139986654348432 {
+style=filled;
+label="names branch"
+139986664474224 [ label="PDReduce"]
+
+graph[style=dashed];
+}
+139985388802352->139986664474224
+139986664474224->1399853888023522
+subgraph cluster_139985388802256 {
+style=filled;
+label="steps branch"
+139985388734736 [ label="PDReduce"]
+subgraph cluster_139985388802160 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_139985388735840 {
+style=filled;
+label="work on recipes"
+subgraph cluster_139985388736368 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_139985388736464 {
+style=filled;
+label="work on steps"
+139985388734832 [ label="lower"]
+139985388734928 [ label="replacer"]
+139985388734832->139985388734928
+139985388735024 [ label="splitter"]
+139985388734928->139985388735024
+subgraph cluster_139985388735504 {
+style=bold;
+label="iterable_apply"
+subgraph cluster_139985388735408 {
+style=filled;
+label="work on words"
+139985388735120 [ label="AlphaNumericalizer"]
+139985388735216 [ label="nltk_porter"]
+139985388735120->139985388735216
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+139985388735024->139985388735120
+139985388736176 [ label="stopwordsremoval"]
+139985388735216->139985388736176
+139985388736224 [ label="lambda"]
+139985388736176->139985388736224
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+139985388735936 [ label="lambda"]
+139985388736224->139985388735936
+
+graph[style=dashed];
+}
+
+graph[style=dashed];
+}
+139985388734736->139985388734832
+
+graph[style=dashed];
+}
+139985388802352->139985388734736
+139985388735936->1399853888023522
+
+}
+139986664474080->139985388802352
+
+graph[style=dashed];
+}
+
+start -> 139988412547136
+1399853888023522->end
+}
