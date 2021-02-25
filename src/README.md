@@ -54,16 +54,14 @@ datasets
     └── train.json
 ```
 
-**Note:** You must not supply all datasets.
+**Note:** You do not have to supply all datasets.
 
 #### IMPORTANT!
 Please export the folder using `export RECIPE_DATASET_PATH=<path-to-dataset>`
 
-Otherwise is
+## Predefined Pipelines
 
-## example pipelines
-
-If not stated differently simply call them by `python3 <filename.py>`.
+If not stated differently simply call them by `python3 <filename.py>`. Do not forget to export the `RECIPE_DATASET_PATH` beforehand.
 
 ### `baseline_approach.py`
 
@@ -73,6 +71,14 @@ Uses a hierarchical clustering algorithm (not part of the pipeline).
 **Design:**
 
 ![Pipeline design of baseline_approach](pipelines_graphics/baseline_approach.png)
+
+### `clustering_algorithms.py`
+
+**Aim:** Applying different clustering algorithms to TFIDF-baseline approach. Qualitative evaluation by hand (hovering over some).
+
+**Design:**
+
+![Pipeline design of clustering_algorithms](pipelines_graphics/clustering_algorithms.png)
 
 ### `cuisine_w2v.py`
 
@@ -144,3 +150,11 @@ head is of type `Head` and is used to store infos about the processed data, this
 
 Overwriting the `visualize` method allows to customize the graphviz visualization. To change the pointing 
 nodes overwrite `begin_viz` and `end_viz` (only returns a simple string).
+
+## Tests
+
+We supply tests for all deterministic PipelineSteps we have implemented. Run them by:
+
+```sh
+pytest
+```
