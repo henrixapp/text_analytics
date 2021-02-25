@@ -93,6 +93,7 @@ Uses a hierarchical clustering algorithm (not part of the pipeline).
 **Aim:** Retrieve all ingredients from recipenlg, uniquenize them and store them in file.
 
 **Design:**
+
 ![Pipeline design of ingredients_crawler](pipelines_graphics/ingredients_crawler.png)
 
 ### `tfidf-pca-kmean-interactive-plot.py`
